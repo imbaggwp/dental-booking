@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Dental Care</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Aurora-фон -->
+  <div class="aurora">
+    <div class="aurora-blob blob-1"></div>
+    <div class="aurora-blob blob-2"></div>
+    <div class="aurora-blob blob-3"></div>
+  </div>
+
+  <div id="app">
+
+    <!-- ====== WELCOME ====== -->
+    <section id="step-welcome" class="step active">
+      <div class="welcome">
+        <div class="welcome-logo glass-card">
+          <div class="logo-glow"></div>
+          <span>🦷</span>
+        </div>
+        <h1 class="welcome-title">Dental Care</h1>
+        <p class="welcome-subtitle">Современная стоматология<br>с заботой о каждом пациенте</p>
+
+        <div class="welcome-features">
+          <div class="feature glass-card">
+            <div class="feature-icon">⏱️</div>
+            <div>
+              <div class="feature-title">Быстрая запись</div>
+              <div class="feature-desc">Выберите время за 30 секунд</div>
+            </div>
+          </div>
+          <div class="feature glass-card">
+            <div class="feature-icon">👨‍⚕️</div>
+            <div>
+              <div class="feature-title">Опытные врачи</div>
+              <div class="feature-desc">Специалисты с опытом 10+ лет</div>
+            </div>
+          </div>
+          <div class="feature glass-card">
+            <div class="feature-icon">💎</div>
+            <div>
+              <div class="feature-title">Премиум-оборудование</div>
+              <div class="feature-desc">Безболезненное лечение</div>
+            </div>
+          </div>
+          <div class="feature glass-card">
+            <div class="feature-icon">🔔</div>
+            <div>
+              <div class="feature-title">Напоминания</div>
+              <div class="feature-desc">Напомним о приёме заранее</div>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-start" class="btn-primary btn-large btn-gradient">
+          <span>Записаться на приём</span>
+          <span class="btn-arrow">→</span>
+        </button>
+        <p class="welcome-note">Нажимая кнопку, вы соглашаетесь с обработкой персональных данных</p>
+      </div>
+    </section>
+
+    <!-- ====== РЕГИСТРАЦИЯ ====== -->
+    <section id="step-register" class="step">
+      <div class="register glass-card">
+        <div class="step-badge">Шаг 1 из 5</div>
+        <h2>Регистрация</h2>
+        <p class="register-desc">Заполните данные для связи</p>
+
+        <div class="form-group">
+          <label>Как к вам обращаться?</label>
+          <input type="text" id="reg-name" placeholder="Имя и фамилия" autocomplete="name">
+        </div>
+
+        <div class="form-group">
+          <label>Телефон</label>
+          <button id="btn-share-phone" class="btn-outline">
+            <span>📱</span> Поделиться номером из Telegram
+          </button>
+          <div class="or-divider"><span>или</span></div>
+          <input type="tel" id="reg-phone" placeholder="+7 (___) ___-__-__">
+        </div>
+
+        <div class="form-group">
+          <label>Email <span class="optional">(для подтверждений)</span></label>
+          <input type="email" id="reg-email" placeholder="example@mail.ru">
+        </div>
+
+        <button id="btn-register" class="btn-primary btn-large btn-gradient">
+          <span>Продолжить</span><span class="btn-arrow">→</span>
+        </button>
+        <button class="btn-secondary" onclick="goToStep('step-welcome')">← Назад</button>
+      </div>
+    </section>
+
+    <!-- ====== HEADER ====== -->
+    <header class="header" id="main-header" style="display:none">
+      <div class="header-row">
+        <div>
+          <div class="step-badge" id="step-badge">Шаг 2 из 5</div>
+          <h1 id="title">Запись на приём</h1>
+          <p id="greeting" class="greeting"></p>
+        </div>
+        <div id="user-avatar" class="avatar"></div>
+      </div>
+    </header>
+
+    <!-- ====== УСЛУГА ====== -->
+    <section id="step-service" class="step">
+      <h2 class="section-title">Выберите услугу</h2>
+      <div id="services" class="cards"></div>
+    </section>
+
+    <!-- ====== ВРАЧ ====== -->
+    <section id="step-doctor" class="step">
+      <h2 class="section-title">Выберите врача</h2>
+      <div id="doctors" class="cards"></div>
+      <button class="btn-secondary" onclick="goToStep('step-service')">← Назад</button>
+    </section>
+
+    <!-- ====== ДАТА ====== -->
+    <section id="step-date" class="step">
+      <h2 class="section-title">Выберите дату</h2>
+      <div class="calendar glass-card">
+        <div class="cal-header">
+          <button id="prev-month" class="cal-nav">‹</button>
+          <span id="cal-month"></span>
+          <button id="next-month" class="cal-nav">›</button>
+        </div>
+        <div class="cal-weekdays">
+          <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+        </div>
+        <div id="cal-days" class="cal-days"></div>
+      </div>
+      <button class="btn-secondary" onclick="goToStep('step-doctor')">← Назад</button>
+    </section>
+
+    <!-- ====== ВРЕМЯ ====== -->
+    <section id="step-time" class="step">
+      <h2 class="section-title">Выберите время</h2>
+      <p id="selected-date-label" class="date-label"></p>
+      <div id="time-slots" class="time-slots"></div>
+      <button class="btn-secondary" onclick="goToStep('step-date')">← Назад</button>
+    </section>
+
+    <!-- ====== ПОДТВЕРЖДЕНИЕ ====== -->
+    <section id="step-confirm" class="step">
+      <h2 class="section-title">Подтверждение</h2>
+      <div id="summary" class="summary glass-card"></div>
+      <div class="buttons">
+        <button class="btn-secondary" onclick="goToStep('step-time')">← Назад</button>
+        <button id="btn-book" class="btn-primary btn-large btn-gradient">
+          <span>Подтвердить запись</span><span class="btn-arrow">✓</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ====== МОИ ЗАПИСИ ====== -->
+    <section id="step-my" class="step">
+      <h2 class="section-title">Мои записи</h2>
+      <div id="my-bookings" class="bookings-list"></div>
+    </section>
+
+    <!-- ====== МОДАЛКА ОТЗЫВА ====== -->
+    <div id="review-modal" class="modal" style="display:none">
+      <div class="modal-content glass-card">
+        <button class="modal-close" onclick="closeReviewModal()">✕</button>
+        <h2>Оставить отзыв</h2>
+        <p class="review-subtitle" id="review-subtitle"></p>
+        <div class="rating" id="rating">
+          <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+        </div>
+        <textarea id="review-text" placeholder="Расскажите о вашем опыте..." rows="4"></textarea>
+        <button id="btn-submit-review" class="btn-primary btn-gradient">Отправить отзыв</button>
+      </div>
+    </div>
+
+    <!-- ====== НИЖНЯЯ НАВИГАЦИЯ ====== -->
+    <nav class="bottom-nav glass-card" id="bottom-nav" style="display:none">
+      <button class="nav-btn active" data-step="step-service">
+        <span class="nav-icon">🦷</span><span class="nav-label">Запись</span>
+      </button>
+      <button class="nav-btn" data-step="step-my">
+        <span class="nav-icon">📋</span><span class="nav-label">Мои записи</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
