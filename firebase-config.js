@@ -14,7 +14,7 @@ const ADMIN_CONFIG = {
   adminTelegramId: 123456789,
   botToken: "123456:ABC-DEF...",
   notifyChatId: 123456789,
-  adminPassword: "your-secret-password"
+  adminPassword: "Marina2001"
 };
 
 // ====== EMAIL (EmailJS) ======
