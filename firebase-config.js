@@ -1,4 +1,4 @@
-// ====== FIREBASE ======
+// ====== ВАШИ ДАННЫЕ ИЗ FIREBASE ======
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "your-app.firebaseapp.com",
@@ -14,16 +14,16 @@ const ADMIN_CONFIG = {
   adminTelegramId: 123456789,
   botToken: "123456:ABC-DEF...",
   notifyChatId: 123456789,
-  adminPassword: "Marina2001"
+  adminPassword: "your-secret-password"
 };
 
 // ====== EMAIL (EmailJS) ======
-// Регистрация: https://www.emailjs.com (бесплатно 200 писем/мес)
 const EMAIL_CONFIG = {
-  serviceId: "service_xxxxx",    // ваш Email Service ID
-  templateId: "template_xxxxx",  // ваш Template ID
-  publicKey: "xxxxxxxxxxxxxxx"   // ваш Public Key
+  serviceId: "service_xxxxx",
+  templateId: "template_xxxxx",
+  publicKey: "xxxxxxxxxxxxxxx"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+const storage = firebase.storage();
