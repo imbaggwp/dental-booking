@@ -10,14 +10,14 @@ const DEFAULT_SERVICES = [
   { id: 'fill',    name: {ru:'Лечение кариеса', en:'Cavity treatment'}, desc: {ru:'Пломбирование', en:'Filling'}, price: '5 000 ₽', icon: '🦷' },
   { id: 'extract', name: {ru:'Удаление зуба', en:'Tooth extraction'}, desc: {ru:'Простое / сложное', en:'Simple / complex'}, price: 'от 3 500 ₽', icon: '🔧' },
   { id: 'implant', name: {ru:'Имплантация', en:'Implantation'}, desc: {ru:'Установка импланта', en:'Implant placement'}, price: 'от 35 000 ₽', icon: '💎' },
-  { id: 'kids',    name: {ru:'Детский приём', en:'Pediatric visit'}, desc: {ru:'Для пациентов до 14 лет', en:'For patients under 14'}, price: '2 500 ₽', icon: '🧸' }
+  { id: 'kids',    name: {ru:'Детский приём', en:'Pediatric visit'}, desc: {ru:'Для пациентов до 14 лет', en:'For patients under 14'}, price: '2 500 ₽', icon: '' }
 ];
 
 const DEFAULT_DOCTORS = [
-  { id: 'd1', name: 'Иванов И.И.', spec: {ru:'Терапевт', en:'Therapist'}, exp: '12', icon: '👨⚕️' },
-  { id: 'd2', name: 'Петрова А.С.', spec: {ru:'Хирург-имплантолог', en:'Implant surgeon'}, exp: '15', icon: '👩⚕️' },
+  { id: 'd1', name: 'Иванов И.И.', spec: {ru:'Терапевт', en:'Therapist'}, exp: '12', icon: '‍⚕️' },
+  { id: 'd2', name: 'Петрова А.С.', spec: {ru:'Хирург-имплантолог', en:'Implant surgeon'}, exp: '15', icon: '👩‍⚕️' },
   { id: 'd3', name: 'Сидоров П.В.', spec: {ru:'Ортодонт', en:'Orthodontist'}, exp: '10', icon: '👨‍⚕️' },
-  { id: 'd4', name: 'Козлова М.А.', spec: {ru:'Детский стоматолог', en:'Pediatric dentist'}, exp: '8', icon: '‍⚕️' }
+  { id: 'd4', name: 'Козлова М.А.', spec: {ru:'Детский стоматолог', en:'Pediatric dentist'}, exp: '8', icon: '👩‍⚕️' }
 ];
 
 const TIME_SLOTS = ['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
@@ -40,9 +40,39 @@ const state = {
 // ====== Telegram WebApp ======
 const tg = window.Telegram?.WebApp;
 if (tg) {
-  tg.ready();
-  tg.expand();
+  try {
+    tg.ready();
+    tg.expand();
+  } catch (e) {
+    console.warn('Telegram WebApp not available:', e);
+  }
   state.user = tg.initDataUnsafe?.user || null;
+}
+
+// ====== ТЕСТОВЫЙ РЕЖИМ (удалите перед продакшеном) ======
+if (!state.user) {
+  console.warn('⚠️ Telegram user не найден. Создаём тестового пользователя.');
+  state.user = {
+    id: 999999999,
+    first_name: 'Тест',
+    last_name: 'Пользователь',
+    username: 'test_user',
+    language_code: 'ru'
+  };
+}
+
+// ====== ОТЛАДКА ПРИ ЗАГРУЗКЕ ======
+console.log('🚀 App starting...');
+console.log('📱 Telegram WebApp:', tg ? 'OK' : 'NOT FOUND');
+console.log('👤 Telegram user:', state.user);
+console.log('🔥 Firebase db:', typeof db !== 'undefined' ? 'OK' : 'UNDEFINED');
+console.log('🌐 currentLang:', currentLang);
+
+if (typeof db === 'undefined') {
+  console.error('❌ Firebase не инициализирован!');
+  setTimeout(() => {
+    alert('⚠️ Firebase не подключён!\n\nПроверьте:\n1. firebase-config.js заполнен реальными данными\n2. Файл подключён в index.html ДО app.js');
+  }, 500);
 }
 
 // ====== УТИЛИТЫ ======
@@ -83,6 +113,8 @@ function loc(obj) {
 
 // ====== СТАРТ ======
 async function init() {
+  console.log(' Initializing app...');
+  
   // Определяем язык
   const savedLang = localStorage.getItem('dental_lang');
   if (savedLang && translations[savedLang]) {
@@ -97,21 +129,26 @@ async function init() {
     return;
   }
 
+  console.log('📡 Loading settings...');
   await loadSettings();
   await loadPromotions();
 
+  console.log('👤 Loading user profile...');
   try {
     const snap = await db.ref('users/' + state.user.id).once('value');
     state.profile = snap.val();
+    console.log('👤 Profile loaded:', state.profile);
   } catch (e) { 
-    console.error(e); 
+    console.error('❌ Error loading profile:', e); 
   }
 
   if (state.profile) {
+    console.log('✅ User registered, showing main UI');
     showMainUI();
     renderServices();
     goToStep('step-service');
   } else {
+    console.log('📝 User not registered, showing welcome');
     goToStep('step-welcome');
     const tgName = `${state.user.first_name || ''} ${state.user.last_name || ''}`.trim();
     if (tgName) {
@@ -130,8 +167,9 @@ async function loadSettings() {
     const d = dSnap.val();
     if (s) state.services = Object.values(s).filter(x => x.active !== false);
     if (d) state.doctors = Object.values(d).filter(x => x.active !== false);
+    console.log('⚙️ Settings loaded:', state.services.length, 'services,', state.doctors.length, 'doctors');
   } catch (e) { 
-    console.error(e); 
+    console.error('❌ Error loading settings:', e); 
   }
 }
 
@@ -149,7 +187,7 @@ async function loadPromotions() {
     state.promotions = promos;
     renderPromoBanner();
   } catch (e) { 
-    console.error(e); 
+    console.error('❌ Error loading promotions:', e); 
   }
 }
 
@@ -175,8 +213,11 @@ function showMainUI() {
 
 // ====== WELCOME → регистрация ======
 document.getElementById('btn-start').onclick = () => {
+  console.log('👉 Start button clicked');
   goToStep('step-register');
-  tg?.HapticFeedback?.impactOccurred('light');
+  if (tg?.HapticFeedback) {
+    tg.HapticFeedback.impactOccurred('light');
+  }
 };
 
 document.getElementById('btn-share-phone').onclick = () => {
@@ -187,39 +228,95 @@ document.getElementById('btn-share-phone').onclick = () => {
   tg.requestContact(() => showToast('✅'));
 };
 
-// ====== РЕГИСТРАЦИЯ ======
+// ====== РЕГИСТРАЦИЯ (ИСПРАВЛЕННАЯ ВЕРСИЯ) ======
 document.getElementById('btn-register').onclick = async () => {
+  const btn = document.getElementById('btn-register');
+
+  // Сбрасываем состояние кнопки
+  btn.disabled = false;
+
   const name = document.getElementById('reg-name').value.trim();
   const phone = document.getElementById('reg-phone').value.trim();
   const email = document.getElementById('reg-email').value.trim();
 
-  if (!name) { showToast(t('fillName')); return; }
-  if (!phone) { showToast(t('fillPhone')); return; }
+  console.log('🔍 Registration attempt:', { name, phone, email });
 
-  const btn = document.getElementById('btn-register');
+  // Проверка Firebase
+  if (typeof db === 'undefined' || !db) {
+    alert('❌ Firebase не инициализирован. Проверьте firebase-config.js');
+    console.error('db is undefined. Check firebase-config.js');
+    return;
+  }
+
+  // Проверка Telegram-пользователя
+  if (!state.user) {
+    console.warn('⚠️ Telegram user не найден. Создаём тестового пользователя.');
+    state.user = {
+      id: 999999999,
+      first_name: name.split(' ')[0] || 'Тест',
+      last_name: name.split(' ')[1] || 'Пользователь',
+      username: 'test_user',
+      language_code: 'ru'
+    };
+    showToast('🧪 Тестовый режим (без Telegram)');
+  }
+
+  // Валидация
+  if (!name) {
+    showToast('Укажите имя');
+    return;
+  }
+  if (!phone) {
+    showToast('Укажите телефон');
+    return;
+  }
+
+  // Блокируем кнопку
   btn.disabled = true;
+  btn.innerHTML = '<span>Сохранение...</span>';
 
   const profile = {
     telegramId: state.user.id,
     telegramUsername: state.user.username || '',
     language: currentLang,
-    name, phone, email,
+    name: name,
+    phone: phone,
+    email: email,
     registeredAt: Date.now()
   };
+
+  console.log(' Saving profile:', profile);
 
   try {
     await db.ref('users/' + state.user.id).set(profile);
     state.profile = profile;
-    tg?.HapticFeedback?.notificationOccurred('success');
-    showToast(t('registered'));
+
+    console.log('✅ Profile saved successfully');
+
+    if (tg?.HapticFeedback) {
+      tg.HapticFeedback.notificationOccurred('success');
+    }
+
+    showToast('✅ Регистрация завершена');
     showMainUI();
     renderServices();
     goToStep('step-service');
   } catch (e) {
-    console.error(e);
-    showToast(t('error'));
+    console.error('❌ Registration error:', e);
+    const errorMsg = e.message || 'Неизвестная ошибка';
+
+    if (errorMsg.includes('permission-denied')) {
+      alert('❌ Ошибка доступа к Firebase.\n\nПроверьте правила Realtime Database:\n\n' +
+        '{\n  "rules": {\n    "users": { ".read": true, ".write": true },\n    ...\n  }\n}');
+    } else if (errorMsg.includes('NETWORK_ERROR') || errorMsg.includes('network')) {
+      alert('❌ Ошибка сети.\n\nПроверьте firebaseConfig в firebase-config.js');
+    } else {
+      alert('❌ Ошибка: ' + errorMsg);
+    }
   } finally {
+    // ВСЕГДА разблокируем кнопку
     btn.disabled = false;
+    btn.innerHTML = '<span data-i18n="continueBtn">Продолжить</span><span class="btn-arrow">→</span>';
   }
 };
 
@@ -243,7 +340,9 @@ function renderServices() {
       state.service = s;
       renderDoctors();
       goToStep('step-doctor');
-      tg?.HapticFeedback?.selectionChanged();
+      if (tg?.HapticFeedback) {
+        tg.HapticFeedback.selectionChanged();
+      }
     };
     el.appendChild(card);
   });
@@ -263,7 +362,7 @@ function renderDoctors() {
           <div class="name">${d.name}</div>
           <div class="desc">${loc(d.spec) || ''}</div>
           <div class="meta">${t('exp')}: ${d.exp || '—'} ${t('years')}</div>
-          <button class="portfolio-btn" data-doctor="${d.id}"> ${t('portfolio')}</button>
+          <button class="portfolio-btn" data-doctor="${d.id}">🖼 ${t('portfolio')}</button>
         </div>
       </div>`;
     
@@ -272,7 +371,9 @@ function renderDoctors() {
       state.doctor = d;
       renderCalendar();
       goToStep('step-date');
-      tg?.HapticFeedback?.selectionChanged();
+      if (tg?.HapticFeedback) {
+        tg.HapticFeedback.selectionChanged();
+      }
     };
     
     const portfolioBtn = card.querySelector('.portfolio-btn');
@@ -355,7 +456,9 @@ function renderCalendar() {
         renderCalendar();
         renderTimeSlots();
         goToStep('step-time');
-        tg?.HapticFeedback?.selectionChanged();
+        if (tg?.HapticFeedback) {
+          tg.HapticFeedback.selectionChanged();
+        }
       };
     }
     daysEl.appendChild(el);
@@ -399,7 +502,9 @@ async function renderTimeSlots() {
         el.classList.add('selected');
         renderSummary();
         goToStep('step-confirm');
-        tg?.HapticFeedback?.selectionChanged();
+        if (tg?.HapticFeedback) {
+          tg.HapticFeedback.selectionChanged();
+        }
       };
     }
     slotsEl.appendChild(el);
@@ -416,6 +521,7 @@ async function fetchTakenSlots(dateKey) {
     });
     return taken;
   } catch (e) { 
+    console.error('Error fetching taken slots:', e);
     return []; 
   }
 }
@@ -456,7 +562,7 @@ async function notifyAdmin(booking) {
       body: JSON.stringify({ chat_id: ADMIN_CONFIG.notifyChatId, text, parse_mode: 'Markdown' })
     });
   } catch (e) { 
-    console.error(e); 
+    console.error('Error notifying admin:', e); 
   }
 }
 
@@ -477,7 +583,7 @@ async function sendConfirmationEmail(booking) {
       price: booking.price
     });
   } catch (e) { 
-    console.error(e); 
+    console.error('Email error:', e); 
   }
 }
 
@@ -510,7 +616,9 @@ document.getElementById('btn-book').onclick = async () => {
     await ref.set(booking);
     booking.id = ref.key;
 
-    tg?.HapticFeedback?.notificationOccurred('success');
+    if (tg?.HapticFeedback) {
+      tg.HapticFeedback.notificationOccurred('success');
+    }
     showToast(t('booked'));
 
     await Promise.all([
@@ -524,7 +632,7 @@ document.getElementById('btn-book').onclick = async () => {
     loadMyHistory();
     renderPromos();
   } catch (e) {
-    console.error(e);
+    console.error('Booking error:', e);
     showToast(t('error'));
   } finally {
     btn.disabled = false;
@@ -562,7 +670,7 @@ async function loadMyBookings() {
           <span class="b-service">${loc(b.serviceName)}</span>
           <span class="b-status confirmed">${t('confirmed')}</span>
         </div>
-        <div class="b-date">📅 ${dateStr} · 🕐 ${b.time} · 💰 ${b.price}</div>
+        <div class="b-date"> ${dateStr} · 🕐 ${b.time} · 💰 ${b.price}</div>
         ${b.doctorName ? `<div class="b-doctor">👨‍⚕️ ${b.doctorName}</div>` : ''}
         <div class="b-actions">
           <button class="cancel" data-id="${b.id}">${t('cancel')}</button>
@@ -575,13 +683,15 @@ async function loadMyBookings() {
       btn.onclick = async () => {
         if (!confirm(t('cancel') + '?')) return;
         await db.ref('bookings/' + btn.dataset.id).update({ status: 'cancelled' });
-        tg?.HapticFeedback?.notificationOccurred('warning');
+        if (tg?.HapticFeedback) {
+          tg.HapticFeedback.notificationOccurred('warning');
+        }
         showToast(t('cancelledMsg'));
         loadMyBookings();
       };
     });
   } catch (e) {
-    console.error(e);
+    console.error('Error loading bookings:', e);
     list.innerHTML = `<div class="empty">${t('error')}</div>`;
   }
 }
@@ -589,7 +699,7 @@ async function loadMyBookings() {
 // ====== ИСТОРИЯ ======
 async function loadMyHistory() {
   const list = document.getElementById('my-history');
-  list.innerHTML = `<div class="empty"><div class="empty-icon">📜</div>${t('loading')}...</div>`;
+  list.innerHTML = `<div class="empty"><div class="empty-icon"></div>${t('loading')}...</div>`;
   if (!state.user) return;
 
   try {
@@ -619,10 +729,10 @@ async function loadMyHistory() {
           <span class="b-status ${b.status === 'cancelled' ? 'cancelled' : 'done'}">${status}</span>
         </div>
         <div class="h-date">📅 ${dateStr} · 🕐 ${b.time}</div>
-        ${b.doctorName ? `<div class="h-doctor">👨‍️ ${b.doctorName}</div>` : ''}
+        ${b.doctorName ? `<div class="h-doctor">‍⚕️ ${b.doctorName}</div>` : ''}
         ${b.review ? `<div class="h-review">${'★'.repeat(b.review.rating)}${'☆'.repeat(5-b.review.rating)} — ${b.review.text || ''}</div>` : ''}
         <div class="h-actions">
-          ${b.status !== 'cancelled' ? `<button class="btn-again" data-id="${b.id}"> ${t('bookAgain')}</button>` : ''}
+          ${b.status !== 'cancelled' ? `<button class="btn-again" data-id="${b.id}">🔁 ${t('bookAgain')}</button>` : ''}
           ${b.status !== 'cancelled' && !b.review ? `<button class="btn-review" data-id="${b.id}">${t('leaveReview')}</button>` : ''}
         </div>
       `;
@@ -636,7 +746,7 @@ async function loadMyHistory() {
       btn.onclick = () => openReviewModal(btn.dataset.id);
     });
   } catch (e) {
-    console.error(e);
+    console.error('Error loading history:', e);
     list.innerHTML = `<div class="empty">${t('error')}</div>`;
   }
 }
@@ -658,7 +768,7 @@ async function bookAgain(bookingId) {
     goToStep('step-date');
     showToast('');
   } catch (e) { 
-    console.error(e); 
+    console.error('Error booking again:', e); 
   }
 }
 
@@ -753,13 +863,15 @@ document.getElementById('btn-submit-review').onclick = async () => {
       db.ref('reviews').push().set(review),
       db.ref('bookings/' + id + '/review').set({ rating: currentRating, text })
     ]);
-    tg?.HapticFeedback?.notificationOccurred('success');
+    if (tg?.HapticFeedback) {
+      tg.HapticFeedback.notificationOccurred('success');
+    }
     showToast(t('reviewSent'));
     closeReviewModal();
     currentRating = 0;
     loadMyHistory();
   } catch (e) {
-    console.error(e);
+    console.error('Review error:', e);
     showToast(t('error'));
   }
 };
@@ -794,7 +906,7 @@ async function openGalleryModal(doctor) {
       grid.appendChild(el);
     });
   } catch (e) {
-    console.error(e);
+    console.error('Gallery error:', e);
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--hint)">${t('error')}</div>`;
   }
 }
@@ -804,4 +916,5 @@ function closeGalleryModal() {
 }
 
 // ====== ЗАПУСК ======
+console.log('🚀 Calling init()...');
 init();
