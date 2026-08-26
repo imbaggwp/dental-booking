@@ -197,6 +197,7 @@
   .appt-status.cancelled { background: var(--danger); }
   .appt-details { font-size: 13px; color: var(--hint); display: flex; gap: 12px; flex-wrap: wrap; }
   .appt-doctor { font-size: 12px; color: var(--link); margin-top: 4px; font-weight: 500; }
+  .appt-cancel-reason { font-size: 11px; color: var(--danger); margin-top: 4px; font-style: italic; }
   .appt-actions { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
   .btn-small {
     padding: 7px 12px; border-radius: 8px; border: none;
@@ -205,7 +206,9 @@
   }
   .btn-small.danger { background: var(--danger); color: white; }
   .btn-small.primary { background: var(--btn); color: var(--btn-text); }
+  .btn-small.success { background: var(--success); color: white; }
   .btn-small.active { background: var(--btn); color: var(--btn-text); }
+  .btn-small.ghost { background: transparent; border: 1px solid var(--border); }
   .empty-state { text-align: center; padding: 40px 20px; color: var(--hint); }
   .empty-icon { font-size: 48px; margin-bottom: 12px; }
   .tabs {
@@ -348,6 +351,77 @@
   .block-info { flex: 1; }
   .block-date { font-weight: 700; font-size: 14px; }
   .block-reason { font-size: 12px; color: var(--hint); margin-top: 2px; }
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 1000; display: flex; align-items: flex-end; justify-content: center;
+    animation: fadeIn 0.2s;
+  }
+  .modal {
+    background: var(--bg); width: 100%; max-width: 480px;
+    border-radius: 20px 20px 0 0; padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+    max-height: 85vh; overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; text-align: center; }
+  .modal-sub { font-size: 13px; color: var(--hint); text-align: center; margin-bottom: 16px; }
+  .reason-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .reason-item {
+    padding: 12px 14px; background: var(--secondary); border-radius: 12px;
+    display: flex; align-items: center; gap: 12px; cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .reason-item.selected { border-color: var(--btn); background: rgba(51,144,236,0.1); }
+  .reason-radio {
+    width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--hint);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .reason-item.selected .reason-radio { border-color: var(--btn); }
+  .reason-item.selected .reason-radio::after {
+    content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--btn);
+  }
+  .reason-text { flex: 1; font-size: 14px; font-weight: 500; }
+  .modal-actions { display: flex; gap: 10px; }
+  .modal-actions .btn-small { flex: 1; padding: 12px; font-size: 14px; }
+  /* Nearest slots */
+  .nearest-slot {
+    background: var(--secondary); border-radius: 14px; padding: 14px;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 12px;
+  }
+  .nearest-slot-info { flex: 1; }
+  .nearest-slot-date { font-weight: 700; font-size: 14px; }
+  .nearest-slot-meta { font-size: 12px; color: var(--hint); margin-top: 2px; }
+  .nearest-slot-time {
+    background: var(--btn); color: var(--btn-text); padding: 6px 12px;
+    border-radius: 10px; font-weight: 700; font-size: 14px;
+  }
+  /* Admin entity list */
+  .entity-card {
+    background: var(--secondary); border-radius: 14px; padding: 14px;
+    margin-bottom: 10px; display: flex; gap: 12px; align-items: center;
+  }
+  .entity-info { flex: 1; min-width: 0; }
+  .entity-name { font-weight: 700; font-size: 14px; }
+  .entity-meta { font-size: 12px; color: var(--hint); margin-top: 2px; }
+  .entity-actions { display: flex; gap: 6px; }
+  .gradient-preview {
+    width: 48px; height: 48px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: white; flex-shrink: 0;
+  }
+  .service-icon-preview {
+    width: 48px; height: 48px; border-radius: 12px; background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .checkbox-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .checkbox-chip {
+    padding: 6px 10px; border-radius: 10px; background: var(--bg);
+    font-size: 11px; font-weight: 600; color: var(--hint); cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .checkbox-chip.active { background: var(--btn); color: var(--btn-text); }
 </style>
 </head>
 <body>
@@ -357,7 +431,7 @@
 const { useState, useEffect, useMemo } = React;
 
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-const ADMIN_USER_ID = 8690178977;
+const ADMIN_USER_ID = 123456789;
 const BOT_USERNAME = "your_dental_bot";
 
 const T = {
@@ -369,10 +443,6 @@ const T = {
     selectDate:"Выберите дату", selectTime:"Выберите время",
     confirm:"Подтверждение", next:"Далее", cancel:"Отмена", save:"Сохранить",
     clinicName:"Стоматология «Улыбка»", clinicSub:"Профессиональная забота",
-    sConsultation:"Консультация", sCleaning:"Чистка зубов",
-    sTreatment:"Лечение", sWhitening:"Отбеливание",
-    sExtraction:"Удаление", sImplantation:"Имплантация",
-    sBraces:"Брекеты", sPediatric:"Детская",
     min:"мин", rub:"₽",
     successTitle:"Вы записаны!", successSub:"Ждём вас в назначенное время",
     noAppts:"Нет записей",
@@ -410,6 +480,39 @@ const T = {
     noDoctors:"Нет врачей", reviews:"отзывов",
     specialists:"специалистов", services:"услуг",
     blockedHint:"Заштрихованные даты заблокированы",
+    bookAgain:"Записаться снова",
+    nearestSlots:"Ближайшие слоты", findNearest:"Показать ближайшие",
+    nearestHint:"Ближайшие свободные слоты у всех врачей",
+    noSlotsFound:"Свободных слотов не найдено",
+    selectThis:"Выбрать",
+    cancelReasonTitle:"Причина отмены",
+    cancelReasonSub:"Помогите нам стать лучше",
+    cancelReasonChanged:"Изменились планы",
+    cancelReasonSick:"Плохо себя чувствую",
+    cancelReasonFound:"Нашёл другую клинику",
+    cancelReasonExpensive:"Дорого",
+    cancelReasonOther:"Другое",
+    cancelReasonCustom:"Укажите причину...",
+    confirmCancelBtn:"Да, отменить",
+    cancelReasonSaved:"Причина сохранена",
+    reason:"Причина",
+    manageDoctors:"Врачи", manageServices:"Услуги",
+    addDoctor:"Добавить врача", editDoctor:"Редактировать врача",
+    addService:"Добавить услугу", editService:"Редактировать услугу",
+    doctorNameRu:"Имя (рус)", doctorNameEn:"Имя (англ)",
+    doctorSpecRu:"Специализация (рус)", doctorSpecEn:"Специализация (англ)",
+    doctorRating:"Рейтинг (0-5)", doctorReviews:"Кол-во отзывов",
+    doctorInitials:"Инициалы", doctorGradient:"Цвет (CSS gradient)",
+    doctorServices:"Оказываемые услуги",
+    serviceId:"ID (латиницей)", serviceIcon:"Иконка (эмодзи)",
+    serviceDuration:"Длительность (мин)", servicePrice:"Цена",
+    serviceNameRu:"Название (рус)", serviceNameEn:"Название (англ)",
+    delete:"Удалить", edit:"Изменить",
+    deleteConfirm:"Удалить?",
+    saved:"Сохранено",
+    cancelStats:"Статистика отмен",
+    topReasons:"Топ причины",
+    noCancellations:"Отмен пока нет",
   },
   en: {
     greeting:"Hello", welcome:"Welcome",
@@ -419,10 +522,6 @@ const T = {
     selectDate:"Select Date", selectTime:"Select Time",
     confirm:"Confirmation", next:"Next", cancel:"Cancel", save:"Save",
     clinicName:"Smile Dental Clinic", clinicSub:"Professional dental care",
-    sConsultation:"Consultation", sCleaning:"Teeth Cleaning",
-    sTreatment:"Treatment", sWhitening:"Whitening",
-    sExtraction:"Extraction", sImplantation:"Implantation",
-    sBraces:"Braces", sPediatric:"Pediatric",
     min:"min", rub:"₽",
     successTitle:"You're booked!", successSub:"We're looking forward to seeing you",
     noAppts:"No appointments",
@@ -460,25 +559,58 @@ const T = {
     noDoctors:"No doctors", reviews:"reviews",
     specialists:"specialists", services:"services",
     blockedHint:"Striped dates are blocked",
+    bookAgain:"Book again",
+    nearestSlots:"Nearest slots", findNearest:"Find nearest",
+    nearestHint:"Nearest available slots across all doctors",
+    noSlotsFound:"No slots found",
+    selectThis:"Select",
+    cancelReasonTitle:"Cancellation reason",
+    cancelReasonSub:"Help us improve",
+    cancelReasonChanged:"Plans changed",
+    cancelReasonSick:"Not feeling well",
+    cancelReasonFound:"Found another clinic",
+    cancelReasonExpensive:"Too expensive",
+    cancelReasonOther:"Other",
+    cancelReasonCustom:"Specify reason...",
+    confirmCancelBtn:"Yes, cancel",
+    cancelReasonSaved:"Reason saved",
+    reason:"Reason",
+    manageDoctors:"Doctors", manageServices:"Services",
+    addDoctor:"Add doctor", editDoctor:"Edit doctor",
+    addService:"Add service", editService:"Edit service",
+    doctorNameRu:"Name (RU)", doctorNameEn:"Name (EN)",
+    doctorSpecRu:"Specialization (RU)", doctorSpecEn:"Specialization (EN)",
+    doctorRating:"Rating (0-5)", doctorReviews:"Reviews count",
+    doctorInitials:"Initials", doctorGradient:"Color (CSS gradient)",
+    doctorServices:"Provided services",
+    serviceId:"ID (latin)", serviceIcon:"Icon (emoji)",
+    serviceDuration:"Duration (min)", servicePrice:"Price",
+    serviceNameRu:"Name (RU)", serviceNameEn:"Name (EN)",
+    delete:"Delete", edit:"Edit",
+    deleteConfirm:"Delete?",
+    saved:"Saved",
+    cancelStats:"Cancellation stats",
+    topReasons:"Top reasons",
+    noCancellations:"No cancellations yet",
   }
 };
 
-const SERVICES = [
-  { id: "consultation", icon: "🩺", duration: 30, price: 1500 },
-  { id: "cleaning", icon: "🦷", duration: 60, price: 3500 },
-  { id: "treatment", icon: "💊", duration: 90, price: 4500 },
-  { id: "whitening", icon: "✨", duration: 60, price: 8000 },
-  { id: "extraction", icon: "🔧", duration: 45, price: 3000 },
-  { id: "implantation", icon: "🔩", duration: 120, price: 25000 },
-  { id: "braces", icon: "😁", duration: 60, price: 15000 },
-  { id: "pediatric", icon: "👶", duration: 45, price: 2500 },
+const DEFAULT_SERVICES = [
+  { id: "consultation", icon: "🩺", duration: 30, price: 1500, nameRu: "Консультация", nameEn: "Consultation" },
+  { id: "cleaning", icon: "🦷", duration: 60, price: 3500, nameRu: "Чистка зубов", nameEn: "Teeth Cleaning" },
+  { id: "treatment", icon: "💊", duration: 90, price: 4500, nameRu: "Лечение", nameEn: "Treatment" },
+  { id: "whitening", icon: "✨", duration: 60, price: 8000, nameRu: "Отбеливание", nameEn: "Whitening" },
+  { id: "extraction", icon: "🔧", duration: 45, price: 3000, nameRu: "Удаление", nameEn: "Extraction" },
+  { id: "implantation", icon: "🔩", duration: 120, price: 25000, nameRu: "Имплантация", nameEn: "Implantation" },
+  { id: "braces", icon: "😁", duration: 60, price: 15000, nameRu: "Брекеты", nameEn: "Braces" },
+  { id: "pediatric", icon: "👶", duration: 45, price: 2500, nameRu: "Детская", nameEn: "Pediatric" },
 ];
 
-const DOCTORS = [
-  { id:"d1", name:{ru:"Д-р Анна Иванова",en:"Dr. Anna Ivanova"}, spec:{ru:"Терапевт, 12 лет",en:"General, 12 yrs"}, rating:4.9, reviews:128, gradient:"linear-gradient(135deg,#667eea,#764ba2)", services:["consultation","cleaning","treatment","whitening"], initials:"АИ" },
-  { id:"d2", name:{ru:"Д-р Михаил Петров",en:"Dr. Mikhail Petrov"}, spec:{ru:"Хирург, 15 лет",en:"Surgeon, 15 yrs"}, rating:4.8, reviews:95, gradient:"linear-gradient(135deg,#f093fb,#f5576c)", services:["consultation","extraction","implantation"], initials:"МП" },
-  { id:"d3", name:{ru:"Д-р Елена Смирнова",en:"Dr. Elena Smirnova"}, spec:{ru:"Ортодонт, 8 лет",en:"Orthodontist, 8 yrs"}, rating:5.0, reviews:76, gradient:"linear-gradient(135deg,#4facfe,#00f2fe)", services:["consultation","braces"], initials:"ЕС" },
-  { id:"d4", name:{ru:"Д-р Сергей Козлов",en:"Dr. Sergey Kozlov"}, spec:{ru:"Детский, 10 лет",en:"Pediatric, 10 yrs"}, rating:4.9, reviews:203, gradient:"linear-gradient(135deg,#43e97b,#38f9d7)", services:["consultation","pediatric","cleaning","treatment"], initials:"СК" },
+const DEFAULT_DOCTORS = [
+  { id:"d1", nameRu:"Д-р Анна Иванова", nameEn:"Dr. Anna Ivanova", specRu:"Терапевт, 12 лет", specEn:"General, 12 yrs", rating:4.9, reviews:128, gradient:"linear-gradient(135deg,#667eea,#764ba2)", services:["consultation","cleaning","treatment","whitening"], initials:"АИ" },
+  { id:"d2", nameRu:"Д-р Михаил Петров", nameEn:"Dr. Mikhail Petrov", specRu:"Хирург, 15 лет", specEn:"Surgeon, 15 yrs", rating:4.8, reviews:95, gradient:"linear-gradient(135deg,#f093fb,#f5576c)", services:["consultation","extraction","implantation"], initials:"МП" },
+  { id:"d3", nameRu:"Д-р Елена Смирнова", nameEn:"Dr. Elena Smirnova", specRu:"Ортодонт, 8 лет", specEn:"Orthodontist, 8 yrs", rating:5.0, reviews:76, gradient:"linear-gradient(135deg,#4facfe,#00f2fe)", services:["consultation","braces"], initials:"ЕС" },
+  { id:"d4", nameRu:"Д-р Сергей Козлов", nameEn:"Dr. Sergey Kozlov", specRu:"Детский, 10 лет", specEn:"Pediatric, 10 yrs", rating:4.9, reviews:203, gradient:"linear-gradient(135deg,#43e97b,#38f9d7)", services:["consultation","pediatric","cleaning","treatment"], initials:"СК" },
 ];
 
 const TIME_SLOTS = ["09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30"];
@@ -498,8 +630,12 @@ const NEWS = [
   { id:3, type:"promo", title:{ru:"Приведи друга — 1000₽",en:"Refer a friend — 1000₽"}, desc:{ru:"1000₽ за каждого приведённого друга",en:"1000₽ for each friend you refer"}, validUntil:"2026-12-31" },
 ];
 
-const LS = { appts:"dental_appts_v3", profile:"dental_profile_v3", theme:"dental_theme_v3", lang:"dental_lang_v3", blocks:"dental_blocks_v3" };
-const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d; } catch { return d; } };
+const LS = {
+  appts:"dental_appts_v4", profile:"dental_profile_v4", theme:"dental_theme_v4",
+  lang:"dental_lang_v4", blocks:"dental_blocks_v4",
+  doctors:"dental_doctors_v1", services:"dental_services_v1"
+};
+const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 
 function App() {
@@ -518,6 +654,8 @@ function App() {
   const [appointments, setAppointments] = useState(() => load(LS.appts, []));
   const [profile, setProfile] = useState(() => load(LS.profile, {}));
   const [blocks, setBlocks] = useState(() => load(LS.blocks, []));
+  const [doctors, setDoctors] = useState(() => load(LS.doctors, DEFAULT_DOCTORS));
+  const [services, setServices] = useState(() => load(LS.services, DEFAULT_SERVICES));
   const [booking, setBooking] = useState({ service:null, doctor:null, date:null, time:null });
   const [calMonth, setCalMonth] = useState(new Date().getMonth());
   const [calYear, setCalYear] = useState(new Date().getFullYear());
@@ -532,6 +670,13 @@ function App() {
   const [scheduleWeek, setScheduleWeek] = useState(0);
   const [newBlockDate, setNewBlockDate] = useState("");
   const [newBlockReason, setNewBlockReason] = useState("");
+
+  // NEW: cancel modal
+  const [cancelModal, setCancelModal] = useState(null); // { id, reason, customReason }
+  // NEW: nearest slots modal
+  const [showNearest, setShowNearest] = useState(false);
+  // NEW: entity editor modal
+  const [entityEditor, setEntityEditor] = useState(null); // { type: "doctor"|"service", data, isNew }
 
   const t = T[lang];
   const isAdmin = user && user.id === ADMIN_USER_ID;
@@ -630,11 +775,12 @@ function App() {
     return () => hide();
   }, [screen, booking, appointments, user, lang, profile, editProfile, t]);
 
+  // Helpers
   const svcName = (id) => {
-    const key = "s" + id.charAt(0).toUpperCase() + id.slice(1);
-    return t[key] || id;
+    const s = services.find(x => x.id === id);
+    if (!s) return id;
+    return lang === "ru" ? s.nameRu : s.nameEn;
   };
-
   const formatDate = (d) => {
     if (!d) return "";
     try {
@@ -642,40 +788,63 @@ function App() {
       return date.toLocaleDateString(lang === "ru" ? "ru-RU" : "en-US", { day:"numeric", month:"long", year:"numeric" });
     } catch { return d; }
   };
-
   const doctorName = (id) => {
-    const d = DOCTORS.find(x => x.id === id);
-    return d ? d.name[lang] : "";
+    const d = doctors.find(x => x.id === id);
+    return d ? (lang === "ru" ? d.nameRu : d.nameEn) : "";
   };
 
-  const toggleReminder = (id) => {
-    const updated = appointments.map(a => a.id === id ? { ...a, reminder: !a.reminder, reminderShown: false } : a);
+  // NEW: Book again handler
+  const bookAgain = (appt) => {
+    setBooking({ service: appt.service, doctor: appt.doctorId, date: null, time: null });
+    setScreen("date");
+  };
+
+  // NEW: Cancel with reason
+  const openCancelModal = (id) => {
+    setCancelModal({ id, reason: null, customReason: "" });
+  };
+  const submitCancel = () => {
+    if (!cancelModal) return;
+    let reasonText = cancelModal.reason;
+    if (cancelModal.reason === "other" && cancelModal.customReason) {
+      reasonText = cancelModal.customReason;
+    }
+    const updated = appointments.map(a => a.id === cancelModal.id ? {
+      ...a, status: "cancelled", cancelReason: reasonText || "—"
+    } : a);
     setAppointments(updated);
     save(LS.appts, updated);
+    setCancelModal(null);
+    if (tg) tg.HapticFeedback && tg.HapticFeedback.notificationOccurred && tg.HapticFeedback.notificationOccurred("warning");
   };
 
-  const cancelAppt = (id) => {
-    const updated = appointments.map(a => a.id === id ? { ...a, status: "cancelled" } : a);
-    setAppointments(updated);
-    save(LS.appts, updated);
-  };
-
-  const confirmCancel = (id) => {
-    if (tg && tg.showConfirm) tg.showConfirm(t.cancelConfirm, (ok) => { if (ok) cancelAppt(id); });
-    else cancelAppt(id);
-  };
-
-  const openChat = () => {
-    if (tg && tg.openTelegramLink) tg.openTelegramLink("https://t.me/" + BOT_USERNAME);
-    else window.open("https://t.me/" + BOT_USERNAME, "_blank");
-  };
-
-  const callClinic = () => { window.location.href = "tel:" + CLINIC_INFO.phone.replace(/\s/g,""); };
-
-  const goBack = () => {
-    const back = { doctors:"services", date:"doctors", time:"date", confirm:"time" };
-    setScreen(back[screen] || "home");
-  };
+  // NEW: Find nearest slots
+  const nearestSlots = useMemo(() => {
+    if (!booking.service) return [];
+    const result = [];
+    const start = new Date(today);
+    start.setDate(start.getDate() + 1);
+    const maxDays = 30;
+    for (let dayOff = 0; dayOff < maxDays && result.length < 10; dayOff++) {
+      const d = new Date(start);
+      d.setDate(d.getDate() + dayOff);
+      const ds = d.toISOString().split("T")[0];
+      if (blocks.some(b => b.date === ds)) continue;
+      for (let di = 0; di < doctors.length && result.length < 10; di++) {
+        const doc = doctors[di];
+        if (doc.services.indexOf(booking.service) === -1) continue;
+        for (let ti = 0; ti < TIME_SLOTS.length && result.length < 10; ti++) {
+          const time = TIME_SLOTS[ti];
+          const taken = appointments.some(a => a.date === ds && a.time === time && a.doctorId === doc.id && a.status === "confirmed");
+          if (!taken) {
+            result.push({ date: ds, time, doctorId: doc.id });
+            break; // один слот на врача на дату
+          }
+        }
+      }
+    }
+    return result;
+  }, [booking.service, doctors, appointments, blocks, today]);
 
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
   const firstDay = (new Date(calYear, calMonth, 1).getDay() + 6) % 7;
@@ -695,9 +864,9 @@ function App() {
   }, [appointments, booking.date, booking.doctor]);
 
   const filteredDoctors = useMemo(() => {
-    if (!serviceFilter) return DOCTORS;
-    return DOCTORS.filter(d => d.services.indexOf(serviceFilter) !== -1);
-  }, [serviceFilter]);
+    if (!serviceFilter) return doctors;
+    return doctors.filter(d => d.services.indexOf(serviceFilter) !== -1);
+  }, [serviceFilter, doctors]);
 
   const myAppts = useMemo(() => {
     if (isAdmin) return appointments;
@@ -717,6 +886,13 @@ function App() {
     upcoming: appointments.filter(a => a.date >= todayStr && a.status === "confirmed").length,
     cancelled: appointments.filter(a => a.status === "cancelled").length,
   }), [appointments, todayStr]);
+
+  const cancelStats = useMemo(() => {
+    const cancelled = appointments.filter(a => a.status === "cancelled" && a.cancelReason);
+    const counts = {};
+    cancelled.forEach(a => { counts[a.cancelReason] = (counts[a.cancelReason] || 0) + 1; });
+    return Object.entries(counts).sort((a,b) => b[1] - a[1]);
+  }, [appointments]);
 
   const filteredAdminAppts = useMemo(() => {
     let list = appointments.slice();
@@ -750,7 +926,10 @@ function App() {
   const renderHeader = (title, showBack, rightSlot) => (
     <div className="header">
       <div className="header-left">
-        {showBack && <button className="icon-btn" onClick={goBack}>←</button>}
+        {showBack && <button className="icon-btn" onClick={() => {
+          const back = { doctors:"services", date:"doctors", time:"date", confirm:"time" };
+          setScreen(back[screen] || "home");
+        }}>←</button>}
       </div>
       <div className="header-title">{title}</div>
       <div className="header-right">
@@ -773,6 +952,218 @@ function App() {
     );
   };
 
+  // Cancel reason modal
+  const renderCancelModal = () => {
+    if (!cancelModal) return null;
+    const reasons = [
+      { id: "changed", label: t.cancelReasonChanged, icon: "🔄" },
+      { id: "sick", label: t.cancelReasonSick, icon: "🤒" },
+      { id: "found", label: t.cancelReasonFound, icon: "🏥" },
+      { id: "expensive", label: t.cancelReasonExpensive, icon: "💸" },
+      { id: "other", label: t.cancelReasonOther, icon: "✏️" },
+    ];
+    return (
+      <div className="modal-overlay" onClick={() => setCancelModal(null)}>
+        <div className="modal" onClick={e => e.stopPropagation()}>
+          <div className="modal-title">{t.cancelReasonTitle}</div>
+          <div className="modal-sub">{t.cancelReasonSub}</div>
+          <div className="reason-list">
+            {reasons.map(r => (
+              <div key={r.id} className={"reason-item " + (cancelModal.reason === r.id ? "selected" : "")}
+                onClick={() => setCancelModal({ ...cancelModal, reason: r.id })}>
+                <div className="reason-radio"></div>
+                <div style={{fontSize:20}}>{r.icon}</div>
+                <div className="reason-text">{r.label}</div>
+              </div>
+            ))}
+          </div>
+          {cancelModal.reason === "other" && (
+            <input className="form-input" placeholder={t.cancelReasonCustom}
+              value={cancelModal.customReason}
+              onChange={e => setCancelModal({ ...cancelModal, customReason: e.target.value })}
+              style={{marginBottom:16}} />
+          )}
+          <div className="modal-actions">
+            <button className="btn-small ghost" onClick={() => setCancelModal(null)}>{t.cancel}</button>
+            <button className="btn-small danger" onClick={submitCancel} disabled={!cancelModal.reason}>{t.confirmCancelBtn}</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Nearest slots modal
+  const renderNearestModal = () => {
+    if (!showNearest) return null;
+    return (
+      <div className="modal-overlay" onClick={() => setShowNearest(false)}>
+        <div className="modal" onClick={e => e.stopPropagation()}>
+          <div className="modal-title">{t.nearestSlots}</div>
+          <div className="modal-sub">{t.nearestHint}</div>
+          {nearestSlots.length === 0 ? (
+            <div className="empty-state" style={{padding:20}}><div>{t.noSlotsFound}</div></div>
+          ) : nearestSlots.map((slot, i) => (
+            <div key={i} className="nearest-slot">
+              <div className="nearest-slot-info">
+                <div className="nearest-slot-date">{formatDate(slot.date)}</div>
+                <div className="nearest-slot-meta">
+                  👨‍⚕️ {doctorName(slot.doctorId)} · {svcName(booking.service)}
+                </div>
+              </div>
+              <button className="btn-small primary" onClick={() => {
+                setBooking({ ...booking, doctor: slot.doctorId, date: slot.date, time: slot.time });
+                setShowNearest(false);
+                setScreen("confirm");
+              }}>{t.selectThis}</button>
+            </div>
+          ))}
+          <div style={{marginTop:16}}>
+            <button className="btn-small ghost" style={{width:"100%", padding:12}} onClick={() => setShowNearest(false)}>{t.cancel}</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Entity editor modal (doctors/services)
+  const renderEntityEditor = () => {
+    if (!entityEditor) return null;
+    const { type, data, isNew } = entityEditor;
+
+    if (type === "doctor") {
+      return (
+        <div className="modal-overlay" onClick={() => setEntityEditor(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">{isNew ? t.addDoctor : t.editDoctor}</div>
+            <div className="profile-form">
+              <div className="form-group">
+                <label className="form-label">{t.doctorNameRu}</label>
+                <input className="form-input" value={data.nameRu} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, nameRu: e.target.value } })} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">{t.doctorNameEn}</label>
+                <input className="form-input" value={data.nameEn} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, nameEn: e.target.value } })} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">{t.doctorSpecRu}</label>
+                <input className="form-input" value={data.specRu} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, specRu: e.target.value } })} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">{t.doctorSpecEn}</label>
+                <input className="form-input" value={data.specEn} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, specEn: e.target.value } })} />
+              </div>
+              <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10}}>
+                <div className="form-group">
+                  <label className="form-label">{t.doctorRating}</label>
+                  <input className="form-input" type="number" step="0.1" min="0" max="5" value={data.rating} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, rating: parseFloat(e.target.value) || 0 } })} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">{t.doctorReviews}</label>
+                  <input className="form-input" type="number" min="0" value={data.reviews} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, reviews: parseInt(e.target.value) || 0 } })} />
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="form-label">{t.doctorInitials}</label>
+                <input className="form-input" maxLength="3" value={data.initials} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, initials: e.target.value } })} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">{t.doctorGradient}</label>
+                <input className="form-input" value={data.gradient} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, gradient: e.target.value } })} />
+                <div className="gradient-preview" style={{background: data.gradient, marginTop:8, width:48, height:48, borderRadius:"50%", color:"white", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:700}}>{data.initials}</div>
+              </div>
+              <div className="form-group">
+                <label className="form-label">{t.doctorServices}</label>
+                <div className="checkbox-row">
+                  {services.map(s => (
+                    <div key={s.id} className={"checkbox-chip " + (data.services.indexOf(s.id) !== -1 ? "active" : "")}
+                      onClick={() => {
+                        const has = data.services.indexOf(s.id) !== -1;
+                        const newSvcs = has ? data.services.filter(x => x !== s.id) : data.services.concat([s.id]);
+                        setEntityEditor({ ...entityEditor, data: { ...data, services: newSvcs } });
+                      }}>
+                      {lang === "ru" ? s.nameRu : s.nameEn}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="modal-actions" style={{marginTop:8}}>
+                <button className="btn-small ghost" onClick={() => setEntityEditor(null)}>{t.cancel}</button>
+                <button className="btn-small primary" onClick={() => {
+                  let newDoctors;
+                  if (isNew) {
+                    newDoctors = doctors.concat([{ ...data, id: "d" + Date.now() }]);
+                  } else {
+                    newDoctors = doctors.map(d => d.id === data.id ? data : d);
+                  }
+                  setDoctors(newDoctors);
+                  save(LS.doctors, newDoctors);
+                  setEntityEditor(null);
+                }}>{t.save}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (type === "service") {
+      return (
+        <div className="modal-overlay" onClick={() => setEntityEditor(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">{isNew ? t.addService : t.editService}</div>
+            <div className="profile-form">
+              <div className="form-group">
+                <label className="form-label">{t.serviceId}</label>
+                <input className="form-input" value={data.id} disabled={!isNew}
+                  onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, id: e.target.value.replace(/[^a-z0-9]/gi,"") } })} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">{t.serviceNameRu}</label>
+                <input className="form-input" value={data.nameRu} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, nameRu: e.target.value } })} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">{t.serviceNameEn}</label>
+                <input className="form-input" value={data.nameEn} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, nameEn: e.target.value } })} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">{t.serviceIcon}</label>
+                <input className="form-input" value={data.icon} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, icon: e.target.value } })} />
+                <div className="service-icon-preview" style={{marginTop:8, width:48, height:48}}>{data.icon}</div>
+              </div>
+              <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10}}>
+                <div className="form-group">
+                  <label className="form-label">{t.serviceDuration}</label>
+                  <input className="form-input" type="number" min="5" value={data.duration} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, duration: parseInt(e.target.value) || 0 } })} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">{t.servicePrice}</label>
+                  <input className="form-input" type="number" min="0" value={data.price} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, price: parseInt(e.target.value) || 0 } })} />
+                </div>
+              </div>
+              <div className="modal-actions" style={{marginTop:8}}>
+                <button className="btn-small ghost" onClick={() => setEntityEditor(null)}>{t.cancel}</button>
+                <button className="btn-small primary" onClick={() => {
+                  if (!data.id) return;
+                  let newServices;
+                  if (isNew) {
+                    newServices = services.concat([data]);
+                  } else {
+                    newServices = services.map(s => s.id === data.id ? data : s);
+                  }
+                  setServices(newServices);
+                  save(LS.services, newServices);
+                  setEntityEditor(null);
+                }}>{t.save}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // ============ SCREENS ============
   if (screen === "home") return (
     <div className="app">
       {notification && (
@@ -827,7 +1218,7 @@ function App() {
           <button className="menu-btn" onClick={() => setScreen("news")}>
             <span className="icon">🎁</span><span>{t.news}</span>
           </button>
-          <button className="menu-btn primary" onClick={openChat}>
+          <button className="menu-btn primary" onClick={() => { if (tg && tg.openTelegramLink) tg.openTelegramLink("https://t.me/" + BOT_USERNAME); else window.open("https://t.me/" + BOT_USERNAME, "_blank"); }}>
             <span className="icon">💬</span><span>{t.contactClinic}</span>
           </button>
           {isAdmin && (
@@ -845,12 +1236,12 @@ function App() {
       {renderHeader(t.selectService, true)}
       {renderStepIndicator()}
       <div className="services-list fade-in">
-        {SERVICES.map(s => (
+        {services.map(s => (
           <div key={s.id} className={"service-card " + (booking.service===s.id?"selected":"")}
             onClick={() => setBooking({ ...booking, service: s.id, doctor: null, time: null })}>
             <div className="service-icon">{s.icon}</div>
             <div className="service-info">
-              <div className="service-name">{svcName(s.id)}</div>
+              <div className="service-name">{lang === "ru" ? s.nameRu : s.nameEn}</div>
               <div className="service-meta">{s.duration} {t.min} · {s.price} {t.rub}</div>
             </div>
           </div>
@@ -867,10 +1258,15 @@ function App() {
         <div style={{fontSize:12, color:"var(--hint)", marginBottom:8, fontWeight:600}}>{t.filterByService}</div>
         <div className="filter-row">
           <span className={"chip " + (!serviceFilter?"active":"")} onClick={() => setServiceFilter(null)}>{t.allDoctors}</span>
-          {SERVICES.map(s => (
-            <span key={s.id} className={"chip " + (serviceFilter===s.id?"active":"")} onClick={() => setServiceFilter(s.id)}>{svcName(s.id)}</span>
+          {services.map(s => (
+            <span key={s.id} className={"chip " + (serviceFilter===s.id?"active":"")} onClick={() => setServiceFilter(s.id)}>{lang === "ru" ? s.nameRu : s.nameEn}</span>
           ))}
         </div>
+        {booking.service && (
+          <button className="btn-small primary" style={{width:"100%", padding:12, marginBottom:12, fontSize:13}} onClick={() => setShowNearest(true)}>
+            🔍 {t.findNearest}
+          </button>
+        )}
         {filteredDoctors.length === 0 ? (
           <div className="empty-state"><div className="empty-icon">🔍</div><div>{t.noDoctors}</div></div>
         ) : (
@@ -880,8 +1276,8 @@ function App() {
                 onClick={() => setBooking({ ...booking, doctor: d.id, time: null })}>
                 <div className="doctor-avatar" style={{background: d.gradient}}>{d.initials}</div>
                 <div className="doctor-info">
-                  <div className="doctor-name">{d.name[lang]}</div>
-                  <div className="doctor-spec">{d.spec[lang]}</div>
+                  <div className="doctor-name">{lang === "ru" ? d.nameRu : d.nameEn}</div>
+                  <div className="doctor-spec">{lang === "ru" ? d.specRu : d.specEn}</div>
                   <div className="doctor-rating">⭐ {d.rating} · {d.reviews} {t.reviews}</div>
                   <div className="doctor-tags">
                     {d.services.slice(0,3).map(sid => <span key={sid} className="doctor-tag">{svcName(sid)}</span>)}
@@ -892,6 +1288,7 @@ function App() {
           </div>
         )}
       </div>
+      {renderNearestModal()}
     </div>
   );
 
@@ -955,7 +1352,7 @@ function App() {
   );
 
   if (screen === "confirm") {
-    const service = SERVICES.find(s => s.id === booking.service);
+    const service = services.find(s => s.id === booking.service);
     return (
       <div className="app">
         {renderHeader(t.confirm, true)}
@@ -1002,29 +1399,46 @@ function App() {
       <div className="fade-in">
         {filteredMyAppts.length === 0 ? (
           <div className="empty-state"><div className="empty-icon">📭</div><div>{t.noAppts}</div></div>
-        ) : filteredMyAppts.map(a => (
-          <div key={a.id} className={"appt-card " + (a.status==="cancelled"?"cancelled":"")}>
-            <div className="appt-header">
-              <div className="appt-service">{svcName(a.service)}</div>
-              <div className={"appt-status " + (a.status==="cancelled"?"cancelled":"")}>
-                {a.status==="cancelled"?t.cancelled:t.confirmed}
+        ) : filteredMyAppts.map(a => {
+          const isPast = a.date < todayStr && a.status === "confirmed";
+          return (
+            <div key={a.id} className={"appt-card " + (a.status==="cancelled"?"cancelled":"")}>
+              <div className="appt-header">
+                <div className="appt-service">{svcName(a.service)}</div>
+                <div className={"appt-status " + (a.status==="cancelled"?"cancelled":"")}>
+                  {a.status==="cancelled"?t.cancelled:t.confirmed}
+                </div>
               </div>
-            </div>
-            <div className="appt-details">
-              <span>📅 {formatDate(a.date)}</span><span>🕐 {a.time}</span>
-            </div>
-            {a.doctorId && <div className="appt-doctor">👨‍⚕️ {doctorName(a.doctorId)}</div>}
-            {a.status === "confirmed" && (
-              <div className="appt-actions">
-                <button className={"btn-small " + (a.reminder?"active":"")} onClick={() => toggleReminder(a.id)}>
-                  🔔 {a.reminder ? t.reminderOn : t.remind}
-                </button>
-                {!isAdmin && <button className="btn-small danger" onClick={() => confirmCancel(a.id)}>{t.cancelAppt}</button>}
+              <div className="appt-details">
+                <span>📅 {formatDate(a.date)}</span><span>🕐 {a.time}</span>
               </div>
-            )}
-          </div>
-        ))}
+              {a.doctorId && <div className="appt-doctor">👨‍⚕️ {doctorName(a.doctorId)}</div>}
+              {a.status === "cancelled" && a.cancelReason && (
+                <div className="appt-cancel-reason">💭 {t.reason}: {a.cancelReason}</div>
+              )}
+              {a.status === "confirmed" && (
+                <div className="appt-actions">
+                  <button className={"btn-small " + (a.reminder?"active":"")} onClick={() => {
+                    const updated = appointments.map(x => x.id === a.id ? { ...x, reminder: !x.reminder, reminderShown: false } : x);
+                    setAppointments(updated); save(LS.appts, updated);
+                  }}>
+                    🔔 {a.reminder ? t.reminderOn : t.remind}
+                  </button>
+                  {!isAdmin && <button className="btn-small danger" onClick={() => openCancelModal(a.id)}>{t.cancelAppt}</button>}
+                </div>
+              )}
+              {isPast && (
+                <div className="appt-actions">
+                  <button className="btn-small success" onClick={() => bookAgain(a)}>
+                    🔄 {t.bookAgain}
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
+      {renderCancelModal()}
     </div>
   );
 
@@ -1072,7 +1486,7 @@ function App() {
         {myAppts.filter(a => a.status === "confirmed" && a.date < todayStr).length === 0 ? (
           <div className="empty-state" style={{padding:20}}><div>{t.noHistory}</div></div>
         ) : myAppts.filter(a => a.status === "confirmed" && a.date < todayStr).slice(0,10).map(a => {
-          const svc = SERVICES.find(s => s.id === a.service);
+          const svc = services.find(s => s.id === a.service);
           return (
             <div key={a.id} className="history-item">
               <div className="history-icon">{svc ? svc.icon : "🦷"}</div>
@@ -1080,6 +1494,7 @@ function App() {
                 <div className="history-title">{svcName(a.service)}</div>
                 <div className="history-sub">{formatDate(a.date)} · {doctorName(a.doctorId)}</div>
               </div>
+              <button className="btn-small success" onClick={() => bookAgain(a)}>🔄</button>
             </div>
           );
         })}
@@ -1107,10 +1522,10 @@ function App() {
           <button className="social-btn" onClick={() => window.open(CLINIC_INFO.social.vk,"_blank")}>🅥</button>
         </div>
         <div style={{display:"flex", gap:10, marginTop:16}}>
-          <button className="menu-btn primary" style={{flex:1}} onClick={openChat}>
+          <button className="menu-btn primary" style={{flex:1}} onClick={() => { if (tg && tg.openTelegramLink) tg.openTelegramLink("https://t.me/" + BOT_USERNAME); else window.open("https://t.me/" + BOT_USERNAME, "_blank"); }}>
             <span className="icon">💬</span><span>{t.openChat}</span>
           </button>
-          <button className="menu-btn" style={{flex:1}} onClick={callClinic}>
+          <button className="menu-btn" style={{flex:1}} onClick={() => { window.location.href = "tel:" + CLINIC_INFO.phone.replace(/\s/g,""); }}>
             <span className="icon">📞</span><span>{t.callNow}</span>
           </button>
         </div>
@@ -1177,6 +1592,8 @@ function App() {
         <button className={"tab " + (adminTab==="appts"?"active":"")} onClick={() => setAdminTab("appts")}>{t.myAppts}</button>
         <button className={"tab " + (adminTab==="schedule"?"active":"")} onClick={() => setAdminTab("schedule")}>{t.schedule}</button>
         <button className={"tab " + (adminTab==="blocks"?"active":"")} onClick={() => setAdminTab("blocks")}>{t.blockedDates}</button>
+        <button className={"tab " + (adminTab==="doctors"?"active":"")} onClick={() => setAdminTab("doctors")}>{t.manageDoctors}</button>
+        <button className={"tab " + (adminTab==="services"?"active":"")} onClick={() => setAdminTab("services")}>{t.manageServices}</button>
       </div>
       <div className="fade-in">
         {adminTab === "stats" && (
@@ -1188,10 +1605,26 @@ function App() {
               <div className="stat-card"><div className="stat-value">{adminStats.cancelled}</div><div className="stat-label">{t.cancelledCount}</div></div>
             </div>
             <div className="info-block">
-              <div className="info-row"><div className="info-icon">👨‍⚕️</div><div className="info-content"><div className="info-label">{t.doctor}</div><div className="info-value">{DOCTORS.length} {t.specialists}</div></div></div>
-              <div className="info-row"><div className="info-icon">🦷</div><div className="info-content"><div className="info-label">{t.service}</div><div className="info-value">{SERVICES.length} {t.services}</div></div></div>
+              <div className="info-row"><div className="info-icon">👨‍⚕️</div><div className="info-content"><div className="info-label">{t.doctor}</div><div className="info-value">{doctors.length} {t.specialists}</div></div></div>
+              <div className="info-row"><div className="info-icon">🦷</div><div className="info-content"><div className="info-label">{t.service}</div><div className="info-value">{services.length} {t.services}</div></div></div>
               <div className="info-row"><div className="info-icon">🔔</div><div className="info-content"><div className="info-label">{t.reminderOn}</div><div className="info-value">{appointments.filter(a => a.reminder && a.status === "confirmed").length}</div></div></div>
             </div>
+            <div className="section-title">{t.cancelStats}</div>
+            {cancelStats.length === 0 ? (
+              <div className="empty-state" style={{padding:20}}><div>{t.noCancellations}</div></div>
+            ) : (
+              <div className="info-block">
+                {cancelStats.map(([reason, count], i) => (
+                  <div key={i} className="info-row">
+                    <div className="info-icon">📊</div>
+                    <div className="info-content">
+                      <div className="info-value">{reason}</div>
+                    </div>
+                    <div style={{fontWeight:700, color:"var(--danger)"}}>{count}</div>
+                  </div>
+                ))}
+              </div>
+            )}
           </>
         )}
         {adminTab === "appts" && (
@@ -1220,10 +1653,13 @@ function App() {
                   <span>📅 {formatDate(a.date)}</span><span>🕐 {a.time}</span>
                 </div>
                 {a.doctorId && <div className="appt-doctor">👨‍⚕️ {doctorName(a.doctorId)}</div>}
+                {a.status === "cancelled" && a.cancelReason && (
+                  <div className="appt-cancel-reason">💭 {t.reason}: {a.cancelReason}</div>
+                )}
                 {a.status === "confirmed" && (
                   <div className="appt-actions">
-                    <button className="btn-small danger" onClick={() => confirmCancel(a.id)}>{t.cancelAppt}</button>
-                    <button className="btn-small" onClick={openChat}>💬</button>
+                    <button className="btn-small danger" onClick={() => openCancelModal(a.id)}>{t.cancelAppt}</button>
+                    <button className="btn-small" onClick={() => { if (tg && tg.openTelegramLink) tg.openTelegramLink("https://t.me/" + BOT_USERNAME); else window.open("https://t.me/" + BOT_USERNAME, "_blank"); }}>💬</button>
                   </div>
                 )}
               </div>
@@ -1234,7 +1670,7 @@ function App() {
           <>
             <div style={{fontSize:12, color:"var(--hint)", marginBottom:8, fontWeight:600}}>{t.doctor}</div>
             <div className="filter-row">
-              {DOCTORS.map(d => (
+              {doctors.map(d => (
                 <span key={d.id} className={"chip " + (scheduleDoctor===d.id?"active":"")} onClick={() => setScheduleDoctor(d.id)}>{d.initials}</span>
               ))}
             </div>
@@ -1269,7 +1705,7 @@ function App() {
                         setBlocks(newBlocks); save(LS.blocks, newBlocks);
                       } else if (status === "booked") {
                         const appt = appointments.find(a => a.date === ds && a.time === time && a.doctorId === scheduleDoctor && a.status === "confirmed");
-                        if (appt && confirm("Cancel this appointment?")) cancelAppt(appt.id);
+                        if (appt) openCancelModal(appt.id);
                       }
                     }}>
                       {status === "booked" ? "●" : status === "blocked-cell" ? "×" : ""}
@@ -1324,7 +1760,67 @@ function App() {
             ))}
           </>
         )}
+        {adminTab === "doctors" && (
+          <>
+            <button className="btn-small primary" style={{width:"100%", padding:12, marginBottom:12, fontSize:13}}
+              onClick={() => setEntityEditor({
+                type: "doctor", isNew: true,
+                data: { id:"", nameRu:"", nameEn:"", specRu:"", specEn:"", rating:5.0, reviews:0, gradient:"linear-gradient(135deg,#667eea,#764ba2)", services:[], initials:"" }
+              })}>
+              + {t.addDoctor}
+            </button>
+            {doctors.map(d => (
+              <div key={d.id} className="entity-card">
+                <div className="gradient-preview" style={{background: d.gradient}}>{d.initials}</div>
+                <div className="entity-info">
+                  <div className="entity-name">{lang === "ru" ? d.nameRu : d.nameEn}</div>
+                  <div className="entity-meta">{lang === "ru" ? d.specRu : d.specEn} · ⭐{d.rating}</div>
+                </div>
+                <div className="entity-actions">
+                  <button className="btn-small" onClick={() => setEntityEditor({ type:"doctor", isNew:false, data: {...d} })}>✏️</button>
+                  <button className="btn-small danger" onClick={() => {
+                    if (confirm(t.deleteConfirm + "?")) {
+                      const newDoctors = doctors.filter(x => x.id !== d.id);
+                      setDoctors(newDoctors); save(LS.doctors, newDoctors);
+                    }
+                  }}>🗑</button>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+        {adminTab === "services" && (
+          <>
+            <button className="btn-small primary" style={{width:"100%", padding:12, marginBottom:12, fontSize:13}}
+              onClick={() => setEntityEditor({
+                type: "service", isNew: true,
+                data: { id:"", nameRu:"", nameEn:"", icon:"🦷", duration:30, price:0 }
+              })}>
+              + {t.addService}
+            </button>
+            {services.map(s => (
+              <div key={s.id} className="entity-card">
+                <div className="service-icon-preview">{s.icon}</div>
+                <div className="entity-info">
+                  <div className="entity-name">{lang === "ru" ? s.nameRu : s.nameEn}</div>
+                  <div className="entity-meta">{s.duration} {t.min} · {s.price} {t.rub}</div>
+                </div>
+                <div className="entity-actions">
+                  <button className="btn-small" onClick={() => setEntityEditor({ type:"service", isNew:false, data: {...s} })}>✏️</button>
+                  <button className="btn-small danger" onClick={() => {
+                    if (confirm(t.deleteConfirm + "?")) {
+                      const newServices = services.filter(x => x.id !== s.id);
+                      setServices(newServices); save(LS.services, newServices);
+                    }
+                  }}>🗑</button>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </div>
+      {renderCancelModal()}
+      {renderEntityEditor()}
     </div>
   );
 
