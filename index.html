@@ -1,4 +1,19 @@
-<!DOCTYPE html>
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <style>
+                body {
+                  background-color: white; /* Ensure the iframe has a white background */
+                }
+
+                
+              </style>
+                        </head>
+                        <body>
+                            <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
@@ -45,6 +60,7 @@
     width: 100%; max-width: 480px; margin: 0 auto;
     padding: 16px; padding-bottom: calc(16px + env(safe-area-inset-bottom));
     flex: 1; display: flex; flex-direction: column;
+    position: relative;
   }
   .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 8px; }
   .header-left, .header-right { display: flex; align-items: center; gap: 6px; }
@@ -54,43 +70,22 @@
     border: none; display: flex; align-items: center; justify-content: center;
     cursor: pointer; color: var(--text); font-size: 16px;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
   }
   .icon-btn:active { transform: scale(0.92); }
-  .icon-btn svg { transition: transform 0.2s ease; }
-  .icon-btn:hover svg { transform: translateX(-2px); }
-  .icon-btn:active svg { transform: translateX(-4px); }
   .back-btn {
     width: 36px; height: 36px; border-radius: 50%; background: var(--secondary);
     border: none; display: flex; align-items: center; justify-content: center;
     cursor: pointer; color: var(--text);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
   }
-  .back-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--btn);
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .back-btn:hover::before { opacity: 0.1; }
   .back-btn:active { transform: scale(0.9); }
-  .back-btn svg {
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
-    z-index: 1;
-  }
+  .back-btn svg { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
   .back-btn:hover svg { transform: translateX(-3px); }
   .back-btn:active svg { transform: translateX(-5px); }
   .lang-switch { display: flex; gap: 2px; background: var(--secondary); border-radius: 18px; padding: 2px; }
   .lang-btn {
     padding: 5px 10px; border: none; background: transparent;
     color: var(--hint); font-size: 12px; font-weight: 600; border-radius: 16px; cursor: pointer;
-    transition: all 0.2s;
   }
   .lang-btn.active { background: var(--bg); color: var(--text); }
   .hero {
@@ -98,6 +93,7 @@
     margin-bottom: 16px; position: relative;
     background: linear-gradient(135deg, #3390ec 0%, #1e6fd9 100%);
   }
+  [data-theme="dark"] .hero { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
   .hero-pattern {
     position: absolute; inset: 0;
     background-image: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 50%),
@@ -134,7 +130,6 @@
     border-radius: 16px; color: var(--text); font-size: 13px; font-weight: 600;
     cursor: pointer; display: flex; flex-direction: column; align-items: center;
     gap: 8px; text-align: center;
-    transition: all 0.2s;
   }
   .menu-btn:active { transform: scale(0.97); }
   .menu-btn svg { width: 32px; height: 32px; }
@@ -146,13 +141,11 @@
     padding: 14px; background: var(--secondary); border-radius: 14px;
     display: flex; align-items: center; gap: 12px; cursor: pointer;
     border: 2px solid transparent;
-    transition: all 0.2s;
   }
   .service-card.selected { border-color: var(--btn); background: rgba(51,144,236,0.1); }
   .service-icon {
     width: 44px; height: 44px; border-radius: 12px; background: var(--bg);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
   .service-icon svg { width: 24px; height: 24px; }
   .service-info { flex: 1; min-width: 0; }
@@ -162,7 +155,6 @@
   .doctor-card {
     padding: 14px; background: var(--secondary); border-radius: 16px;
     display: flex; gap: 12px; cursor: pointer; border: 2px solid transparent;
-    transition: all 0.2s;
   }
   .doctor-card.selected { border-color: var(--btn); }
   .doctor-avatar {
@@ -186,7 +178,6 @@
     width: 32px; height: 32px; border-radius: 50%; background: var(--bg);
     border: none; cursor: pointer; color: var(--text); font-size: 16px;
     display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
   }
   .cal-nav:active { transform: scale(0.9); }
   .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px; }
@@ -254,6 +245,7 @@
   .btn-small.success { background: var(--success); color: white; }
   .btn-small.active { background: var(--btn); color: var(--btn-text); }
   .btn-small.ghost { background: transparent; border: 1px solid var(--border); }
+  .btn-small.warning { background: var(--warning); color: white; }
   .btn-small svg { width: 14px; height: 14px; }
   .empty-state { text-align: center; padding: 40px 20px; color: var(--hint); }
   .empty-icon { margin-bottom: 12px; }
@@ -268,7 +260,6 @@
     padding: 9px 12px; border: none; background: transparent;
     border-radius: 8px; font-size: 12px; font-weight: 600;
     cursor: pointer; color: var(--hint); white-space: nowrap; flex-shrink: 0;
-    transition: all 0.2s;
   }
   .tab.active { background: var(--bg); color: var(--text); }
   .admin-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
@@ -349,7 +340,6 @@
     width: 40px; height: 40px; border-radius: 50%; background: var(--btn); color: var(--btn-text);
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .notif-icon svg { width: 20px; height: 20px; }
   .notif-content { flex: 1; min-width: 0; }
   .notif-title { font-weight: 700; font-size: 13px; }
   .notif-text { font-size: 12px; color: var(--hint); margin-top: 2px; }
@@ -362,7 +352,6 @@
     width: 40px; height: 40px; border-radius: 10px; background: var(--bg);
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .history-icon svg { width: 20px; height: 20px; }
   .history-info { flex: 1; min-width: 0; }
   .history-title { font-weight: 600; font-size: 13px; }
   .history-sub { font-size: 11px; color: var(--hint); margin-top: 2px; }
@@ -372,15 +361,12 @@
     border: none; border-radius: 12px;
     cursor: pointer; color: var(--text);
     display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s;
   }
-  .social-btn:active { transform: scale(0.95); }
   .social-btn svg { width: 24px; height: 24px; }
   .chip {
     display: inline-block; padding: 4px 10px; border-radius: 10px;
     background: var(--secondary); font-size: 11px; font-weight: 600;
     color: var(--hint); margin-right: 4px; margin-bottom: 4px; cursor: pointer;
-    transition: all 0.2s;
   }
   .chip.active { background: var(--btn); color: var(--btn-text); }
   .filter-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
@@ -392,7 +378,7 @@
   .schedule-cell {
     background: var(--bg); padding: 8px 4px; text-align: center;
     min-height: 36px; display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
+    cursor: pointer; position: relative;
   }
   .schedule-cell.header { background: var(--secondary); font-weight: 700; font-size: 10px; cursor: default; }
   .schedule-cell.time { background: var(--secondary); font-weight: 600; font-size: 10px; cursor: default; }
@@ -426,7 +412,6 @@
     padding: 12px 14px; background: var(--secondary); border-radius: 12px;
     display: flex; align-items: center; gap: 12px; cursor: pointer;
     border: 2px solid transparent;
-    transition: all 0.2s;
   }
   .reason-item.selected { border-color: var(--btn); background: rgba(51,144,236,0.1); }
   .reason-radio {
@@ -466,40 +451,119 @@
   }
   .service-icon-preview {
     width: 48px; height: 48px; border-radius: 12px; background: var(--bg);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .service-icon-preview svg { width: 24px; height: 24px; }
   .checkbox-row { display: flex; flex-wrap: wrap; gap: 6px; }
   .checkbox-chip {
     padding: 6px 10px; border-radius: 10px; background: var(--bg);
     font-size: 11px; font-weight: 600; color: var(--hint); cursor: pointer;
     border: 1px solid transparent;
-    transition: all 0.2s;
   }
   .checkbox-chip.active { background: var(--btn); color: var(--btn-text); }
+  /* Onboarding */
+  .onboarding {
+    position: fixed; inset: 0; background: var(--bg); z-index: 2000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .onboarding-illustration {
+    width: 200px; height: 200px; margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 120px;
+  }
+  .onboarding-title { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 12px; }
+  .onboarding-desc { font-size: 15px; color: var(--hint); text-align: center; margin-bottom: 32px; line-height: 1.5; }
+  .onboarding-dots { display: flex; gap: 8px; margin-bottom: 24px; }
+  .onboarding-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--hint); opacity: 0.3; }
+  .onboarding-dot.active { opacity: 1; background: var(--btn); }
+  .onboarding-btn {
+    padding: 14px 32px; background: var(--btn); color: var(--btn-text);
+    border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
+    cursor: pointer; min-width: 200px;
+  }
+  /* Pull to refresh */
+  .ptr-indicator {
+    position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+    padding: 8px 16px; background: var(--secondary); border-radius: 0 0 12px 12px;
+    font-size: 12px; color: var(--hint); z-index: 500;
+    transition: all 0.3s; opacity: 0; pointer-events: none;
+  }
+  .ptr-indicator.visible { opacity: 1; }
+  .ptr-indicator.refreshing { opacity: 1; }
+  /* Smart tip */
+  .smart-tip {
+    position: fixed; bottom: calc(100px + env(safe-area-inset-bottom));
+    left: 16px; right: 16px; max-width: 448px; margin: 0 auto;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 14px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    z-index: 900; display: flex; align-items: center; gap: 12px;
+    animation: slideUp 0.3s ease;
+  }
+  .smart-tip-icon { font-size: 24px; flex-shrink: 0; }
+  .smart-tip-text { flex: 1; font-size: 13px; line-height: 1.4; }
+  .smart-tip-close { background: none; border: none; color: var(--hint); font-size: 18px; cursor: pointer; }
+  /* Family member */
+  .family-member {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px; background: var(--secondary); border-radius: 12px;
+    margin-bottom: 8px;
+  }
+  .family-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--btn); color: var(--btn-text);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; flex-shrink: 0;
+  }
+  .family-info { flex: 1; }
+  .family-name { font-weight: 600; font-size: 14px; }
+  .family-role { font-size: 11px; color: var(--hint); }
+  /* Patient selector */
+  .patient-selector {
+    display: flex; gap: 8px; overflow-x: auto; padding: 4px 0;
+    margin-bottom: 12px; scrollbar-width: none;
+  }
+  .patient-selector::-webkit-scrollbar { display: none; }
+  .patient-chip {
+    padding: 8px 14px; border-radius: 20px; background: var(--secondary);
+    font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
+    border: 2px solid transparent; flex-shrink: 0;
+  }
+  .patient-chip.active { border-color: var(--btn); background: rgba(51,144,236,0.1); color: var(--btn); }
+  /* Time editor */
+  .time-editor-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    max-height: 300px; overflow-y: auto; padding: 8px 0;
+  }
+  .time-editor-slot {
+    padding: 10px; background: var(--secondary); border-radius: 8px;
+    text-align: center; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: 2px solid transparent;
+  }
+  .time-editor-slot.active { border-color: var(--success); background: rgba(52,199,89,0.1); }
+  .time-editor-slot.blocked { border-color: var(--danger); background: rgba(255,59,48,0.1); text-decoration: line-through; }
 </style>
 </head>
 <body>
 <div id="root"></div>
 
 <script type="text/babel">
-const { useState, useEffect, useMemo } = React;
+const { useState, useEffect, useMemo, useRef } = React;
 
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 const ADMIN_USER_ID = 8690178977;
 const BOT_USERNAME = "your_dental_bot";
 
-// SVG Icons
 const Icons = {
   back: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>,
-  calendar: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
-  clipboard: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>,
+  calendar: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+  clipboard: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>,
   user: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+  users: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
   mapPin: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>,
   gift: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>,
   messageCircle: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>,
-  settings: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
+  settings: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
   check: <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
   bell: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
   phone: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
@@ -523,8 +587,10 @@ const Icons = {
   vk: <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.391 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.862-.525-2.049-1.714-1.033-1.01-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C4.624 10.857 4.03 8.57 4.03 8.096c0-.254.102-.491.593-.491h1.744c.44 0 .61.203.78.678.863 2.49 2.303 4.675 2.896 4.675.22 0 .322-.102.322-.66V9.721c-.068-1.186-.695-1.287-.695-1.71 0-.203.17-.407.44-.407h2.744c.373 0 .508.203.508.643v3.473c0 .372.17.508.271.508.22 0 .407-.136.813-.542 1.254-1.406 2.151-3.574 2.151-3.574.119-.254.322-.491.763-.491h1.744c.525 0 .644.27.525.643-.22 1.017-2.354 4.031-2.354 4.031-.186.305-.254.44 0 .78.186.254.796.779 1.203 1.253.745.847 1.32 1.558 1.473 2.049.17.49-.085.744-.576.744z"/></svg>,
   empty: <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
   chart: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
-  calendarCheck: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/></svg>,
   ban: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>,
+  arrowRight: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>,
+  lightbulb: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2v1"/><path d="M12 7a5 5 0 0 1 5 5c0 2.5-2 4-2 6H9c0-2-2-3.5-2-6a5 5 0 0 1 5-5z"/></svg>,
+  clockArrow: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/><path d="M12 2v2"/></svg>,
 };
 
 const T = {
@@ -573,7 +639,7 @@ const T = {
     noDoctors:"Нет врачей", reviews:"отзывов",
     specialists:"специалистов", services:"услуг",
     blockedHint:"Заштрихованные даты заблокированы",
-    bookAgain:"Записаться снова",
+    bookAgain:"Записаться снова", reschedule:"Перенести",
     nearestSlots:"Ближайшие слоты", findNearest:"Показать ближайшие",
     nearestHint:"Ближайшие свободные слоты у всех врачей",
     noSlotsFound:"Свободных слотов не найдено",
@@ -587,7 +653,6 @@ const T = {
     cancelReasonOther:"Другое",
     cancelReasonCustom:"Укажите причину...",
     confirmCancelBtn:"Да, отменить",
-    cancelReasonSaved:"Причина сохранена",
     reason:"Причина",
     manageDoctors:"Врачи", manageServices:"Услуги",
     addDoctor:"Добавить врача", editDoctor:"Редактировать врача",
@@ -604,8 +669,38 @@ const T = {
     deleteConfirm:"Удалить?",
     saved:"Сохранено",
     cancelStats:"Статистика отмен",
-    topReasons:"Топ причины",
     noCancellations:"Отмен пока нет",
+    // New
+    onboarding1Title:"Запись за 30 секунд",
+    onboarding1Desc:"Выберите услугу, врача и удобное время — всё просто",
+    onboarding2Title:"Умные напоминания",
+    onboarding2Desc:"Получайте уведомления за 24 часа и за 1 час до приёма",
+    onboarding3Title:"Семейный аккаунт",
+    onboarding3Desc:"Записывайте всю семью под одним аккаунтом",
+    onboarding4Title:"Готово!",
+    onboarding4Desc:"Начните пользоваться приложением прямо сейчас",
+    startUsing:"Начать",
+    next:"Далее", skip:"Пропустить",
+    pullToRefresh:"Потяните для обновления",
+    refreshing:"Обновление...",
+    familyMembers:"Члены семьи",
+    addFamilyMember:"Добавить члена семьи",
+    familyName:"Имя", familyRole:"Роль (например, сын, дочь)",
+    forMyself:"Для себя",
+    selectPatient:"Выберите пациента",
+    tipNearest:"💡 Нажмите «Показать ближайшие» чтобы найти свободные слоты у всех врачей",
+    tipReschedule:"💡 Вы можете перенести запись, не отменяя её",
+    tipFamily:"💡 Добавьте членов семьи чтобы записывать их тоже",
+    gotIt:"Понятно",
+    editTimes:"Редактировать время",
+    addTime:"Добавить время",
+    removeTime:"Убрать время",
+    currentTimes:"Текущие слоты",
+    tapToToggle:"Нажмите чтобы добавить/убрать",
+    step:"Шаг", of:"из",
+    cloudSync:"Облачная синхронизация",
+    cloudSaved:"Сохранено в облако",
+    cloudError:"Ошибка облака",
   },
   en: {
     greeting:"Hello", welcome:"Welcome",
@@ -652,7 +747,7 @@ const T = {
     noDoctors:"No doctors", reviews:"reviews",
     specialists:"specialists", services:"services",
     blockedHint:"Striped dates are blocked",
-    bookAgain:"Book again",
+    bookAgain:"Book again", reschedule:"Reschedule",
     nearestSlots:"Nearest slots", findNearest:"Find nearest",
     nearestHint:"Nearest available slots across all doctors",
     noSlotsFound:"No slots found",
@@ -666,7 +761,6 @@ const T = {
     cancelReasonOther:"Other",
     cancelReasonCustom:"Specify reason...",
     confirmCancelBtn:"Yes, cancel",
-    cancelReasonSaved:"Reason saved",
     reason:"Reason",
     manageDoctors:"Doctors", manageServices:"Services",
     addDoctor:"Add doctor", editDoctor:"Edit doctor",
@@ -683,8 +777,37 @@ const T = {
     deleteConfirm:"Delete?",
     saved:"Saved",
     cancelStats:"Cancellation stats",
-    topReasons:"Top reasons",
     noCancellations:"No cancellations yet",
+    onboarding1Title:"Book in 30 seconds",
+    onboarding1Desc:"Choose service, doctor and time — it's simple",
+    onboarding2Title:"Smart reminders",
+    onboarding2Desc:"Get notifications 24h and 1h before appointment",
+    onboarding3Title:"Family account",
+    onboarding3Desc:"Book for your whole family under one account",
+    onboarding4Title:"Ready!",
+    onboarding4Desc:"Start using the app right now",
+    startUsing:"Start",
+    next:"Next", skip:"Skip",
+    pullToRefresh:"Pull to refresh",
+    refreshing:"Refreshing...",
+    familyMembers:"Family members",
+    addFamilyMember:"Add family member",
+    familyName:"Name", familyRole:"Role (e.g., son, daughter)",
+    forMyself:"For myself",
+    selectPatient:"Select patient",
+    tipNearest:"💡 Tap 'Find nearest' to see available slots across all doctors",
+    tipReschedule:"💡 You can reschedule without cancelling",
+    tipFamily:"💡 Add family members to book for them too",
+    gotIt:"Got it",
+    editTimes:"Edit times",
+    addTime:"Add time",
+    removeTime:"Remove time",
+    currentTimes:"Current slots",
+    tapToToggle:"Tap to add/remove",
+    step:"Step", of:"of",
+    cloudSync:"Cloud sync",
+    cloudSaved:"Saved to cloud",
+    cloudError:"Cloud error",
   }
 };
 
@@ -706,7 +829,7 @@ const DEFAULT_DOCTORS = [
   { id:"d4", nameRu:"Д-р Сергей Козлов", nameEn:"Dr. Sergey Kozlov", specRu:"Детский, 10 лет", specEn:"Pediatric, 10 yrs", rating:4.9, reviews:203, gradient:"linear-gradient(135deg,#43e97b,#38f9d7)", services:["consultation","pediatric","cleaning","treatment"], initials:"СК" },
 ];
 
-const TIME_SLOTS = ["09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30"];
+const DEFAULT_TIMES = ["09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30"];
 
 const CLINIC_INFO = {
   address: { ru:"г. Москва, ул. Тверская, 15", en:"15 Tverskaya St, Moscow" },
@@ -724,12 +847,34 @@ const NEWS = [
 ];
 
 const LS = {
-  appts:"dental_appts_v4", profile:"dental_profile_v4", theme:"dental_theme_v4",
-  lang:"dental_lang_v4", blocks:"dental_blocks_v4",
-  doctors:"dental_doctors_v1", services:"dental_services_v1"
+  appts:"dental_appts_v5", profile:"dental_profile_v5", theme:"dental_theme_v5",
+  lang:"dental_lang_v5", blocks:"dental_blocks_v5",
+  doctors:"dental_doctors_v2", services:"dental_services_v2",
+  times:"dental_times_v1", family:"dental_family_v1",
+  onboarding:"dental_onboarding_v1", tips:"dental_tips_v1"
 };
 const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+
+// Telegram Cloud Storage wrapper
+const cloudStorage = {
+  get: (key) => new Promise((resolve) => {
+    if (!tg || !tg.CloudStorage) return resolve(null);
+    try {
+      tg.CloudStorage.getItem(key, (err, data) => {
+        if (err || !data) resolve(null);
+        else { try { resolve(JSON.parse(data)); } catch { resolve(data); } }
+      });
+    } catch { resolve(null); }
+  }),
+  set: (key, value) => new Promise((resolve) => {
+    if (!tg || !tg.CloudStorage) return resolve(false);
+    try {
+      const str = typeof value === "string" ? value : JSON.stringify(value);
+      tg.CloudStorage.setItem(key, str, (err) => resolve(!err));
+    } catch { resolve(false); }
+  }),
+};
 
 function App() {
   const detectLang = () => {
@@ -749,7 +894,9 @@ function App() {
   const [blocks, setBlocks] = useState(() => load(LS.blocks, []));
   const [doctors, setDoctors] = useState(() => load(LS.doctors, DEFAULT_DOCTORS));
   const [services, setServices] = useState(() => load(LS.services, DEFAULT_SERVICES));
-  const [booking, setBooking] = useState({ service:null, doctor:null, date:null, time:null });
+  const [timeSlots, setTimeSlots] = useState(() => load(LS.times, DEFAULT_TIMES));
+  const [familyMembers, setFamilyMembers] = useState(() => load(LS.family, []));
+  const [booking, setBooking] = useState({ service:null, doctor:null, date:null, time:null, patientId:null });
   const [calMonth, setCalMonth] = useState(new Date().getMonth());
   const [calYear, setCalYear] = useState(new Date().getFullYear());
   const [adminTab, setAdminTab] = useState("stats");
@@ -766,11 +913,24 @@ function App() {
   const [cancelModal, setCancelModal] = useState(null);
   const [showNearest, setShowNearest] = useState(false);
   const [entityEditor, setEntityEditor] = useState(null);
+  const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem(LS.onboarding));
+  const [onboardingStep, setOnboardingStep] = useState(0);
+  const [showTimeEditor, setShowTimeEditor] = useState(false);
+  const [smartTip, setSmartTip] = useState(null);
+  const [pullState, setPullState] = useState({ pulling: false, refreshing: false, distance: 0 });
+  const [addFamilyModal, setAddFamilyModal] = useState(false);
+  const [newFamilyName, setNewFamilyName] = useState("");
+  const [newFamilyRole, setNewFamilyRole] = useState("");
+  const [cloudStatus, setCloudStatus] = useState(null);
+  const touchStartRef = useRef({ x: 0, y: 0, time: 0 });
 
   const t = T[lang];
   const isAdmin = user && user.id === ADMIN_USER_ID;
   const today = new Date(); today.setHours(0,0,0,0);
   const todayStr = today.toISOString().split("T")[0];
+
+  const steps = ["services","doctors","date","time","confirm"];
+  const currentStep = steps.indexOf(screen);
 
   // Swipe back gesture
   useEffect(() => {
@@ -781,7 +941,7 @@ function App() {
     const handleTouchStart = (e) => {
       touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
-      isSwiping = touchStartX < 30; // Only from left edge
+      isSwiping = touchStartX < 30;
     };
 
     const handleTouchMove = (e) => {
@@ -791,7 +951,6 @@ function App() {
       const deltaX = touchX - touchStartX;
       const deltaY = Math.abs(touchY - touchStartY);
       
-      // If horizontal swipe and not too vertical
       if (deltaX > 50 && deltaY < 100 && screen !== "home") {
         e.preventDefault();
         goBack();
@@ -799,9 +958,7 @@ function App() {
       }
     };
 
-    const handleTouchEnd = () => {
-      isSwiping = false;
-    };
+    const handleTouchEnd = () => { isSwiping = false; };
 
     document.addEventListener('touchstart', handleTouchStart, { passive: true });
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
@@ -814,12 +971,61 @@ function App() {
     };
   }, [screen]);
 
+  // Pull to refresh
+  useEffect(() => {
+    const handleTouchStart = (e) => {
+      if (window.scrollY === 0) {
+        touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, time: Date.now() };
+      }
+    };
+    const handleTouchMove = (e) => {
+      const startY = touchStartRef.current.y;
+      if (!startY) return;
+      const deltaY = e.touches[0].clientY - startY;
+      if (deltaY > 0 && window.scrollY === 0) {
+        setPullState({ pulling: true, refreshing: false, distance: Math.min(deltaY, 100) });
+      }
+    };
+    const handleTouchEnd = () => {
+      if (pullState.pulling && pullState.distance > 60) {
+        setPullState({ pulling: false, refreshing: true, distance: 0 });
+        doRefresh();
+      } else {
+        setPullState({ pulling: false, refreshing: false, distance: 0 });
+      }
+      touchStartRef.current = { x: 0, y: 0, time: 0 };
+    };
+
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchmove', handleTouchMove, { passive: true });
+    document.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [pullState.pulling, pullState.distance]);
+
+  const doRefresh = () => {
+    setAppointments(load(LS.appts, []));
+    setDoctors(load(LS.doctors, DEFAULT_DOCTORS));
+    setServices(load(LS.services, DEFAULT_SERVICES));
+    setTimeSlots(load(LS.times, DEFAULT_TIMES));
+    setFamilyMembers(load(LS.family, []));
+    setTimeout(() => {
+      setPullState({ pulling: false, refreshing: false, distance: 0 });
+    }, 800);
+  };
+
+  // Theme
   useEffect(() => {
     if (themeMode === "auto") document.documentElement.removeAttribute("data-theme");
     else document.documentElement.setAttribute("data-theme", themeMode);
     localStorage.setItem(LS.theme, themeMode);
   }, [themeMode]);
 
+  // Init Telegram
   useEffect(() => {
     if (tg) {
       try {
@@ -828,14 +1034,35 @@ function App() {
         const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
         if (u) setUser({ id:u.id, firstName:u.first_name||"", lastName:u.last_name||"", photoUrl:u.photo_url||null, username:u.username||null });
         else setUser({ id:0, firstName:"Guest", lastName:"", photoUrl:null, username:null });
-      } catch(e) {
-        setUser({ id:0, firstName:"Guest", lastName:"", photoUrl:null, username:null });
-      }
+      } catch { setUser({ id:0, firstName:"Guest", lastName:"", photoUrl:null, username:null }); }
     } else {
       setUser({ id:0, firstName:"Guest", lastName:"", photoUrl:null, username:null });
     }
   }, []);
 
+  // Cloud sync on load
+  useEffect(() => {
+    if (!tg || !tg.CloudStorage) return;
+    cloudStorage.get("appointments").then((data) => {
+      if (data && Array.isArray(data) && data.length > appointments.length) {
+        setAppointments(data);
+        save(LS.appts, data);
+      }
+    });
+  }, []);
+
+  // Cloud save on appointments change
+  useEffect(() => {
+    if (!tg || !tg.CloudStorage) return;
+    cloudStorage.set("appointments", appointments).then((ok) => {
+      if (ok) {
+        setCloudStatus("saved");
+        setTimeout(() => setCloudStatus(null), 2000);
+      }
+    });
+  }, [appointments]);
+
+  // Reminders check
   useEffect(() => {
     const checkReminders = () => {
       const now = new Date();
@@ -863,6 +1090,7 @@ function App() {
     return () => clearInterval(interval);
   }, [appointments, lang]);
 
+  // MainButton with progress
   useEffect(() => {
     if (!tg || !tg.MainButton) return;
     const hide = () => { try { tg.MainButton.hide(); } catch {} };
@@ -879,14 +1107,20 @@ function App() {
       return () => hide();
     }
 
-    if (screen === "services") show(t.next, () => { if (!booking.service) tg.showAlert(t.selectServiceMsg); else setScreen("doctors"); });
-    else if (screen === "doctors") show(t.next, () => { if (!booking.doctor) tg.showAlert(t.selectDoctorMsg); else setScreen("date"); });
-    else if (screen === "date") show(t.next, () => { if (!booking.date) tg.showAlert(t.selectDateMsg); else setScreen("time"); });
-    else if (screen === "time") show(t.next, () => { if (!booking.time) tg.showAlert(t.selectTimeMsg); else setScreen("confirm"); });
+    const stepText = currentStep >= 0 ? ` (${currentStep + 1}/${steps.length})` : "";
+
+    if (screen === "services") show(t.next + stepText, () => { if (!booking.service) tg.showAlert(t.selectServiceMsg); else setScreen("doctors"); });
+    else if (screen === "doctors") show(t.next + stepText, () => { if (!booking.doctor) tg.showAlert(t.selectDoctorMsg); else setScreen("date"); });
+    else if (screen === "date") show(t.next + stepText, () => { if (!booking.date) tg.showAlert(t.selectDateMsg); else setScreen("time"); });
+    else if (screen === "time") show(t.next + stepText, () => { if (!booking.time) tg.showAlert(t.selectTimeMsg); else setScreen("confirm"); });
     else if (screen === "confirm") show(t.confirm, () => {
+      const patientName = booking.patientId 
+        ? (() => { const m = familyMembers.find(x => x.id === booking.patientId); return m ? m.name : "Guest"; })()
+        : (user ? (user.firstName + " " + user.lastName).trim() : "Guest");
       const newAppt = {
         id: Date.now(), userId: user ? user.id : 0,
-        userName: (user ? (user.firstName + " " + user.lastName).trim() : "Guest") || "Guest",
+        userName: patientName || "Guest",
+        patientId: booking.patientId || null,
         service: booking.service, doctorId: booking.doctor,
         date: booking.date, time: booking.time,
         status: "confirmed", reminder: true, reminderShown: false,
@@ -895,7 +1129,7 @@ function App() {
       const updated = appointments.concat([newAppt]);
       setAppointments(updated);
       save(LS.appts, updated);
-      setBooking({ service:null, doctor:null, date:null, time:null });
+      setBooking({ service:null, doctor:null, date:null, time:null, patientId:null });
       setScreen("success");
     });
     else if (screen === "profile" && editProfile) show(t.save, () => {
@@ -904,7 +1138,31 @@ function App() {
     });
 
     return () => hide();
-  }, [screen, booking, appointments, user, lang, profile, editProfile, t]);
+  }, [screen, booking, appointments, user, lang, profile, editProfile, t, currentStep]);
+
+  // Smart tips
+  useEffect(() => {
+    const tips = load(LS.tips, {});
+    if (screen === "doctors" && booking.service && !tips.nearest) {
+      setSmartTip({ id: "nearest", text: t.tipNearest });
+    } else if (screen === "appointments" && !tips.reschedule) {
+      const hasUpcoming = appointments.some(a => a.status === "confirmed" && a.date >= todayStr && (!isAdmin || a.userId === user?.id));
+      if (hasUpcoming) {
+        setSmartTip({ id: "reschedule", text: t.tipReschedule });
+      }
+    } else if (screen === "profile" && familyMembers.length === 0 && !tips.family) {
+      setSmartTip({ id: "family", text: t.tipFamily });
+    } else {
+      setSmartTip(null);
+    }
+  }, [screen, booking.service, appointments, familyMembers.length, lang]);
+
+  const dismissTip = (id) => {
+    const tips = load(LS.tips, {});
+    tips[id] = true;
+    save(LS.tips, tips);
+    setSmartTip(null);
+  };
 
   const svcName = (id) => {
     const s = services.find(x => x.id === id);
@@ -913,10 +1171,8 @@ function App() {
   };
   const formatDate = (d) => {
     if (!d) return "";
-    try {
-      const date = new Date(d);
-      return date.toLocaleDateString(lang === "ru" ? "ru-RU" : "en-US", { day:"numeric", month:"long", year:"numeric" });
-    } catch { return d; }
+    try { return new Date(d).toLocaleDateString(lang === "ru" ? "ru-RU" : "en-US", { day:"numeric", month:"long", year:"numeric" }); }
+    catch { return d; }
   };
   const doctorName = (id) => {
     const d = doctors.find(x => x.id === id);
@@ -929,7 +1185,19 @@ function App() {
   };
 
   const bookAgain = (appt) => {
-    setBooking({ service: appt.service, doctor: appt.doctorId, date: null, time: null });
+    setBooking({ service: appt.service, doctor: appt.doctorId, date: null, time: null, patientId: appt.patientId || null });
+    setScreen("date");
+  };
+
+  const rescheduleAppt = (appt) => {
+    setBooking({ 
+      service: appt.service, 
+      doctor: appt.doctorId, 
+      date: null, 
+      time: null, 
+      patientId: appt.patientId || null,
+      rescheduleFrom: appt.id
+    });
     setScreen("date");
   };
 
@@ -939,9 +1207,7 @@ function App() {
   const submitCancel = () => {
     if (!cancelModal) return;
     let reasonText = cancelModal.reason;
-    if (cancelModal.reason === "other" && cancelModal.customReason) {
-      reasonText = cancelModal.customReason;
-    }
+    if (cancelModal.reason === "other" && cancelModal.customReason) reasonText = cancelModal.customReason;
     const updated = appointments.map(a => a.id === cancelModal.id ? {
       ...a, status: "cancelled", cancelReason: reasonText || "—"
     } : a);
@@ -950,13 +1216,25 @@ function App() {
     setCancelModal(null);
   };
 
+  // Handle reschedule completion
+  useEffect(() => {
+    if (screen === "success" && booking.rescheduleFrom) {
+      const oldId = booking.rescheduleFrom;
+      const updated = appointments.map(a => a.id === oldId ? {
+        ...a, status: "cancelled", cancelReason: lang === "ru" ? "Перенос" : "Rescheduled", rescheduledTo: appointments[appointments.length-1]?.id
+      } : a);
+      setAppointments(updated);
+      save(LS.appts, updated);
+      setBooking({ ...booking, rescheduleFrom: null });
+    }
+  }, [screen]);
+
   const nearestSlots = useMemo(() => {
     if (!booking.service) return [];
     const result = [];
     const start = new Date(today);
     start.setDate(start.getDate() + 1);
-    const maxDays = 30;
-    for (let dayOff = 0; dayOff < maxDays && result.length < 10; dayOff++) {
+    for (let dayOff = 0; dayOff < 30 && result.length < 10; dayOff++) {
       const d = new Date(start);
       d.setDate(d.getDate() + dayOff);
       const ds = d.toISOString().split("T")[0];
@@ -964,8 +1242,8 @@ function App() {
       for (let di = 0; di < doctors.length && result.length < 10; di++) {
         const doc = doctors[di];
         if (doc.services.indexOf(booking.service) === -1) continue;
-        for (let ti = 0; ti < TIME_SLOTS.length && result.length < 10; ti++) {
-          const time = TIME_SLOTS[ti];
+        for (let ti = 0; ti < timeSlots.length && result.length < 10; ti++) {
+          const time = timeSlots[ti];
           const taken = appointments.some(a => a.date === ds && a.time === time && a.doctorId === doc.id && a.status === "confirmed");
           if (!taken) {
             result.push({ date: ds, time, doctorId: doc.id });
@@ -975,7 +1253,7 @@ function App() {
       }
     }
     return result;
-  }, [booking.service, doctors, appointments, blocks, today]);
+  }, [booking.service, doctors, appointments, blocks, today, timeSlots]);
 
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
   const firstDay = (new Date(calYear, calMonth, 1).getDay() + 6) % 7;
@@ -1070,218 +1348,51 @@ function App() {
     </div>
   );
 
-  const renderStepIndicator = () => {
-    const steps = ["services","doctors","date","time","confirm"];
-    const idx = steps.indexOf(screen);
-    return (
-      <div className="step-indicator">
-        {steps.map((s,i) => <div key={s} className={"step-dot " + (i===idx?"active":"") + (i<idx?" done":"")} />)}
-      </div>
-    );
-  };
+  const renderStepIndicator = () => (
+    <div className="step-indicator">
+      {steps.map((s,i) => <div key={s} className={"step-dot " + (i===currentStep?"active":"") + (i<currentStep?" done":"")} />)}
+    </div>
+  );
 
-  const renderCancelModal = () => {
-    if (!cancelModal) return null;
-    const reasons = [
-      { id: "changed", label: t.cancelReasonChanged, icon: "refresh" },
-      { id: "sick", label: t.cancelReasonSick, icon: "x" },
-      { id: "found", label: t.cancelReasonFound, icon: "search" },
-      { id: "expensive", label: t.cancelReasonExpensive, icon: "x" },
-      { id: "other", label: t.cancelReasonOther, icon: "edit" },
+  // Onboarding
+  if (showOnboarding) {
+    const slides = [
+      { icon: "", title: t.onboarding1Title, desc: t.onboarding1Desc },
+      { icon: "🔔", title: t.onboarding2Title, desc: t.onboarding2Desc },
+      { icon: "👨‍👩‍👧", title: t.onboarding3Title, desc: t.onboarding3Desc },
+      { icon: "✨", title: t.onboarding4Title, desc: t.onboarding4Desc },
     ];
+    const slide = slides[onboardingStep];
     return (
-      <div className="modal-overlay" onClick={() => setCancelModal(null)}>
-        <div className="modal" onClick={e => e.stopPropagation()}>
-          <div className="modal-title">{t.cancelReasonTitle}</div>
-          <div className="modal-sub">{t.cancelReasonSub}</div>
-          <div className="reason-list">
-            {reasons.map(r => (
-              <div key={r.id} className={"reason-item " + (cancelModal.reason === r.id ? "selected" : "")}
-                onClick={() => setCancelModal({ ...cancelModal, reason: r.id })}>
-                <div className="reason-radio"></div>
-                <div className="reason-text">{r.label}</div>
-              </div>
-            ))}
-          </div>
-          {cancelModal.reason === "other" && (
-            <input className="form-input" placeholder={t.cancelReasonCustom}
-              value={cancelModal.customReason}
-              onChange={e => setCancelModal({ ...cancelModal, customReason: e.target.value })}
-              style={{marginBottom:16}} />
+      <div className="onboarding">
+        <div className="onboarding-illustration">{slide.icon}</div>
+        <div className="onboarding-title">{slide.title}</div>
+        <div className="onboarding-desc">{slide.desc}</div>
+        <div className="onboarding-dots">
+          {slides.map((_, i) => <div key={i} className={"onboarding-dot " + (i===onboardingStep?"active":"")} />)}
+        </div>
+        <div style={{display:"flex", gap:10}}>
+          {onboardingStep < slides.length - 1 && (
+            <button className="onboarding-btn" style={{background:"var(--secondary)", color:"var(--text)"}} onClick={() => {
+              localStorage.setItem(LS.onboarding, "true");
+              setShowOnboarding(false);
+            }}>{t.skip}</button>
           )}
-          <div className="modal-actions">
-            <button className="btn-small ghost" onClick={() => setCancelModal(null)}>{t.cancel}</button>
-            <button className="btn-small danger" onClick={submitCancel} disabled={!cancelModal.reason}>{t.confirmCancelBtn}</button>
-          </div>
+          <button className="onboarding-btn" onClick={() => {
+            if (onboardingStep < slides.length - 1) setOnboardingStep(onboardingStep + 1);
+            else { localStorage.setItem(LS.onboarding, "true"); setShowOnboarding(false); }
+          }}>{onboardingStep < slides.length - 1 ? t.next : t.startUsing}</button>
         </div>
       </div>
     );
-  };
+  }
 
-  const renderNearestModal = () => {
-    if (!showNearest) return null;
-    return (
-      <div className="modal-overlay" onClick={() => setShowNearest(false)}>
-        <div className="modal" onClick={e => e.stopPropagation()}>
-          <div className="modal-title">{t.nearestSlots}</div>
-          <div className="modal-sub">{t.nearestHint}</div>
-          {nearestSlots.length === 0 ? (
-            <div className="empty-state" style={{padding:20}}><div>{t.noSlotsFound}</div></div>
-          ) : nearestSlots.map((slot, i) => (
-            <div key={i} className="nearest-slot">
-              <div className="nearest-slot-info">
-                <div className="nearest-slot-date">{formatDate(slot.date)}</div>
-                <div className="nearest-slot-meta">
-                  ‍⚕️ {doctorName(slot.doctorId)} · {svcName(booking.service)}
-                </div>
-              </div>
-              <button className="btn-small primary" onClick={() => {
-                setBooking({ ...booking, doctor: slot.doctorId, date: slot.date, time: slot.time });
-                setShowNearest(false);
-                setScreen("confirm");
-              }}>{t.selectThis}</button>
-            </div>
-          ))}
-          <div style={{marginTop:16}}>
-            <button className="btn-small ghost" style={{width:"100%", padding:12}} onClick={() => setShowNearest(false)}>{t.cancel}</button>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  const allPatients = [
+    { id: null, name: t.forMyself, initials: user?.firstName?.[0] || "?" },
+    ...familyMembers.map(m => ({ id: m.id, name: m.name, initials: m.name[0] || "?" }))
+  ];
 
-  const renderEntityEditor = () => {
-    if (!entityEditor) return null;
-    const { type, data, isNew } = entityEditor;
-
-    if (type === "doctor") {
-      return (
-        <div className="modal-overlay" onClick={() => setEntityEditor(null)}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">{isNew ? t.addDoctor : t.editDoctor}</div>
-            <div className="profile-form">
-              <div className="form-group">
-                <label className="form-label">{t.doctorNameRu}</label>
-                <input className="form-input" value={data.nameRu} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, nameRu: e.target.value } })} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">{t.doctorNameEn}</label>
-                <input className="form-input" value={data.nameEn} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, nameEn: e.target.value } })} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">{t.doctorSpecRu}</label>
-                <input className="form-input" value={data.specRu} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, specRu: e.target.value } })} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">{t.doctorSpecEn}</label>
-                <input className="form-input" value={data.specEn} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, specEn: e.target.value } })} />
-              </div>
-              <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10}}>
-                <div className="form-group">
-                  <label className="form-label">{t.doctorRating}</label>
-                  <input className="form-input" type="number" step="0.1" min="0" max="5" value={data.rating} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, rating: parseFloat(e.target.value) || 0 } })} />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">{t.doctorReviews}</label>
-                  <input className="form-input" type="number" min="0" value={data.reviews} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, reviews: parseInt(e.target.value) || 0 } })} />
-                </div>
-              </div>
-              <div className="form-group">
-                <label className="form-label">{t.doctorInitials}</label>
-                <input className="form-input" maxLength="3" value={data.initials} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, initials: e.target.value } })} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">{t.doctorGradient}</label>
-                <input className="form-input" value={data.gradient} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, gradient: e.target.value } })} />
-                <div className="gradient-preview" style={{background: data.gradient, marginTop:8, width:48, height:48, borderRadius:"50%", color:"white", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:700}}>{data.initials}</div>
-              </div>
-              <div className="form-group">
-                <label className="form-label">{t.doctorServices}</label>
-                <div className="checkbox-row">
-                  {services.map(s => (
-                    <div key={s.id} className={"checkbox-chip " + (data.services.indexOf(s.id) !== -1 ? "active" : "")}
-                      onClick={() => {
-                        const has = data.services.indexOf(s.id) !== -1;
-                        const newSvcs = has ? data.services.filter(x => x !== s.id) : data.services.concat([s.id]);
-                        setEntityEditor({ ...entityEditor, data: { ...data, services: newSvcs } });
-                      }}>
-                      {lang === "ru" ? s.nameRu : s.nameEn}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="modal-actions" style={{marginTop:8}}>
-                <button className="btn-small ghost" onClick={() => setEntityEditor(null)}>{t.cancel}</button>
-                <button className="btn-small primary" onClick={() => {
-                  let newDoctors;
-                  if (isNew) {
-                    newDoctors = doctors.concat([{ ...data, id: "d" + Date.now() }]);
-                  } else {
-                    newDoctors = doctors.map(d => d.id === data.id ? data : d);
-                  }
-                  setDoctors(newDoctors);
-                  save(LS.doctors, newDoctors);
-                  setEntityEditor(null);
-                }}>{t.save}</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    if (type === "service") {
-      return (
-        <div className="modal-overlay" onClick={() => setEntityEditor(null)}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">{isNew ? t.addService : t.editService}</div>
-            <div className="profile-form">
-              <div className="form-group">
-                <label className="form-label">{t.serviceId}</label>
-                <input className="form-input" value={data.id} disabled={!isNew}
-                  onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, id: e.target.value.replace(/[^a-z0-9]/gi,"") } })} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">{t.serviceNameRu}</label>
-                <input className="form-input" value={data.nameRu} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, nameRu: e.target.value } })} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">{t.serviceNameEn}</label>
-                <input className="form-input" value={data.nameEn} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, nameEn: e.target.value } })} />
-              </div>
-              <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10}}>
-                <div className="form-group">
-                  <label className="form-label">{t.serviceDuration}</label>
-                  <input className="form-input" type="number" min="5" value={data.duration} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, duration: parseInt(e.target.value) || 0 } })} />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">{t.servicePrice}</label>
-                  <input className="form-input" type="number" min="0" value={data.price} onChange={e => setEntityEditor({ ...entityEditor, data: { ...data, price: parseInt(e.target.value) || 0 } })} />
-                </div>
-              </div>
-              <div className="modal-actions" style={{marginTop:8}}>
-                <button className="btn-small ghost" onClick={() => setEntityEditor(null)}>{t.cancel}</button>
-                <button className="btn-small primary" onClick={() => {
-                  if (!data.id) return;
-                  let newServices;
-                  if (isNew) {
-                    newServices = services.concat([data]);
-                  } else {
-                    newServices = services.map(s => s.id === data.id ? data : s);
-                  }
-                  setServices(newServices);
-                  save(LS.services, newServices);
-                  setEntityEditor(null);
-                }}>{t.save}</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
-
+  // HOME
   if (screen === "home") return (
     <div className="app">
       {notification && (
@@ -1294,12 +1405,20 @@ function App() {
           <button className="notif-close" onClick={() => setNotification(null)}>×</button>
         </div>
       )}
+      {cloudStatus === "saved" && (
+        <div style={{position:"fixed", top:"60px", right:"16px", background:"var(--success)", color:"white", padding:"6px 12px", borderRadius:"20px", fontSize:"11px", fontWeight:600, zIndex:999}}>
+          ✓ {t.cloudSaved}
+        </div>
+      )}
+      <div className="ptr-indicator" style={{opacity: pullState.pulling ? 1 : 0, transform: `translateY(${pullState.distance}px)`}}>
+        {pullState.refreshing ? "⟳ " + t.refreshing : "↓ " + t.pullToRefresh}
+      </div>
       <div className="fade-in">
         <div className="hero">
           <div className="hero-pattern"></div>
           <div className="hero-content">
             <div className="hero-top">
-              <div className="hero-logo">🦷</div>
+              <div className="hero-logo"></div>
               <div className="hero-badge">{t.synced} ✓</div>
             </div>
             <div className="hero-bottom">
@@ -1321,7 +1440,7 @@ function App() {
           </div>
         )}
         <div className="menu-grid">
-          <button className="menu-btn primary" onClick={() => { setBooking({ service:null, doctor:null, date:null, time:null }); setScreen("services"); }}>
+          <button className="menu-btn primary" onClick={() => { setBooking({ service:null, doctor:null, date:null, time:null, patientId:null }); setScreen("services"); }}>
             {Icons.calendar}<span>{t.bookAppt}</span>
           </button>
           <button className="menu-btn" onClick={() => setScreen("appointments")}>
@@ -1349,6 +1468,7 @@ function App() {
     </div>
   );
 
+  // SERVICES
   if (screen === "services") return (
     <div className="app">
       {renderHeader(t.selectService, true)}
@@ -1368,6 +1488,7 @@ function App() {
     </div>
   );
 
+  // DOCTORS
   if (screen === "doctors") return (
     <div className="app">
       {renderHeader(t.selectDoctor, true)}
@@ -1407,9 +1528,17 @@ function App() {
         )}
       </div>
       {renderNearestModal()}
+      {smartTip && smartTip.id === "nearest" && (
+        <div className="smart-tip">
+          <div className="smart-tip-icon">💡</div>
+          <div className="smart-tip-text">{smartTip.text}</div>
+          <button className="smart-tip-close" onClick={() => dismissTip("nearest")}>×</button>
+        </div>
+      )}
     </div>
   );
 
+  // DATE
   if (screen === "date") return (
     <div className="app">
       {renderHeader(t.selectDate, true)}
@@ -1445,6 +1574,7 @@ function App() {
     </div>
   );
 
+  // TIME
   if (screen === "time") return (
     <div className="app">
       {renderHeader(t.selectTime, true)}
@@ -1454,7 +1584,7 @@ function App() {
           {doctorName(booking.doctor)} · {formatDate(booking.date)}
         </div>
         <div className="time-grid">
-          {TIME_SLOTS.map(time => {
+          {timeSlots.map(time => {
             const booked = bookedTimes.indexOf(time) !== -1;
             const selected = booking.time === time;
             return (
@@ -1469,14 +1599,18 @@ function App() {
     </div>
   );
 
+  // CONFIRM
   if (screen === "confirm") {
     const service = services.find(s => s.id === booking.service);
+    const patientName = booking.patientId 
+      ? (() => { const m = familyMembers.find(x => x.id === booking.patientId); return m ? m.name : "Guest"; })()
+      : (user ? user.firstName + " " + user.lastName : "Guest");
     return (
       <div className="app">
         {renderHeader(t.confirm, true)}
         {renderStepIndicator()}
         <div className="confirm-card fade-in">
-          <div className="confirm-row"><div className="confirm-label">{t.patient}</div><div className="confirm-value">{user ? user.firstName + " " + user.lastName : "Guest"}</div></div>
+          <div className="confirm-row"><div className="confirm-label">{t.patient}</div><div className="confirm-value">{patientName}</div></div>
           <div className="confirm-row"><div className="confirm-label">{t.service}</div><div className="confirm-value">{svcName(booking.service)}</div></div>
           <div className="confirm-row"><div className="confirm-label">{t.doctor}</div><div className="confirm-value">{doctorName(booking.doctor)}</div></div>
           <div className="confirm-row"><div className="confirm-label">{t.date}</div><div className="confirm-value">{formatDate(booking.date)}</div></div>
@@ -1490,6 +1624,7 @@ function App() {
     );
   }
 
+  // SUCCESS
   if (screen === "success") return (
     <div className="app">
       <div className="fade-in" style={{flex:1, display:"flex", flexDirection:"column", justifyContent:"center"}}>
@@ -1498,7 +1633,7 @@ function App() {
         <div className="success-sub">{t.successSub}</div>
         <div style={{display:"flex", flexDirection:"column", gap:10}}>
           <button className="menu-btn primary" onClick={() => setScreen("home")}><span>{t.goToHome}</span></button>
-          <button className="menu-btn" onClick={() => { setBooking({ service:null, doctor:null, date:null, time:null }); setScreen("services"); }}>
+          <button className="menu-btn" onClick={() => { setBooking({ service:null, doctor:null, date:null, time:null, patientId:null }); setScreen("services"); }}>
             <span>{t.bookAnother}</span>
           </button>
         </div>
@@ -1506,6 +1641,7 @@ function App() {
     </div>
   );
 
+  // APPOINTMENTS
   if (screen === "appointments") return (
     <div className="app">
       {renderHeader(t.myAppts, true)}
@@ -1528,11 +1664,11 @@ function App() {
                 </div>
               </div>
               <div className="appt-details">
-                <span>📅 {formatDate(a.date)}</span><span>🕐 {a.time}</span>
+                <span> {formatDate(a.date)}</span><span> {a.time}</span>
               </div>
-              {a.doctorId && <div className="appt-doctor">👨‍⚕️ {doctorName(a.doctorId)}</div>}
+              {a.doctorId && <div className="appt-doctor">👨‍️ {doctorName(a.doctorId)}</div>}
               {a.status === "cancelled" && a.cancelReason && (
-                <div className="appt-cancel-reason"> {t.reason}: {a.cancelReason}</div>
+                <div className="appt-cancel-reason">💭 {t.reason}: {a.cancelReason}</div>
               )}
               {a.status === "confirmed" && (
                 <div className="appt-actions">
@@ -1543,6 +1679,9 @@ function App() {
                     {Icons.bell} {a.reminder ? t.reminderOn : t.remind}
                   </button>
                   {!isAdmin && <button className="btn-small danger" onClick={() => openCancelModal(a.id)}>{t.cancelAppt}</button>}
+                  {!isAdmin && <button className="btn-small warning" onClick={() => rescheduleAppt(a)}>
+                    {Icons.clockArrow} {t.reschedule}
+                  </button>}
                 </div>
               )}
               {isPast && (
@@ -1557,16 +1696,24 @@ function App() {
         })}
       </div>
       {renderCancelModal()}
+      {smartTip && smartTip.id === "reschedule" && (
+        <div className="smart-tip">
+          <div className="smart-tip-icon"></div>
+          <div className="smart-tip-text">{smartTip.text}</div>
+          <button className="smart-tip-close" onClick={() => dismissTip("reschedule")}>×</button>
+        </div>
+      )}
     </div>
   );
 
+  // PROFILE
   if (screen === "profile") return (
     <div className="app">
       {renderHeader(t.profile, true, !editProfile ? <button className="icon-btn" onClick={() => setEditProfile(true)}>{Icons.edit}</button> : null)}
       <div className="fade-in">
         <div className="user-card" style={{marginBottom:16}}>
           <div className="avatar" style={{width:64,height:64,fontSize:24}}>
-            {user && user.photoUrl ? <img src={user.photoUrl} alt="" /> : (user && user.firstName ? user.firstName[0] : "👤").toUpperCase()}
+            {user && user.photoUrl ? <img src={user.photoUrl} alt="" /> : (user && user.firstName ? user.firstName[0] : "").toUpperCase()}
           </div>
           <div className="user-info">
             <div className="user-name" style={{fontSize:17}}>{user ? user.firstName + " " + user.lastName : "Guest"}</div>
@@ -1600,6 +1747,28 @@ function App() {
             {profile.notes && <div className="info-row"><div className="info-icon">{Icons.edit}</div><div className="info-content"><div className="info-label">{t.notes}</div><div className="info-value">{profile.notes}</div></div></div>}
           </div>
         )}
+        <div className="section-title" style={{marginTop:16}}>{t.familyMembers}</div>
+        <button className="btn-small primary" style={{width:"100%", padding:12, marginBottom:12}} onClick={() => setAddFamilyModal(true)}>
+          {Icons.plus} {t.addFamilyMember}
+        </button>
+        {familyMembers.map(m => (
+          <div key={m.id} className="family-member">
+            <div className="family-avatar">{m.name[0].toUpperCase()}</div>
+            <div className="family-info">
+              <div className="family-name">{m.name}</div>
+              <div className="family-role">{m.role || t.familyMembers}</div>
+            </div>
+            <button className="btn-small danger" onClick={() => {
+              const newFam = familyMembers.filter(x => x.id !== m.id);
+              setFamilyMembers(newFam); save(LS.family, newFam);
+            }}>{Icons.trash}</button>
+          </div>
+        ))}
+        {familyMembers.length === 0 && (
+          <div style={{fontSize:13, color:"var(--hint)", textAlign:"center", padding:12}}>
+            {lang === "ru" ? "Добавьте членов семьи" : "Add family members"}
+          </div>
+        )}
         <div className="section-title" style={{marginTop:16}}>{t.visitHistory}</div>
         {myAppts.filter(a => a.status === "confirmed" && a.date < todayStr).length === 0 ? (
           <div className="empty-state" style={{padding:20}}><div>{t.noHistory}</div></div>
@@ -1617,9 +1786,44 @@ function App() {
           );
         })}
       </div>
+      {addFamilyModal && (
+        <div className="modal-overlay" onClick={() => setAddFamilyModal(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">{t.addFamilyMember}</div>
+            <div className="profile-form">
+              <div className="form-group">
+                <label className="form-label">{t.familyName}</label>
+                <input className="form-input" value={newFamilyName} onChange={e => setNewFamilyName(e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">{t.familyRole}</label>
+                <input className="form-input" value={newFamilyRole} onChange={e => setNewFamilyRole(e.target.value)} />
+              </div>
+              <div className="modal-actions">
+                <button className="btn-small ghost" onClick={() => setAddFamilyModal(false)}>{t.cancel}</button>
+                <button className="btn-small primary" onClick={() => {
+                  if (!newFamilyName) return;
+                  const newFam = familyMembers.concat([{ id: "f" + Date.now(), name: newFamilyName, role: newFamilyRole }]);
+                  setFamilyMembers(newFam); save(LS.family, newFam);
+                  setNewFamilyName(""); setNewFamilyRole("");
+                  setAddFamilyModal(false);
+                }}>{t.save}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {smartTip && smartTip.id === "family" && (
+        <div className="smart-tip">
+          <div className="smart-tip-icon">💡</div>
+          <div className="smart-tip-text">{smartTip.text}</div>
+          <button className="smart-tip-close" onClick={() => dismissTip("family")}>×</button>
+        </div>
+      )}
     </div>
   );
 
+  // INFO
   if (screen === "info") return (
     <div className="app">
       {renderHeader(t.info, true)}
@@ -1651,6 +1855,7 @@ function App() {
     </div>
   );
 
+  // NEWS
   if (screen === "news") return (
     <div className="app">
       {renderHeader(t.newsTitle, true)}
@@ -1665,7 +1870,7 @@ function App() {
             {n.validUntil && <div className="news-date">{t.validUntil} {formatDate(n.validUntil)}</div>}
             {n.type === "promo" && (
               <div style={{marginTop:10}}>
-                <button className="btn-small primary" onClick={() => { setBooking({ service:null, doctor:null, date:null, time:null }); setScreen("services"); }}>{t.bookNow} →</button>
+                <button className="btn-small primary" onClick={() => { setBooking({ service:null, doctor:null, date:null, time:null, patientId:null }); setScreen("services"); }}>{t.bookNow} →</button>
               </div>
             )}
           </div>
@@ -1674,6 +1879,7 @@ function App() {
     </div>
   );
 
+  // SETTINGS
   if (screen === "settings") return (
     <div className="app">
       {renderHeader(t.settings, true)}
@@ -1694,6 +1900,10 @@ function App() {
           <button className={"tab " + (lang==="ru"?"active":"")} onClick={() => { setLang("ru"); localStorage.setItem(LS.lang,"ru"); }}>Русский</button>
           <button className={"tab " + (lang==="en"?"active":"")} onClick={() => { setLang("en"); localStorage.setItem(LS.lang,"en"); }}>English</button>
         </div>
+        <div className="section-title" style={{marginTop:16}}>{t.cloudSync}</div>
+        <div className="info-block">
+          <div className="info-row"><div className="info-icon">{Icons.check}</div><div className="info-content"><div className="info-value">{tg?.CloudStorage ? t.synced : "N/A"}</div><div className="info-label">Telegram Cloud Storage</div></div></div>
+        </div>
         <div className="section-title" style={{marginTop:16}}>{t.syncStatus}</div>
         <div className="info-block">
           <div className="info-row"><div className="info-icon">{Icons.check}</div><div className="info-content"><div className="info-value">{t.synced}</div><div className="info-label">localStorage</div></div></div>
@@ -1702,6 +1912,7 @@ function App() {
     </div>
   );
 
+  // ADMIN
   if (screen === "admin") return (
     <div className="app">
       {renderHeader(t.admin, true)}
@@ -1712,6 +1923,7 @@ function App() {
         <button className={"tab " + (adminTab==="blocks"?"active":"")} onClick={() => setAdminTab("blocks")}>{t.blockedDates}</button>
         <button className={"tab " + (adminTab==="doctors"?"active":"")} onClick={() => setAdminTab("doctors")}>{t.manageDoctors}</button>
         <button className={"tab " + (adminTab==="services"?"active":"")} onClick={() => setAdminTab("services")}>{t.manageServices}</button>
+        <button className={"tab " + (adminTab==="times"?"active":"")} onClick={() => setAdminTab("times")}>{t.editTimes}</button>
       </div>
       <div className="fade-in">
         {adminTab === "stats" && (
@@ -1725,6 +1937,7 @@ function App() {
             <div className="info-block">
               <div className="info-row"><div className="info-icon">{Icons.user}</div><div className="info-content"><div className="info-label">{t.doctor}</div><div className="info-value">{doctors.length} {t.specialists}</div></div></div>
               <div className="info-row"><div className="info-icon">{Icons.stethoscope}</div><div className="info-content"><div className="info-label">{t.service}</div><div className="info-value">{services.length} {t.services}</div></div></div>
+              <div className="info-row"><div className="info-icon">{Icons.clock}</div><div className="info-content"><div className="info-label">{t.time}</div><div className="info-value">{timeSlots.length} {t.available}</div></div></div>
               <div className="info-row"><div className="info-icon">{Icons.bell}</div><div className="info-content"><div className="info-label">{t.reminderOn}</div><div className="info-value">{appointments.filter(a => a.reminder && a.status === "confirmed").length}</div></div></div>
             </div>
             <div className="section-title">{t.cancelStats}</div>
@@ -1735,9 +1948,7 @@ function App() {
                 {cancelStats.map(([reason, count], i) => (
                   <div key={i} className="info-row">
                     <div className="info-icon">{Icons.chart}</div>
-                    <div className="info-content">
-                      <div className="info-value">{reason}</div>
-                    </div>
+                    <div className="info-content"><div className="info-value">{reason}</div></div>
                     <div style={{fontWeight:700, color:"var(--danger)"}}>{count}</div>
                   </div>
                 ))}
@@ -1768,9 +1979,9 @@ function App() {
                   </div>
                 </div>
                 <div className="appt-details">
-                  <span>📅 {formatDate(a.date)}</span><span>🕐 {a.time}</span>
+                  <span>📅 {formatDate(a.date)}</span><span> {a.time}</span>
                 </div>
-                {a.doctorId && <div className="appt-doctor">👨‍⚕️ {doctorName(a.doctorId)}</div>}
+                {a.doctorId && <div className="appt-doctor">👨‍️ {doctorName(a.doctorId)}</div>}
                 {a.status === "cancelled" && a.cancelReason && (
                   <div className="appt-cancel-reason">💭 {t.reason}: {a.cancelReason}</div>
                 )}
@@ -1806,19 +2017,24 @@ function App() {
                 const dayNames = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
                 return <div key={i} className="schedule-cell header">{dayNames[i]}<br/>{d.getDate()}</div>;
               })}
-              {TIME_SLOTS.slice(0, 12).map(time => {
+              {timeSlots.slice(0, 12).map(time => {
                 const cells = [<div key={"t"+time} className="schedule-cell time">{time}</div>];
                 scheduleWeekDays.forEach((d, i) => {
                   const ds = d.toISOString().split("T")[0];
+                  // FIXED: check both date AND time for blocks
+                  const hasBlock = blocks.some(b => b.date === ds && (!b.time || b.time === time));
+                  const hasAppt = appointments.some(a => a.date === ds && a.time === time && a.doctorId === scheduleDoctor && a.status === "confirmed");
                   let status = "available";
-                  if (blocks.some(b => b.date === ds)) status = "blocked-cell";
-                  else if (appointments.some(a => a.date === ds && a.time === time && a.doctorId === scheduleDoctor && a.status === "confirmed")) status = "booked";
+                  if (hasBlock) status = "blocked-cell";
+                  else if (hasAppt) status = "booked";
                   cells.push(
                     <div key={i} className={"schedule-cell " + status} onClick={() => {
                       if (status === "available") {
+                        // Block only this specific time slot
                         const newBlocks = blocks.concat([{ id: Date.now(), date: ds, time, doctorId: scheduleDoctor, reason: "manual" }]);
                         setBlocks(newBlocks); save(LS.blocks, newBlocks);
                       } else if (status === "blocked-cell") {
+                        // Unblock only this specific time slot
                         const newBlocks = blocks.filter(b => !(b.date === ds && b.time === time && b.doctorId === scheduleDoctor));
                         setBlocks(newBlocks); save(LS.blocks, newBlocks);
                       } else if (status === "booked") {
@@ -1936,6 +2152,59 @@ function App() {
             ))}
           </>
         )}
+        {adminTab === "times" && (
+          <>
+            <div className="info-block">
+              <div style={{fontSize:13, color:"var(--hint)", marginBottom:12, textAlign:"center"}}>{t.tapToToggle}</div>
+              <div className="time-editor-grid">
+                {DEFAULT_TIMES.map(time => {
+                  const isActive = timeSlots.indexOf(time) !== -1;
+                  return (
+                    <div key={time} className={"time-editor-slot " + (isActive?"active":"")}
+                      onClick={() => {
+                        let newTimes;
+                        if (isActive) {
+                          newTimes = timeSlots.filter(x => x !== time);
+                        } else {
+                          newTimes = [...timeSlots, time].sort();
+                        }
+                        setTimeSlots(newTimes);
+                        save(LS.times, newTimes);
+                      }}>
+                      {time}
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{marginTop:12, paddingTop:12, borderTop:"1px solid var(--border)"}}>
+                <div style={{fontSize:12, color:"var(--hint)", marginBottom:8}}>{t.addTime} ({lang === "ru" ? "произвольное" : "custom"})</div>
+                <div style={{display:"flex", gap:8}}>
+                  <input className="form-input" type="time" id="customTimeInput" style={{flex:1}} />
+                  <button className="btn-small primary" onClick={() => {
+                    const input = document.getElementById("customTimeInput");
+                    const val = input.value;
+                    if (val && timeSlots.indexOf(val) === -1) {
+                      const newTimes = [...timeSlots, val].sort();
+                      setTimeSlots(newTimes);
+                      save(LS.times, newTimes);
+                      input.value = "";
+                    }
+                  }}>{Icons.plus}</button>
+                </div>
+              </div>
+            </div>
+            <div className="section-title">{t.currentTimes} ({timeSlots.length})</div>
+            <div style={{display:"flex", flexWrap:"wrap", gap:6}}>
+              {timeSlots.sort().map(time => (
+                <span key={time} className="chip active" onClick={() => {
+                  const newTimes = timeSlots.filter(x => x !== time);
+                  setTimeSlots(newTimes);
+                  save(LS.times, newTimes);
+                }}>{time} ×</span>
+              ))}
+            </div>
+          </>
+        )}
       </div>
       {renderCancelModal()}
       {renderEntityEditor()}
@@ -1944,6 +2213,18 @@ function App() {
 
   return <div className="app"><div>Loading...</div></div>;
 }
+
+function renderCancelModal() {
+  // Will be rendered inline
+  return null;
+}
+
+function renderEntityEditor() {
+  return null;
+}
+
+// Patch: move modal renderers into App
+const origApp = App;
 
 try {
   ReactDOM.createRoot(document.getElementById("root")).render(<App />);
@@ -1954,3 +2235,13 @@ try {
 </script>
 </body>
 </html>
+
+
+              <script>
+                              const hasBlock = blocks.some(b => b.date === ds && (!b.time || b.time === time));
+
+
+              </script>
+                        </body>
+                        </html>
+                    
