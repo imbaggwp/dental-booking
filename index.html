@@ -47,6 +47,9 @@
     flex: 1; display: flex; flex-direction: column;
     position: relative;
   }
+  .screen { animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes slideOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(-20px); } }
   .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 8px; }
   .header-left, .header-right { display: flex; align-items: center; gap: 6px; }
   .header-title { font-weight: 700; font-size: 16px; text-align: center; flex: 1; }
@@ -78,13 +81,9 @@
     margin-bottom: 16px; position: relative;
     background: linear-gradient(135deg, #3390ec 0%, #1e6fd9 100%);
   }
-  .hero.has-image {
-    background-size: cover;
-    background-position: center;
-  }
+  .hero.has-image { background-size: cover; background-position: center; }
   .hero.has-image::after {
-    content: '';
-    position: absolute; inset: 0;
+    content: ''; position: absolute; inset: 0;
     background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%);
   }
   [data-theme="dark"] .hero:not(.has-image) { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
@@ -113,6 +112,17 @@
   }
   .hero-bottom h1 { margin: 0; font-size: 22px; font-weight: 700; }
   .hero-bottom p { margin: 4px 0 0; font-size: 13px; opacity: 0.9; }
+  .branch-selector {
+    display: flex; gap: 8px; overflow-x: auto; padding: 4px 0;
+    margin-bottom: 12px; scrollbar-width: none;
+  }
+  .branch-selector::-webkit-scrollbar { display: none; }
+  .branch-chip {
+    padding: 8px 14px; border-radius: 20px; background: var(--secondary);
+    font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
+    border: 2px solid transparent; flex-shrink: 0;
+  }
+  .branch-chip.active { border-color: var(--btn); background: rgba(51,144,236,0.1); color: var(--btn); }
   .user-card {
     display: flex; align-items: center; gap: 12px;
     padding: 14px; background: var(--secondary); border-radius: 16px; margin-bottom: 16px;
@@ -138,8 +148,8 @@
   .menu-btn.primary { background: var(--btn); color: var(--btn-text); }
   .menu-btn.full { grid-column: span 2; }
   .section-title { font-size: 17px; font-weight: 700; margin: 8px 0 12px; }
-  .services-list { display: flex; flex-direction: column; gap: 10px; }
-  .service-card {
+  .services-list, .doctors-list, .faq-list { display: flex; flex-direction: column; gap: 10px; }
+  .service-card, .faq-item {
     padding: 14px; background: var(--secondary); border-radius: 14px;
     display: flex; align-items: center; gap: 12px; cursor: pointer;
     border: 2px solid transparent;
@@ -153,7 +163,6 @@
   .service-info { flex: 1; min-width: 0; }
   .service-name { font-weight: 600; font-size: 14px; }
   .service-meta { font-size: 12px; color: var(--hint); margin-top: 2px; }
-  .doctors-list { display: flex; flex-direction: column; gap: 10px; }
   .doctor-card {
     padding: 14px; background: var(--secondary); border-radius: 16px;
     display: flex; gap: 12px; cursor: pointer; border: 2px solid transparent;
@@ -301,7 +310,7 @@
     background: var(--secondary); margin-bottom: 12px;
   }
   .map-container iframe { width: 100%; height: 100%; border: none; }
-  .news-card { background: var(--secondary); border-radius: 16px; padding: 14px; margin-bottom: 10px; position: relative; }
+  .news-card { background: var(--secondary); border-radius: 16px; padding: 14px; margin-bottom: 10px; }
   .news-badge {
     display: inline-block; font-size: 10px; padding: 3px 8px;
     border-radius: 8px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase;
@@ -311,10 +320,6 @@
   .news-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
   .news-desc { font-size: 13px; color: var(--hint); line-height: 1.4; }
   .news-date { font-size: 11px; color: var(--hint); margin-top: 8px; }
-  .news-actions {
-    position: absolute; top: 10px; right: 10px;
-    display: flex; gap: 4px;
-  }
   .theme-toggle {
     display: flex; align-items: center; gap: 10px;
     padding: 12px 14px; background: var(--secondary);
@@ -438,10 +443,6 @@
   .nearest-slot-info { flex: 1; }
   .nearest-slot-date { font-weight: 700; font-size: 14px; }
   .nearest-slot-meta { font-size: 12px; color: var(--hint); margin-top: 2px; }
-  .nearest-slot-time {
-    background: var(--btn); color: var(--btn-text); padding: 6px 12px;
-    border-radius: 10px; font-weight: 700; font-size: 14px;
-  }
   .entity-card {
     background: var(--secondary); border-radius: 14px; padding: 14px;
     margin-bottom: 10px; display: flex; gap: 12px; align-items: center;
@@ -492,8 +493,6 @@
     font-size: 12px; color: var(--hint); z-index: 500;
     transition: all 0.3s; opacity: 0; pointer-events: none;
   }
-  .ptr-indicator.visible { opacity: 1; }
-  .ptr-indicator.refreshing { opacity: 1; }
   .smart-tip {
     position: fixed; bottom: calc(100px + env(safe-area-inset-bottom));
     left: 16px; right: 16px; max-width: 448px; margin: 0 auto;
@@ -543,6 +542,49 @@
   .sync-compact-info { flex: 1; }
   .sync-compact-title { font-weight: 600; font-size: 13px; }
   .sync-compact-sub { font-size: 11px; color: var(--hint); text-transform: uppercase; margin-top: 1px; }
+  /* FAQ */
+  .faq-item { flex-direction: column; align-items: flex-start; gap: 8px; cursor: pointer; }
+  .faq-q { font-weight: 600; font-size: 14px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
+  .faq-a { font-size: 13px; color: var(--hint); line-height: 1.5; width: 100%; }
+  .faq-toggle { font-size: 18px; color: var(--btn); font-weight: 700; }
+  /* Branch card */
+  .branch-card {
+    background: var(--secondary); border-radius: 14px; padding: 14px;
+    margin-bottom: 10px; display: flex; gap: 12px; align-items: center;
+  }
+  .branch-icon {
+    width: 48px; height: 48px; border-radius: 12px; background: var(--btn);
+    color: var(--btn-text); display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  /* Blacklist */
+  .blacklist-item {
+    background: var(--secondary); border-radius: 12px; padding: 12px;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 12px;
+    border-left: 4px solid var(--danger);
+  }
+  .blacklist-info { flex: 1; }
+  .blacklist-name { font-weight: 700; font-size: 14px; }
+  .blacklist-reason { font-size: 12px; color: var(--hint); margin-top: 2px; }
+  /* Quick book */
+  .quick-book-card {
+    background: linear-gradient(135deg, var(--btn), #1e6fd9);
+    color: white; border-radius: 16px; padding: 16px;
+    margin-bottom: 16px; cursor: pointer;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .quick-book-icon {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); display: flex;
+    align-items: center; justify-content: center; font-size: 24px;
+  }
+  .quick-book-info { flex: 1; }
+  .quick-book-title { font-weight: 700; font-size: 15px; }
+  .quick-book-sub { font-size: 12px; opacity: 0.9; margin-top: 2px; }
+  /* Admin action buttons row */
+  .admin-actions-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;
+  }
 </style>
 </head>
 <body>
@@ -555,7 +597,6 @@ const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : 
 const ADMIN_USER_ID = 8690178977;
 const BOT_USERNAME = "your_dental_bot";
 
-// SVG зуб
 const ToothIcon = ({ size = 36 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none">
     <path d="M12 2C9.5 2 7.5 3 6 4.5C4.5 6 4 8 4 10C4 12 5 14 6 16C7 18 7.5 20 8 21C8.5 22 9.5 22 10 21C10.5 20 11 18 12 18C13 18 13.5 20 14 21C14.5 22 15.5 22 16 21C16.5 20 17 18 18 16C19 14 20 12 20 10C20 8 19.5 6 18 4.5C16.5 3 14.5 2 12 2ZM12 6C13.1 6 14 6.9 14 8C14 9.1 13.1 10 12 10C10.9 10 10 9.1 10 8C10 6.9 10.9 6 12 6Z"/>
@@ -597,19 +638,20 @@ const Icons = {
   empty: <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
   chart: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
   ban: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>,
-  arrowRight: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>,
-  lightbulb: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2v1"/><path d="M12 7a5 5 0 0 1 5 5c0 2.5-2 4-2 6H9c0-2-2-3.5-2-6a5 5 0 0 1 5-5z"/></svg>,
   clockArrow: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/><path d="M12 2v2"/></svg>,
-  image: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>,
-  cloud: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>,
-  database: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>,
+  download: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
+  calendarPlus: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg>,
+  zap: <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+  helpCircle: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+  shield: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+  building: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>,
 };
 
 const T = {
   ru: {
     greeting:"Здравствуйте", welcome:"Добро пожаловать",
     bookAppt:"Записаться", myAppts:"Мои записи", profile:"Профиль",
-    info:"О клинике", news:"Акции", admin:"Админ-панель",
+    info:"О клинике", news:"Акции", admin:"Админ-панель", faq:"FAQ",
     selectService:"Выберите услугу", selectDoctor:"Выберите врача",
     selectDate:"Выберите дату", selectTime:"Выберите время",
     confirm:"Подтверждение", next:"Далее", cancel:"Отмена", save:"Сохранить",
@@ -698,9 +740,9 @@ const T = {
     familyName:"Имя", familyRole:"Роль (например, сын, дочь)",
     forMyself:"Для себя",
     selectPatient:"Выберите пациента",
-    tipNearest:" Нажмите «Показать ближайшие» чтобы найти свободные слоты у всех врачей",
-    tipReschedule:"💡 Вы можете перенести запись, не отменяя её",
-    tipFamily:"💡 Добавьте членов семьи чтобы записывать их тоже",
+    tipNearest:"Нажмите «Показать ближайшие» чтобы найти свободные слоты у всех врачей",
+    tipReschedule:"Вы можете перенести запись, не отменяя её",
+    tipFamily:"Добавьте членов семьи чтобы записывать их тоже",
     gotIt:"Понятно",
     editTimes:"Редактировать время",
     addTime:"Добавить время",
@@ -728,11 +770,36 @@ const T = {
     heroImageUrl:"URL картинки (оставьте пустым для градиента)",
     heroImagePreview:"Предпросмотр",
     removeImage:"Убрать картинку",
+    exportCsv:"Экспорт CSV",
+    icsAdd:"Добавить в календарь",
+    quickBook:"Быстрая запись",
+    quickBookSub:"Как в последний раз",
+    adminNotified:"Админ уведомлён",
+    faqTitle:"Частые вопросы",
+    noFaq:"Пока нет вопросов",
+    addFaq:"Добавить вопрос",
+    faqQuestion:"Вопрос",
+    faqAnswer:"Ответ",
+    branches:"Филиалы",
+    addBranch:"Добавить филиал",
+    branchName:"Название филиала",
+    branchAddress:"Адрес",
+    branchPhone:"Телефон",
+    branchCoords:"Координаты Яндекс Карт",
+    branchWorkHours:"Часы работы",
+    allBranches:"Все филиалы",
+    blacklist:"Чёрный список",
+    addToBlacklist:"Добавить в чёрный список",
+    blacklistReason:"Причина",
+    blacklistEmpty:"Чёрный список пуст",
+    blockedUser:"Вы заблокированы",
+    selectBranch:"Выберите филиал",
+    branch:"Филиал",
   },
   en: {
     greeting:"Hello", welcome:"Welcome",
     bookAppt:"Book Appointment", myAppts:"My Appointments", profile:"Profile",
-    info:"About Clinic", news:"Promotions", admin:"Admin Panel",
+    info:"About Clinic", news:"Promotions", admin:"Admin Panel", faq:"FAQ",
     selectService:"Select Service", selectDoctor:"Select Doctor",
     selectDate:"Select Date", selectTime:"Select Time",
     confirm:"Confirmation", next:"Next", cancel:"Cancel", save:"Save",
@@ -821,9 +888,9 @@ const T = {
     familyName:"Name", familyRole:"Role (e.g., son, daughter)",
     forMyself:"For myself",
     selectPatient:"Select patient",
-    tipNearest:"💡 Tap 'Find nearest' to see available slots across all doctors",
-    tipReschedule:"💡 You can reschedule without cancelling",
-    tipFamily:"💡 Add family members to book for them too",
+    tipNearest:"Tap 'Find nearest' to see available slots across all doctors",
+    tipReschedule:"You can reschedule without cancelling",
+    tipFamily:"Add family members to book for them too",
     gotIt:"Got it",
     editTimes:"Edit times",
     addTime:"Add time",
@@ -851,6 +918,31 @@ const T = {
     heroImageUrl:"Image URL (leave empty for gradient)",
     heroImagePreview:"Preview",
     removeImage:"Remove image",
+    exportCsv:"Export CSV",
+    icsAdd:"Add to calendar",
+    quickBook:"Quick book",
+    quickBookSub:"Like last time",
+    adminNotified:"Admin notified",
+    faqTitle:"FAQ",
+    noFaq:"No questions yet",
+    addFaq:"Add question",
+    faqQuestion:"Question",
+    faqAnswer:"Answer",
+    branches:"Branches",
+    addBranch:"Add branch",
+    branchName:"Branch name",
+    branchAddress:"Address",
+    branchPhone:"Phone",
+    branchCoords:"Yandex Maps coordinates",
+    branchWorkHours:"Work hours",
+    allBranches:"All branches",
+    blacklist:"Blacklist",
+    addToBlacklist:"Add to blacklist",
+    blacklistReason:"Reason",
+    blacklistEmpty:"Blacklist is empty",
+    blockedUser:"You are blocked",
+    selectBranch:"Select branch",
+    branch:"Branch",
   }
 };
 
@@ -887,6 +979,18 @@ const DEFAULT_CLINIC = {
   heroImage: ""
 };
 
+const DEFAULT_BRANCHES = [
+  { id:"b1", nameRu:"Тверская", nameEn:"Tverskaya", addressRu:"г. Москва, ул. Тверская, 15", addressEn:"15 Tverskaya St, Moscow", phone:"+7 (495) 123-45-67", coords:"55.761637,37.605024", workHoursRu:"Пн-Пт: 9:00 – 20:00", workHoursEn:"Mon-Fri: 9:00 – 20:00" },
+  { id:"b2", nameRu:"Арбат", nameEn:"Arbat", addressRu:"г. Москва, ул. Арбат, 10", addressEn:"10 Arbat St, Moscow", phone:"+7 (495) 123-45-68", coords:"55.752295,37.587392", workHoursRu:"Пн-Сб: 10:00 – 21:00", workHoursEn:"Mon-Sat: 10:00 – 21:00" },
+];
+
+const DEFAULT_FAQ = [
+  { id:1, q:{ru:"Как подготовиться к чистке?",en:"How to prepare for cleaning?"}, a:{ru:"Не ешьте за 2 часа до приёма. Почистите зубы утром.",en:"Don't eat 2 hours before. Brush your teeth in the morning."} },
+  { id:2, q:{ru:"Больно ли делать чистку?",en:"Is cleaning painful?"}, a:{ru:"Процедура безболезненна. При чувствительности используем анестезию.",en:"The procedure is painless. We use anesthesia if sensitive."} },
+  { id:3, q:{ru:"Какие методы оплаты?",en:"Payment methods?"}, a:{ru:"Карта, наличные, Apple Pay, Samsung Pay.",en:"Card, cash, Apple Pay, Samsung Pay."} },
+  { id:4, q:{ru:"Нужна ли запись к детскому стоматологу?",en:"Need appointment for pediatric dentist?"}, a:{ru:"Да, запись обязательна. Приём по предварительной записи.",en:"Yes, appointment required."} },
+];
+
 const DEFAULT_NEWS = [
   { id:1, type:"promo", title:{ru:"Скидка 20% на чистку",en:"20% off cleaning"}, desc:{ru:"Профессиональная гигиена со скидкой до конца месяца",en:"Professional hygiene with discount"}, validUntil:"2026-08-31" },
   { id:2, type:"news", title:{ru:"Новый врач-ортодонт",en:"New orthodontist"}, desc:{ru:"Д-р Елена Смирнова — эксперт по брекет-системам",en:"Dr. Elena Smirnova — braces expert"}, validUntil:null },
@@ -894,12 +998,13 @@ const DEFAULT_NEWS = [
 ];
 
 const LS = {
-  appts:"dental_appts_v5", profile:"dental_profile_v5", theme:"dental_theme_v5",
-  lang:"dental_lang_v5", blocks:"dental_blocks_v5",
-  doctors:"dental_doctors_v2", services:"dental_services_v2",
-  times:"dental_times_v1", family:"dental_family_v1",
-  onboarding:"dental_onboarding_v1", tips:"dental_tips_v1",
-  clinic:"dental_clinic_v1", news:"dental_news_v1"
+  appts:"dental_appts_v6", profile:"dental_profile_v6", theme:"dental_theme_v6",
+  lang:"dental_lang_v6", blocks:"dental_blocks_v6",
+  doctors:"dental_doctors_v3", services:"dental_services_v3",
+  times:"dental_times_v2", family:"dental_family_v2",
+  onboarding:"dental_onboarding_v2", tips:"dental_tips_v2",
+  clinic:"dental_clinic_v2", news:"dental_news_v2",
+  branches:"dental_branches_v1", faq:"dental_faq_v1", blacklist:"dental_blacklist_v1"
 };
 const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
@@ -945,7 +1050,11 @@ function App() {
   const [familyMembers, setFamilyMembers] = useState(() => load(LS.family, []));
   const [clinicInfo, setClinicInfo] = useState(() => load(LS.clinic, DEFAULT_CLINIC));
   const [news, setNews] = useState(() => load(LS.news, DEFAULT_NEWS));
-  const [booking, setBooking] = useState({ service:null, doctor:null, date:null, time:null, patientId:null });
+  const [branches, setBranches] = useState(() => load(LS.branches, DEFAULT_BRANCHES));
+  const [faq, setFaq] = useState(() => load(LS.faq, DEFAULT_FAQ));
+  const [blacklist, setBlacklist] = useState(() => load(LS.blacklist, []));
+  const [currentBranchId, setCurrentBranchId] = useState(null);
+  const [booking, setBooking] = useState({ service:null, doctor:null, date:null, time:null, patientId:null, branchId:null });
   const [calMonth, setCalMonth] = useState(new Date().getMonth());
   const [calYear, setCalYear] = useState(new Date().getFullYear());
   const [adminTab, setAdminTab] = useState("stats");
@@ -971,6 +1080,10 @@ function App() {
   const [newFamilyRole, setNewFamilyRole] = useState("");
   const [cloudStatus, setCloudStatus] = useState(null);
   const [newsEditor, setNewsEditor] = useState(null);
+  const [faqEditor, setFaqEditor] = useState(null);
+  const [branchEditor, setBranchEditor] = useState(null);
+  const [blacklistEditor, setBlacklistEditor] = useState(null);
+  const [openFaq, setOpenFaq] = useState(null);
   const touchStartRef = useRef({ x: 0, y: 0, time: 0 });
   const isPullingRef = useRef(false);
 
@@ -982,7 +1095,18 @@ function App() {
   const steps = ["services","doctors","date","time","confirm"];
   const currentStep = steps.indexOf(screen);
 
-  // Swipe back gesture
+  // Check blacklist on load
+  useEffect(() => {
+    if (user && blacklist.some(b => b.userId === user.id)) {
+      setNotification({
+        id: "blocked", icon: "ban",
+        title: t.blockedUser,
+        text: lang === "ru" ? "Обратитесь в поддержку" : "Contact support"
+      });
+    }
+  }, [user, blacklist, lang]);
+
+  // Swipe back
   useEffect(() => {
     let touchStartX = 0;
     let touchStartY = 0;
@@ -1021,44 +1145,26 @@ function App() {
     };
   }, [screen]);
 
-  // Pull to refresh - FIXED
+  // Pull to refresh
   useEffect(() => {
     const handleTouchStart = (e) => {
-      // Only trigger if at top of page
       if (window.scrollY <= 0) {
-        touchStartRef.current = { 
-          x: e.touches[0].clientX, 
-          y: e.touches[0].clientY, 
-          time: Date.now() 
-        };
+        touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, time: Date.now() };
         isPullingRef.current = false;
       }
     };
-    
     const handleTouchMove = (e) => {
       const startY = touchStartRef.current.y;
       if (!startY) return;
-      
       const currentY = e.touches[0].clientY;
       const deltaX = Math.abs(e.touches[0].clientX - touchStartRef.current.x);
       const deltaY = currentY - startY;
-      
-      // Only pull if:
-      // 1. At top of page
-      // 2. Moving down (positive deltaY)
-      // 3. More vertical than horizontal
-      // 4. Distance > 20px (threshold to avoid accidental triggers)
       if (window.scrollY <= 0 && deltaY > 20 && deltaY > deltaX * 1.5) {
         isPullingRef.current = true;
-        e.preventDefault(); // Prevent browser pull-to-refresh
-        setPullState({ 
-          pulling: true, 
-          refreshing: false, 
-          distance: Math.min(deltaY, 100) 
-        });
+        e.preventDefault();
+        setPullState({ pulling: true, refreshing: false, distance: Math.min(deltaY, 100) });
       }
     };
-    
     const handleTouchEnd = () => {
       if (isPullingRef.current && pullState.distance > 80) {
         setPullState({ pulling: false, refreshing: true, distance: 0 });
@@ -1089,19 +1195,18 @@ function App() {
     setFamilyMembers(load(LS.family, []));
     setClinicInfo(load(LS.clinic, DEFAULT_CLINIC));
     setNews(load(LS.news, DEFAULT_NEWS));
-    setTimeout(() => {
-      setPullState({ pulling: false, refreshing: false, distance: 0 });
-    }, 800);
+    setBranches(load(LS.branches, DEFAULT_BRANCHES));
+    setFaq(load(LS.faq, DEFAULT_FAQ));
+    setBlacklist(load(LS.blacklist, []));
+    setTimeout(() => setPullState({ pulling: false, refreshing: false, distance: 0 }), 800);
   };
 
-  // Theme
   useEffect(() => {
     if (themeMode === "auto") document.documentElement.removeAttribute("data-theme");
     else document.documentElement.setAttribute("data-theme", themeMode);
     localStorage.setItem(LS.theme, themeMode);
   }, [themeMode]);
 
-  // Init Telegram
   useEffect(() => {
     if (tg) {
       try {
@@ -1116,7 +1221,7 @@ function App() {
     }
   }, []);
 
-  // Cloud sync on load
+  // Cloud sync
   useEffect(() => {
     if (!tg || !tg.CloudStorage) return;
     cloudStorage.get("appointments").then((data) => {
@@ -1127,18 +1232,14 @@ function App() {
     });
   }, []);
 
-  // Cloud save on appointments change
   useEffect(() => {
     if (!tg || !tg.CloudStorage) return;
     cloudStorage.set("appointments", appointments).then((ok) => {
-      if (ok) {
-        setCloudStatus("saved");
-        setTimeout(() => setCloudStatus(null), 2000);
-      }
+      if (ok) { setCloudStatus("saved"); setTimeout(() => setCloudStatus(null), 2000); }
     });
   }, [appointments]);
 
-  // Reminders check
+  // Reminders
   useEffect(() => {
     const checkReminders = () => {
       const now = new Date();
@@ -1166,19 +1267,15 @@ function App() {
     return () => clearInterval(interval);
   }, [appointments, lang]);
 
-  // MainButton with progress
+  // MainButton
   useEffect(() => {
     if (!tg || !tg.MainButton) return;
     const hide = () => { try { tg.MainButton.hide(); } catch {} };
     const show = (text, onClick) => {
-      try {
-        tg.MainButton.setText(text);
-        tg.MainButton.show();
-        tg.MainButton.onClick(onClick);
-      } catch {}
+      try { tg.MainButton.setText(text); tg.MainButton.show(); tg.MainButton.onClick(onClick); } catch {}
     };
 
-    if (["home","success","info","news","appointments","admin","profile","settings"].includes(screen) && !editProfile) {
+    if (["home","success","info","news","appointments","admin","profile","settings","faq"].includes(screen) && !editProfile) {
       hide();
       return () => hide();
     }
@@ -1199,13 +1296,16 @@ function App() {
         patientId: booking.patientId || null,
         service: booking.service, doctorId: booking.doctor,
         date: booking.date, time: booking.time,
+        branchId: booking.branchId || currentBranchId,
         status: "confirmed", reminder: true, reminderShown: false,
         createdAt: new Date().toISOString(),
       };
       const updated = appointments.concat([newAppt]);
       setAppointments(updated);
       save(LS.appts, updated);
-      setBooking({ service:null, doctor:null, date:null, time:null, patientId:null });
+      // Notify admin
+      notifyAdmin(newAppt);
+      setBooking({ service:null, doctor:null, date:null, time:null, patientId:null, branchId:null });
       setScreen("success");
     });
     else if (screen === "profile" && editProfile) show(t.save, () => {
@@ -1214,7 +1314,19 @@ function App() {
     });
 
     return () => hide();
-  }, [screen, booking, appointments, user, lang, profile, editProfile, t, currentStep]);
+  }, [screen, booking, appointments, user, lang, profile, editProfile, t, currentStep, currentBranchId]);
+
+  const notifyAdmin = (appt) => {
+    if (!tg) return;
+    try {
+      if (tg.sendData) {
+        tg.sendData(JSON.stringify({ type: "new_appointment", appt }));
+      }
+    } catch {}
+    // Visual feedback
+    setCloudStatus("admin_notified");
+    setTimeout(() => setCloudStatus(null), 2000);
+  };
 
   // Smart tips
   useEffect(() => {
@@ -1222,10 +1334,8 @@ function App() {
     if (screen === "doctors" && booking.service && !tips.nearest) {
       setSmartTip({ id: "nearest", text: t.tipNearest });
     } else if (screen === "appointments" && !tips.reschedule) {
-      const hasUpcoming = appointments.some(a => a.status === "confirmed" && a.date >= todayStr && (!isAdmin || a.userId === user?.id));
-      if (hasUpcoming) {
-        setSmartTip({ id: "reschedule", text: t.tipReschedule });
-      }
+      const hasUpcoming = appointments.some(a => a.status === "confirmed" && a.date >= todayStr);
+      if (hasUpcoming) setSmartTip({ id: "reschedule", text: t.tipReschedule });
     } else if (screen === "profile" && familyMembers.length === 0 && !tips.family) {
       setSmartTip({ id: "family", text: t.tipFamily });
     } else {
@@ -1254,6 +1364,11 @@ function App() {
     const d = doctors.find(x => x.id === id);
     return d ? (lang === "ru" ? d.nameRu : d.nameEn) : "";
   };
+  const branchName = (id) => {
+    if (!id) return "";
+    const b = branches.find(x => x.id === id);
+    return b ? (lang === "ru" ? b.nameRu : b.nameEn) : "";
+  };
 
   const goBack = () => {
     const back = { doctors:"services", date:"doctors", time:"date", confirm:"time" };
@@ -1261,25 +1376,45 @@ function App() {
   };
 
   const bookAgain = (appt) => {
-    setBooking({ service: appt.service, doctor: appt.doctorId, date: null, time: null, patientId: appt.patientId || null });
+    setBooking({ service: appt.service, doctor: appt.doctorId, date: null, time: null, patientId: appt.patientId || null, branchId: appt.branchId || null });
     setScreen("date");
   };
 
   const rescheduleAppt = (appt) => {
     setBooking({ 
-      service: appt.service, 
-      doctor: appt.doctorId, 
-      date: null, 
-      time: null, 
-      patientId: appt.patientId || null,
+      service: appt.service, doctor: appt.doctorId, date: null, time: null,
+      patientId: appt.patientId || null, branchId: appt.branchId || null,
       rescheduleFrom: appt.id
     });
     setScreen("date");
   };
 
-  const openCancelModal = (id) => {
-    setCancelModal({ id, reason: null, customReason: "" });
+  // Quick book - 1 click
+  const quickBook = () => {
+    const lastAppt = appointments
+      .filter(a => a.userId === user?.id && a.status === "confirmed")
+      .sort((a,b) => b.createdAt.localeCompare(a.createdAt))[0];
+    if (lastAppt) {
+      setBooking({
+        service: lastAppt.service,
+        doctor: lastAppt.doctorId,
+        date: null,
+        time: null,
+        patientId: lastAppt.patientId || null,
+        branchId: lastAppt.branchId || currentBranchId
+      });
+      setScreen("date");
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+    }
   };
+
+  const lastAppt = useMemo(() => {
+    return appointments
+      .filter(a => a.userId === user?.id && a.status === "confirmed")
+      .sort((a,b) => b.createdAt.localeCompare(a.createdAt))[0];
+  }, [appointments, user]);
+
+  const openCancelModal = (id) => setCancelModal({ id, reason: null, customReason: "" });
   const submitCancel = () => {
     if (!cancelModal) return;
     let reasonText = cancelModal.reason;
@@ -1296,13 +1431,63 @@ function App() {
     if (screen === "success" && booking.rescheduleFrom) {
       const oldId = booking.rescheduleFrom;
       const updated = appointments.map(a => a.id === oldId ? {
-        ...a, status: "cancelled", cancelReason: lang === "ru" ? "Перенос" : "Rescheduled", rescheduledTo: appointments[appointments.length-1]?.id
+        ...a, status: "cancelled", cancelReason: lang === "ru" ? "Перенос" : "Rescheduled"
       } : a);
       setAppointments(updated);
       save(LS.appts, updated);
       setBooking({ ...booking, rescheduleFrom: null });
     }
   }, [screen]);
+
+  // Export CSV
+  const exportCsv = () => {
+    const headers = ["ID","Client","Service","Doctor","Branch","Date","Time","Status","Price","Created"];
+    const rows = appointments.map(a => [
+      a.id,
+      a.userName,
+      svcName(a.service),
+      doctorName(a.doctorId),
+      branchName(a.branchId),
+      a.date,
+      a.time,
+      a.status,
+      services.find(s => s.id === a.service)?.price || 0,
+      a.createdAt
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
+    const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `appointments_${todayStr}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+  };
+
+  // ICS download
+  const downloadIcs = (appt) => {
+    const service = services.find(s => s.id === appt.service);
+    const duration = service?.duration || 60;
+    const startDate = appt.date.replace(/-/g, "");
+    const startTime = appt.time.replace(/:/g, "") + "00";
+    const [h, m] = appt.time.split(":").map(Number);
+    const endTotalMin = h * 60 + m + duration;
+    const endH = Math.floor(endTotalMin / 60);
+    const endM = endTotalMin % 60;
+    const endTime = `${String(endH).padStart(2,"0")}${String(endM).padStart(2,"0")}00`;
+    
+    const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//DentalBooking//EN\nBEGIN:VEVENT\nDTSTART:${startDate}T${startTime}\nDTEND:${startDate}T${endTime}\nSUMMARY:${svcName(appt.service)} - ${doctorName(appt.doctorId)}\nLOCATION:${branchName(appt.branchId) || clinicInfo.addressRu}\nDESCRIPTION:Запись в стоматологию\nEND:VEVENT\nEND:VCALENDAR`;
+    
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `appointment_${appt.id}.ics`;
+    link.click();
+    URL.revokeObjectURL(url);
+    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+  };
 
   const nearestSlots = useMemo(() => {
     if (!booking.service) return [];
@@ -1348,9 +1533,12 @@ function App() {
   }, [appointments, booking.date, booking.doctor]);
 
   const filteredDoctors = useMemo(() => {
-    if (!serviceFilter) return doctors;
-    return doctors.filter(d => d.services.indexOf(serviceFilter) !== -1);
-  }, [serviceFilter, doctors]);
+    let list = serviceFilter ? doctors.filter(d => d.services.indexOf(serviceFilter) !== -1) : doctors;
+    if (currentBranchId) {
+      // All doctors available at all branches for simplicity
+    }
+    return list;
+  }, [serviceFilter, doctors, currentBranchId]);
 
   const myAppts = useMemo(() => {
     if (isAdmin) return appointments;
@@ -1434,7 +1622,7 @@ function App() {
     const slides = [
       { icon: "", title: t.onboarding1Title, desc: t.onboarding1Desc },
       { icon: "🔔", title: t.onboarding2Title, desc: t.onboarding2Desc },
-      { icon: "👨‍‍👧", title: t.onboarding3Title, desc: t.onboarding3Desc },
+      { icon: "👨‍👩‍👧", title: t.onboarding3Title, desc: t.onboarding3Desc },
       { icon: "✨", title: t.onboarding4Title, desc: t.onboarding4Desc },
     ];
     const slide = slides[onboardingStep];
@@ -1462,17 +1650,12 @@ function App() {
     );
   }
 
-  const allPatients = [
-    { id: null, name: t.forMyself, initials: user?.firstName?.[0] || "?" },
-    ...familyMembers.map(m => ({ id: m.id, name: m.name, initials: m.name[0] || "?" }))
-  ];
-
   // HOME
   if (screen === "home") return (
-    <div className="app">
+    <div className="app screen">
       {notification && (
         <div className="notification-banner">
-          <div className="notif-icon">{Icons[notification.icon] || Icons.bell}</div>
+          <div className="notif-icon">{notification.icon === "ban" ? Icons.ban : Icons.bell}</div>
           <div className="notif-content">
             <div className="notif-title">{notification.title}</div>
             <div className="notif-text">{notification.text}</div>
@@ -1485,6 +1668,11 @@ function App() {
           ✓ {t.cloudSaved}
         </div>
       )}
+      {cloudStatus === "admin_notified" && (
+        <div style={{position:"fixed", top:"60px", right:"16px", background:"var(--btn)", color:"white", padding:"6px 12px", borderRadius:"20px", fontSize:"11px", fontWeight:600, zIndex:999}}>
+          🔔 {t.adminNotified}
+        </div>
+      )}
       <div className="ptr-indicator" style={{opacity: pullState.pulling ? 1 : 0, transform: `translateY(${pullState.distance}px)`}}>
         {pullState.refreshing ? "⟳ " + t.refreshing : "↓ " + t.pullToRefresh}
       </div>
@@ -1493,9 +1681,8 @@ function App() {
           <div className="hero-pattern"></div>
           <div className="hero-content">
             <div className="hero-top">
-              <div className="hero-logo">
-                <ToothIcon size={36} />
-              </div>
+              <div className="hero-logo"><ToothIcon size={36} /></div>
+              <div className="hero-badge">{t.synced} ✓</div>
             </div>
             <div className="hero-bottom">
               <h1>{lang === "ru" ? clinicInfo.nameRu : clinicInfo.nameEn}</h1>
@@ -1515,8 +1702,35 @@ function App() {
             <button className="icon-btn" onClick={() => setScreen("settings")}>{Icons.settings}</button>
           </div>
         )}
+        {/* Branch selector */}
+        {branches.length > 0 && (
+          <>
+            <div style={{fontSize:12, color:"var(--hint)", marginBottom:6, fontWeight:600}}>{t.selectBranch}</div>
+            <div className="branch-selector">
+              <div className={"branch-chip " + (!currentBranchId?"active":"")} onClick={() => setCurrentBranchId(null)}>
+                {t.allBranches}
+              </div>
+              {branches.map(b => (
+                <div key={b.id} className={"branch-chip " + (currentBranchId===b.id?"active":"")} onClick={() => setCurrentBranchId(b.id)}>
+                  {lang === "ru" ? b.nameRu : b.nameEn}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+        {/* Quick book */}
+        {lastAppt && (
+          <div className="quick-book-card" onClick={quickBook}>
+            <div className="quick-book-icon">⚡</div>
+            <div className="quick-book-info">
+              <div className="quick-book-title">{t.quickBook}</div>
+              <div className="quick-book-sub">{svcName(lastAppt.service)} · {doctorName(lastAppt.doctorId)}</div>
+            </div>
+            <div style={{fontSize:20}}>→</div>
+          </div>
+        )}
         <div className="menu-grid">
-          <button className="menu-btn primary" onClick={() => { setBooking({ service:null, doctor:null, date:null, time:null, patientId:null }); setScreen("services"); }}>
+          <button className="menu-btn primary" onClick={() => { setBooking({ service:null, doctor:null, date:null, time:null, patientId:null, branchId:currentBranchId }); setScreen("services"); }}>
             {Icons.calendar}<span>{t.bookAppt}</span>
           </button>
           <button className="menu-btn" onClick={() => setScreen("appointments")}>
@@ -1531,8 +1745,8 @@ function App() {
           <button className="menu-btn" onClick={() => setScreen("news")}>
             {Icons.gift}<span>{t.news}</span>
           </button>
-          <button className="menu-btn primary" onClick={() => { if (tg && tg.openTelegramLink) tg.openTelegramLink("https://t.me/" + BOT_USERNAME); else window.open("https://t.me/" + BOT_USERNAME, "_blank"); }}>
-            {Icons.messageCircle}<span>{t.contactClinic}</span>
+          <button className="menu-btn" onClick={() => setScreen("faq")}>
+            {Icons.helpCircle}<span>{t.faq}</span>
           </button>
           {isAdmin && (
             <button className="menu-btn full" onClick={() => setScreen("admin")}>
@@ -1546,7 +1760,7 @@ function App() {
 
   // SERVICES
   if (screen === "services") return (
-    <div className="app">
+    <div className="app screen">
       {renderHeader(t.selectService, true)}
       {renderStepIndicator()}
       <div className="services-list fade-in">
@@ -1566,7 +1780,7 @@ function App() {
 
   // DOCTORS
   if (screen === "doctors") return (
-    <div className="app">
+    <div className="app screen">
       {renderHeader(t.selectDoctor, true)}
       {renderStepIndicator()}
       <div className="fade-in">
@@ -1603,7 +1817,32 @@ function App() {
           </div>
         )}
       </div>
-      {renderNearestModal()}
+      {showNearest && (
+        <div className="modal-overlay" onClick={() => setShowNearest(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">{t.nearestSlots}</div>
+            <div className="modal-sub">{t.nearestHint}</div>
+            {nearestSlots.length === 0 ? (
+              <div className="empty-state" style={{padding:20}}><div>{t.noSlotsFound}</div></div>
+            ) : nearestSlots.map((slot, i) => (
+              <div key={i} className="nearest-slot">
+                <div className="nearest-slot-info">
+                  <div className="nearest-slot-date">{formatDate(slot.date)}</div>
+                  <div className="nearest-slot-meta">👨‍⚕️ {doctorName(slot.doctorId)} · {svcName(booking.service)}</div>
+                </div>
+                <button className="btn-small primary" onClick={() => {
+                  setBooking({ ...booking, doctor: slot.doctorId, date: slot.date, time: slot.time });
+                  setShowNearest(false);
+                  setScreen("confirm");
+                }}>{t.selectThis}</button>
+              </div>
+            ))}
+            <div style={{marginTop:16}}>
+              <button className="btn-small ghost" style={{width:"100%", padding:12}} onClick={() => setShowNearest(false)}>{t.cancel}</button>
+            </div>
+          </div>
+        </div>
+      )}
       {smartTip && smartTip.id === "nearest" && (
         <div className="smart-tip">
           <div className="smart-tip-icon">💡</div>
@@ -1616,7 +1855,7 @@ function App() {
 
   // DATE
   if (screen === "date") return (
-    <div className="app">
+    <div className="app screen">
       {renderHeader(t.selectDate, true)}
       {renderStepIndicator()}
       <div className="calendar fade-in">
@@ -1652,7 +1891,7 @@ function App() {
 
   // TIME
   if (screen === "time") return (
-    <div className="app">
+    <div className="app screen">
       {renderHeader(t.selectTime, true)}
       {renderStepIndicator()}
       <div className="fade-in">
@@ -1682,13 +1921,14 @@ function App() {
       ? (() => { const m = familyMembers.find(x => x.id === booking.patientId); return m ? m.name : "Guest"; })()
       : (user ? user.firstName + " " + user.lastName : "Guest");
     return (
-      <div className="app">
+      <div className="app screen">
         {renderHeader(t.confirm, true)}
         {renderStepIndicator()}
         <div className="confirm-card fade-in">
           <div className="confirm-row"><div className="confirm-label">{t.patient}</div><div className="confirm-value">{patientName}</div></div>
           <div className="confirm-row"><div className="confirm-label">{t.service}</div><div className="confirm-value">{svcName(booking.service)}</div></div>
           <div className="confirm-row"><div className="confirm-label">{t.doctor}</div><div className="confirm-value">{doctorName(booking.doctor)}</div></div>
+          {booking.branchId && <div className="confirm-row"><div className="confirm-label">{t.branch}</div><div className="confirm-value">{branchName(booking.branchId)}</div></div>}
           <div className="confirm-row"><div className="confirm-label">{t.date}</div><div className="confirm-value">{formatDate(booking.date)}</div></div>
           <div className="confirm-row"><div className="confirm-label">{t.time}</div><div className="confirm-value">{booking.time}</div></div>
           <div className="confirm-row"><div className="confirm-label">{t.price}</div><div className="confirm-value">{service ? service.price : 0} {t.rub}</div></div>
@@ -1702,14 +1942,14 @@ function App() {
 
   // SUCCESS
   if (screen === "success") return (
-    <div className="app">
+    <div className="app screen">
       <div className="fade-in" style={{flex:1, display:"flex", flexDirection:"column", justifyContent:"center"}}>
         <div className="success-icon">{Icons.check}</div>
         <div className="success-text">{t.successTitle}</div>
         <div className="success-sub">{t.successSub}</div>
         <div style={{display:"flex", flexDirection:"column", gap:10}}>
           <button className="menu-btn primary" onClick={() => setScreen("home")}><span>{t.goToHome}</span></button>
-          <button className="menu-btn" onClick={() => { setBooking({ service:null, doctor:null, date:null, time:null, patientId:null }); setScreen("services"); }}>
+          <button className="menu-btn" onClick={() => { setBooking({ service:null, doctor:null, date:null, time:null, patientId:null, branchId:null }); setScreen("services"); }}>
             <span>{t.bookAnother}</span>
           </button>
         </div>
@@ -1719,7 +1959,7 @@ function App() {
 
   // APPOINTMENTS
   if (screen === "appointments") return (
-    <div className="app">
+    <div className="app screen">
       {renderHeader(t.myAppts, true)}
       <div className="tabs">
         <button className={"tab " + (apptTab==="upcoming"?"active":"")} onClick={() => setApptTab("upcoming")}>{t.upcoming}</button>
@@ -1743,6 +1983,7 @@ function App() {
                 <span>📅 {formatDate(a.date)}</span><span>🕐 {a.time}</span>
               </div>
               {a.doctorId && <div className="appt-doctor">👨‍⚕️ {doctorName(a.doctorId)}</div>}
+              {a.branchId && <div className="appt-doctor">📍 {branchName(a.branchId)}</div>}
               {a.status === "cancelled" && a.cancelReason && (
                 <div className="appt-cancel-reason">💭 {t.reason}: {a.cancelReason}</div>
               )}
@@ -1753,6 +1994,9 @@ function App() {
                     setAppointments(updated); save(LS.appts, updated);
                   }}>
                     {Icons.bell} {a.reminder ? t.reminderOn : t.remind}
+                  </button>
+                  <button className="btn-small primary" onClick={() => downloadIcs(a)}>
+                    {Icons.calendarPlus} {t.icsAdd}
                   </button>
                   {!isAdmin && <button className="btn-small danger" onClick={() => openCancelModal(a.id)}>{t.cancelAppt}</button>}
                   {!isAdmin && <button className="btn-small warning" onClick={() => rescheduleAppt(a)}>
@@ -1771,10 +2015,42 @@ function App() {
           );
         })}
       </div>
-      {renderCancelModal()}
+      {cancelModal && (
+        <div className="modal-overlay" onClick={() => setCancelModal(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">{t.cancelReasonTitle}</div>
+            <div className="modal-sub">{t.cancelReasonSub}</div>
+            <div className="reason-list">
+              {[
+                { id: "changed", label: t.cancelReasonChanged },
+                { id: "sick", label: t.cancelReasonSick },
+                { id: "found", label: t.cancelReasonFound },
+                { id: "expensive", label: t.cancelReasonExpensive },
+                { id: "other", label: t.cancelReasonOther },
+              ].map(r => (
+                <div key={r.id} className={"reason-item " + (cancelModal.reason === r.id ? "selected" : "")}
+                  onClick={() => setCancelModal({ ...cancelModal, reason: r.id })}>
+                  <div className="reason-radio"></div>
+                  <div className="reason-text">{r.label}</div>
+                </div>
+              ))}
+            </div>
+            {cancelModal.reason === "other" && (
+              <input className="form-input" placeholder={t.cancelReasonCustom}
+                value={cancelModal.customReason}
+                onChange={e => setCancelModal({ ...cancelModal, customReason: e.target.value })}
+                style={{marginBottom:16}} />
+            )}
+            <div className="modal-actions">
+              <button className="btn-small ghost" onClick={() => setCancelModal(null)}>{t.cancel}</button>
+              <button className="btn-small danger" onClick={submitCancel} disabled={!cancelModal.reason}>{t.confirmCancelBtn}</button>
+            </div>
+          </div>
+        </div>
+      )}
       {smartTip && smartTip.id === "reschedule" && (
         <div className="smart-tip">
-          <div className="smart-tip-icon"></div>
+          <div className="smart-tip-icon">💡</div>
           <div className="smart-tip-text">{smartTip.text}</div>
           <button className="smart-tip-close" onClick={() => dismissTip("reschedule")}>×</button>
         </div>
@@ -1784,7 +2060,7 @@ function App() {
 
   // PROFILE
   if (screen === "profile") return (
-    <div className="app">
+    <div className="app screen">
       {renderHeader(t.profile, true, !editProfile ? <button className="icon-btn" onClick={() => setEditProfile(true)}>{Icons.edit}</button> : null)}
       <div className="fade-in">
         <div className="user-card" style={{marginBottom:16}}>
@@ -1823,8 +2099,6 @@ function App() {
             {profile.notes && <div className="info-row"><div className="info-icon">{Icons.edit}</div><div className="info-content"><div className="info-label">{t.notes}</div><div className="info-value">{profile.notes}</div></div></div>}
           </div>
         )}
-        
-        {/* Sync status moved to profile */}
         <div className="section-title" style={{marginTop:16}}>{t.syncStatus}</div>
         <div className="sync-compact">
           <div className="sync-compact-icon">{Icons.checkSmall}</div>
@@ -1840,7 +2114,6 @@ function App() {
             <div className="sync-compact-sub">LocalStorage</div>
           </div>
         </div>
-
         <div className="section-title" style={{marginTop:16}}>{t.familyMembers}</div>
         <button className="btn-small primary" style={{width:"100%", padding:12, marginBottom:12}} onClick={() => setAddFamilyModal(true)}>
           {Icons.plus} {t.addFamilyMember}
@@ -1919,11 +2192,11 @@ function App() {
 
   // INFO
   if (screen === "info") return (
-    <div className="app">
+    <div className="app screen">
       {renderHeader(t.info, true)}
       <div className="fade-in">
         <div className="map-container">
-          <iframe title="map" src={"https://maps.google.com/maps?q=" + clinicInfo.mapCoords + "&z=16&output=embed"} loading="lazy" />
+          <iframe title="map" src={`https://yandex.ru/map-widget/v1/?ll=${clinicInfo.mapCoords}&z=16`} loading="lazy" />
         </div>
         <div className="info-block">
           <div className="info-row"><div className="info-icon">{Icons.mapPin}</div><div className="info-content"><div className="info-label">{t.address}</div><div className="info-value">{lang === "ru" ? clinicInfo.addressRu : clinicInfo.addressEn}</div></div></div>
@@ -1931,6 +2204,22 @@ function App() {
           <div className="info-row"><div className="info-icon">{Icons.phone}</div><div className="info-content"><div className="info-label">{t.phone}</div><div className="info-value">{clinicInfo.phone}</div></div></div>
           <div className="info-row"><div className="info-icon">{Icons.mail}</div><div className="info-content"><div className="info-label">Email</div><div className="info-value">{clinicInfo.email}</div></div></div>
         </div>
+        {/* Branches list */}
+        {branches.length > 0 && (
+          <>
+            <div className="section-title">{t.branches}</div>
+            {branches.map(b => (
+              <div key={b.id} className="branch-card">
+                <div className="branch-icon">{Icons.building}</div>
+                <div className="entity-info">
+                  <div className="entity-name">{lang === "ru" ? b.nameRu : b.nameEn}</div>
+                  <div className="entity-meta">📍 {lang === "ru" ? b.addressRu : b.addressEn}</div>
+                  <div className="entity-meta">📞 {b.phone}</div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
         <div className="section-title">{t.social}</div>
         <div className="social-row">
           <button className="social-btn" onClick={() => window.open(clinicInfo.social.telegram,"_blank")}>{Icons.telegram}</button>
@@ -1951,7 +2240,7 @@ function App() {
 
   // NEWS
   if (screen === "news") return (
-    <div className="app">
+    <div className="app screen">
       {renderHeader(t.newsTitle, true)}
       <div className="fade-in">
         {news.length === 0 ? (
@@ -1964,7 +2253,7 @@ function App() {
             {n.validUntil && <div className="news-date">{t.validUntil} {formatDate(n.validUntil)}</div>}
             {n.type === "promo" && (
               <div style={{marginTop:10}}>
-                <button className="btn-small primary" onClick={() => { setBooking({ service:null, doctor:null, date:null, time:null, patientId:null }); setScreen("services"); }}>{t.bookNow} →</button>
+                <button className="btn-small primary" onClick={() => { setBooking({ service:null, doctor:null, date:null, time:null, patientId:null, branchId:null }); setScreen("services"); }}>{t.bookNow} →</button>
               </div>
             )}
           </div>
@@ -1973,9 +2262,33 @@ function App() {
     </div>
   );
 
+  // FAQ
+  if (screen === "faq") return (
+    <div className="app screen">
+      {renderHeader(t.faqTitle, true)}
+      <div className="fade-in">
+        {faq.length === 0 ? (
+          <div className="empty-state"><div className="empty-icon">{Icons.empty}</div><div>{t.noFaq}</div></div>
+        ) : (
+          <div className="faq-list">
+            {faq.map((item, i) => (
+              <div key={item.id} className="faq-item" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+                <div className="faq-q">
+                  <span>{item.q[lang]}</span>
+                  <span className="faq-toggle">{openFaq === i ? "−" : "+"}</span>
+                </div>
+                {openFaq === i && <div className="faq-a">{item.a[lang]}</div>}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   // SETTINGS
   if (screen === "settings") return (
-    <div className="app">
+    <div className="app screen">
       {renderHeader(t.settings, true)}
       <div className="fade-in">
         <div className="section-title">{t.settings}</div>
@@ -2000,7 +2313,7 @@ function App() {
 
   // ADMIN
   if (screen === "admin") return (
-    <div className="app">
+    <div className="app screen">
       {renderHeader(t.admin, true)}
       <div className="tabs">
         <button className={"tab " + (adminTab==="stats"?"active":"")} onClick={() => setAdminTab("stats")}>{t.stats}</button>
@@ -2012,6 +2325,9 @@ function App() {
         <button className={"tab " + (adminTab==="times"?"active":"")} onClick={() => setAdminTab("times")}>{t.editTimes}</button>
         <button className={"tab " + (adminTab==="clinic"?"active":"")} onClick={() => setAdminTab("clinic")}>{t.manageClinic}</button>
         <button className={"tab " + (adminTab==="news"?"active":"")} onClick={() => setAdminTab("news")}>{t.manageNews}</button>
+        <button className={"tab " + (adminTab==="branches"?"active":"")} onClick={() => setAdminTab("branches")}>{t.branches}</button>
+        <button className={"tab " + (adminTab==="faq"?"active":"")} onClick={() => setAdminTab("faq")}>{t.faq}</button>
+        <button className={"tab " + (adminTab==="blacklist"?"active":"")} onClick={() => setAdminTab("blacklist")}>{t.blacklist}</button>
       </div>
       <div className="fade-in">
         {adminTab === "stats" && (
@@ -2022,11 +2338,18 @@ function App() {
               <div className="stat-card"><div className="stat-value">{adminStats.upcoming}</div><div className="stat-label">{t.upcomingCount}</div></div>
               <div className="stat-card"><div className="stat-value">{adminStats.cancelled}</div><div className="stat-label">{t.cancelledCount}</div></div>
             </div>
+            <div className="admin-actions-row">
+              <button className="btn-small primary" style={{padding:12}} onClick={exportCsv}>
+                {Icons.download} {t.exportCsv}
+              </button>
+            </div>
             <div className="info-block">
               <div className="info-row"><div className="info-icon">{Icons.user}</div><div className="info-content"><div className="info-label">{t.doctor}</div><div className="info-value">{doctors.length} {t.specialists}</div></div></div>
               <div className="info-row"><div className="info-icon">{Icons.stethoscope}</div><div className="info-content"><div className="info-label">{t.service}</div><div className="info-value">{services.length} {t.services}</div></div></div>
               <div className="info-row"><div className="info-icon">{Icons.clock}</div><div className="info-content"><div className="info-label">{t.time}</div><div className="info-value">{timeSlots.length} {t.available}</div></div></div>
+              <div className="info-row"><div className="info-icon">{Icons.building}</div><div className="info-content"><div className="info-label">{t.branches}</div><div className="info-value">{branches.length}</div></div></div>
               <div className="info-row"><div className="info-icon">{Icons.bell}</div><div className="info-content"><div className="info-label">{t.reminderOn}</div><div className="info-value">{appointments.filter(a => a.reminder && a.status === "confirmed").length}</div></div></div>
+              <div className="info-row"><div className="info-icon">{Icons.shield}</div><div className="info-content"><div className="info-label">{t.blacklist}</div><div className="info-value">{blacklist.length}</div></div></div>
             </div>
             <div className="section-title">{t.cancelStats}</div>
             {cancelStats.length === 0 ? (
@@ -2046,6 +2369,11 @@ function App() {
         )}
         {adminTab === "appts" && (
           <>
+            <div className="admin-actions-row">
+              <button className="btn-small primary" style={{padding:12}} onClick={exportCsv}>
+                {Icons.download} {t.exportCsv}
+              </button>
+            </div>
             <input className="search-box" placeholder={t.search} value={adminSearch} onChange={e => setAdminSearch(e.target.value)} />
             <div className="tabs">
               <button className={"tab " + (adminFilter==="all"?"active":"")} onClick={() => setAdminFilter("all")}>{t.all}</button>
@@ -2070,13 +2398,20 @@ function App() {
                   <span>📅 {formatDate(a.date)}</span><span>🕐 {a.time}</span>
                 </div>
                 {a.doctorId && <div className="appt-doctor">👨‍⚕️ {doctorName(a.doctorId)}</div>}
+                {a.branchId && <div className="appt-doctor">📍 {branchName(a.branchId)}</div>}
                 {a.status === "cancelled" && a.cancelReason && (
                   <div className="appt-cancel-reason">💭 {t.reason}: {a.cancelReason}</div>
                 )}
                 {a.status === "confirmed" && (
                   <div className="appt-actions">
+                    <button className="btn-small primary" onClick={() => downloadIcs(a)}>{Icons.calendarPlus} .ics</button>
                     <button className="btn-small danger" onClick={() => openCancelModal(a.id)}>{t.cancelAppt}</button>
-                    <button className="btn-small" onClick={() => { if (tg && tg.openTelegramLink) tg.openTelegramLink("https://t.me/" + BOT_USERNAME); else window.open("https://t.me/" + BOT_USERNAME, "_blank"); }}>{Icons.messageCircle}</button>
+                    <button className="btn-small" onClick={() => {
+                      if (confirm((lang === "ru" ? "Добавить в чёрный список?" : "Add to blacklist?"))) {
+                        const newBl = blacklist.concat([{ id: Date.now(), userId: a.userId, userName: a.userName, reason: lang === "ru" ? "Админ добавил" : "Admin added", date: new Date().toISOString() }]);
+                        setBlacklist(newBl); save(LS.blacklist, newBl);
+                      }
+                    }}>{Icons.shield}</button>
                   </div>
                 )}
               </div>
@@ -2093,9 +2428,7 @@ function App() {
             </div>
             <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12}}>
               <button className="icon-btn" onClick={() => setScheduleWeek(scheduleWeek - 1)}>‹</button>
-              <div style={{fontSize:13, fontWeight:600}}>
-                {formatDate(scheduleWeekDays[0].toISOString().split("T")[0])}
-              </div>
+              <div style={{fontSize:13, fontWeight:600}}>{formatDate(scheduleWeekDays[0].toISOString().split("T")[0])}</div>
               <button className="icon-btn" onClick={() => setScheduleWeek(scheduleWeek + 1)}>›</button>
             </div>
             <div style={{fontSize:11, color:"var(--hint)", marginBottom:8, textAlign:"center"}}>{t.clickToToggle}</div>
@@ -2133,11 +2466,6 @@ function App() {
                 });
                 return cells;
               })}
-            </div>
-            <div style={{display:"flex", gap:12, fontSize:11, color:"var(--hint)", marginTop:8, justifyContent:"center"}}>
-              <span><span style={{color:"var(--success)"}}>●</span> {t.available}</span>
-              <span><span style={{color:"var(--btn)"}}>●</span> {t.booked}</span>
-              <span><span style={{color:"var(--hint)"}}>×</span> {t.blocked}</span>
             </div>
           </>
         )}
@@ -2248,11 +2576,8 @@ function App() {
                     <div key={time} className={"time-editor-slot " + (isActive?"active":"")}
                       onClick={() => {
                         let newTimes;
-                        if (isActive) {
-                          newTimes = timeSlots.filter(x => x !== time);
-                        } else {
-                          newTimes = [...timeSlots, time].sort();
-                        }
+                        if (isActive) newTimes = timeSlots.filter(x => x !== time);
+                        else newTimes = [...timeSlots, time].sort();
                         setTimeSlots(newTimes);
                         save(LS.times, newTimes);
                       }}>
@@ -2278,107 +2603,84 @@ function App() {
                 </div>
               </div>
             </div>
-            <div className="section-title">{t.currentTimes} ({timeSlots.length})</div>
-            <div style={{display:"flex", flexWrap:"wrap", gap:6}}>
-              {timeSlots.sort().map(time => (
-                <span key={time} className="chip active" onClick={() => {
-                  const newTimes = timeSlots.filter(x => x !== time);
-                  setTimeSlots(newTimes);
-                  save(LS.times, newTimes);
-                }}>{time} ×</span>
-              ))}
-            </div>
           </>
         )}
         {adminTab === "clinic" && (
-          <>
-            <div className="info-block">
-              <div className="form-group">
-                <label className="form-label">{t.heroImage}</label>
-                <input className="form-input" placeholder={t.heroImageUrl} value={clinicInfo.heroImage || ""} onChange={e => {
-                  const newClinic = { ...clinicInfo, heroImage: e.target.value };
-                  setClinicInfo(newClinic);
-                  save(LS.clinic, newClinic);
-                }} />
-                {clinicInfo.heroImage && (
-                  <div style={{marginTop:8}}>
-                    <div style={{fontSize:11, color:"var(--hint)", marginBottom:4}}>{t.heroImagePreview}</div>
-                    <img src={clinicInfo.heroImage} alt="preview" style={{width:"100%", height:120, objectFit:"cover", borderRadius:8}} />
-                    <button className="btn-small danger" style={{marginTop:8}} onClick={() => {
-                      const newClinic = { ...clinicInfo, heroImage: "" };
-                      setClinicInfo(newClinic);
-                      save(LS.clinic, newClinic);
-                    }}>{t.removeImage}</button>
-                  </div>
-                )}
-              </div>
+          <div className="info-block">
+            <div className="form-group">
+              <label className="form-label">{t.heroImage}</label>
+              <input className="form-input" placeholder={t.heroImageUrl} value={clinicInfo.heroImage || ""} onChange={e => {
+                const c = { ...clinicInfo, heroImage: e.target.value };
+                setClinicInfo(c); save(LS.clinic, c);
+              }} />
+              {clinicInfo.heroImage && (
+                <div style={{marginTop:8}}>
+                  <img src={clinicInfo.heroImage} alt="preview" style={{width:"100%", height:120, objectFit:"cover", borderRadius:8}} />
+                  <button className="btn-small danger" style={{marginTop:8}} onClick={() => {
+                    const c = { ...clinicInfo, heroImage: "" };
+                    setClinicInfo(c); save(LS.clinic, c);
+                  }}>{t.removeImage}</button>
+                </div>
+              )}
             </div>
-            <div className="info-block">
-              <div className="form-group">
-                <label className="form-label">{t.clinicTitle} (RU)</label>
-                <input className="form-input" value={clinicInfo.nameRu} onChange={e => { const c = {...clinicInfo, nameRu: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
-              <div className="form-group" style={{marginTop:10}}>
-                <label className="form-label">{t.clinicTitle} (EN)</label>
-                <input className="form-input" value={clinicInfo.nameEn} onChange={e => { const c = {...clinicInfo, nameEn: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
-              <div className="form-group" style={{marginTop:10}}>
-                <label className="form-label">{t.clinicSubtitle} (RU)</label>
-                <input className="form-input" value={clinicInfo.subRu} onChange={e => { const c = {...clinicInfo, subRu: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
-              <div className="form-group" style={{marginTop:10}}>
-                <label className="form-label">{t.clinicSubtitle} (EN)</label>
-                <input className="form-input" value={clinicInfo.subEn} onChange={e => { const c = {...clinicInfo, subEn: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
+            <div className="form-group" style={{marginTop:10}}>
+              <label className="form-label">{t.clinicTitle} (RU)</label>
+              <input className="form-input" value={clinicInfo.nameRu} onChange={e => { const c = {...clinicInfo, nameRu: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
             </div>
-            <div className="info-block">
-              <div className="form-group">
-                <label className="form-label">{t.address} (RU)</label>
-                <input className="form-input" value={clinicInfo.addressRu} onChange={e => { const c = {...clinicInfo, addressRu: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
-              <div className="form-group" style={{marginTop:10}}>
-                <label className="form-label">{t.address} (EN)</label>
-                <input className="form-input" value={clinicInfo.addressEn} onChange={e => { const c = {...clinicInfo, addressEn: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
-              <div className="form-group" style={{marginTop:10}}>
-                <label className="form-label">{t.workHours} (RU)</label>
-                <textarea className="form-input" rows="3" value={clinicInfo.workHoursRu} onChange={e => { const c = {...clinicInfo, workHoursRu: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
-              <div className="form-group" style={{marginTop:10}}>
-                <label className="form-label">{t.workHours} (EN)</label>
-                <textarea className="form-input" rows="3" value={clinicInfo.workHoursEn} onChange={e => { const c = {...clinicInfo, workHoursEn: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
+            <div className="form-group" style={{marginTop:10}}>
+              <label className="form-label">{t.clinicTitle} (EN)</label>
+              <input className="form-input" value={clinicInfo.nameEn} onChange={e => { const c = {...clinicInfo, nameEn: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
             </div>
-            <div className="info-block">
-              <div className="form-group">
-                <label className="form-label">{t.phone}</label>
-                <input className="form-input" value={clinicInfo.phone} onChange={e => { const c = {...clinicInfo, phone: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
-              <div className="form-group" style={{marginTop:10}}>
-                <label className="form-label">Email</label>
-                <input className="form-input" type="email" value={clinicInfo.email} onChange={e => { const c = {...clinicInfo, email: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
-              <div className="form-group" style={{marginTop:10}}>
-                <label className="form-label">{t.clinicMap}</label>
-                <input className="form-input" value={clinicInfo.mapCoords} onChange={e => { const c = {...clinicInfo, mapCoords: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
+            <div className="form-group" style={{marginTop:10}}>
+              <label className="form-label">{t.clinicSubtitle} (RU)</label>
+              <input className="form-input" value={clinicInfo.subRu} onChange={e => { const c = {...clinicInfo, subRu: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
             </div>
-            <div className="info-block">
-              <div style={{fontSize:13, fontWeight:600, marginBottom:12}}>{t.social}</div>
-              <div className="form-group">
-                <label className="form-label">{t.socialTelegram}</label>
-                <input className="form-input" value={clinicInfo.social.telegram} onChange={e => { const c = {...clinicInfo, social: {...clinicInfo.social, telegram: e.target.value}}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
-              <div className="form-group" style={{marginTop:10}}>
-                <label className="form-label">{t.socialInstagram}</label>
-                <input className="form-input" value={clinicInfo.social.instagram} onChange={e => { const c = {...clinicInfo, social: {...clinicInfo.social, instagram: e.target.value}}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
-              <div className="form-group" style={{marginTop:10}}>
-                <label className="form-label">{t.socialVk}</label>
-                <input className="form-input" value={clinicInfo.social.vk} onChange={e => { const c = {...clinicInfo, social: {...clinicInfo.social, vk: e.target.value}}; setClinicInfo(c); save(LS.clinic, c); }} />
-              </div>
+            <div className="form-group" style={{marginTop:10}}>
+              <label className="form-label">{t.clinicSubtitle} (EN)</label>
+              <input className="form-input" value={clinicInfo.subEn} onChange={e => { const c = {...clinicInfo, subEn: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
             </div>
-          </>
+            <div className="form-group" style={{marginTop:10}}>
+              <label className="form-label">{t.address} (RU)</label>
+              <input className="form-input" value={clinicInfo.addressRu} onChange={e => { const c = {...clinicInfo, addressRu: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
+            </div>
+            <div className="form-group" style={{marginTop:10}}>
+              <label className="form-label">{t.address} (EN)</label>
+              <input className="form-input" value={clinicInfo.addressEn} onChange={e => { const c = {...clinicInfo, addressEn: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
+            </div>
+            <div className="form-group" style={{marginTop:10}}>
+              <label className="form-label">{t.workHours} (RU)</label>
+              <textarea className="form-input" rows="3" value={clinicInfo.workHoursRu} onChange={e => { const c = {...clinicInfo, workHoursRu: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
+            </div>
+            <div className="form-group" style={{marginTop:10}}>
+              <label className="form-label">{t.workHours} (EN)</label>
+              <textarea className="form-input" rows="3" value={clinicInfo.workHoursEn} onChange={e => { const c = {...clinicInfo, workHoursEn: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
+            </div>
+            <div className="form-group" style={{marginTop:10}}>
+              <label className="form-label">{t.phone}</label>
+              <input className="form-input" value={clinicInfo.phone} onChange={e => { const c = {...clinicInfo, phone: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
+            </div>
+            <div className="form-group" style={{marginTop:10}}>
+              <label className="form-label">Email</label>
+              <input className="form-input" type="email" value={clinicInfo.email} onChange={e => { const c = {...clinicInfo, email: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
+            </div>
+            <div className="form-group" style={{marginTop:10}}>
+              <label className="form-label">{t.clinicMap}</label>
+              <input className="form-input" value={clinicInfo.mapCoords} onChange={e => { const c = {...clinicInfo, mapCoords: e.target.value}; setClinicInfo(c); save(LS.clinic, c); }} />
+            </div>
+            <div style={{fontSize:13, fontWeight:600, marginTop:16, marginBottom:8}}>{t.social}</div>
+            <div className="form-group">
+              <label className="form-label">{t.socialTelegram}</label>
+              <input className="form-input" value={clinicInfo.social.telegram} onChange={e => { const c = {...clinicInfo, social: {...clinicInfo.social, telegram: e.target.value}}; setClinicInfo(c); save(LS.clinic, c); }} />
+            </div>
+            <div className="form-group" style={{marginTop:10}}>
+              <label className="form-label">{t.socialInstagram}</label>
+              <input className="form-input" value={clinicInfo.social.instagram} onChange={e => { const c = {...clinicInfo, social: {...clinicInfo.social, instagram: e.target.value}}; setClinicInfo(c); save(LS.clinic, c); }} />
+            </div>
+            <div className="form-group" style={{marginTop:10}}>
+              <label className="form-label">{t.socialVk}</label>
+              <input className="form-input" value={clinicInfo.social.vk} onChange={e => { const c = {...clinicInfo, social: {...clinicInfo.social, vk: e.target.value}}; setClinicInfo(c); save(LS.clinic, c); }} />
+            </div>
+          </div>
         )}
         {adminTab === "news" && (
           <>
@@ -2411,53 +2713,289 @@ function App() {
             ))}
           </>
         )}
+        {adminTab === "branches" && (
+          <>
+            <button className="btn-small primary" style={{width:"100%", padding:12, marginBottom:12, fontSize:13}}
+              onClick={() => setBranchEditor({
+                isNew: true,
+                data: { id: "b" + Date.now(), nameRu:"", nameEn:"", addressRu:"", addressEn:"", phone:"", coords:"", workHoursRu:"", workHoursEn:"" }
+              })}>
+              {Icons.plus} {t.addBranch}
+            </button>
+            {branches.map(b => (
+              <div key={b.id} className="branch-card">
+                <div className="branch-icon">{Icons.building}</div>
+                <div className="entity-info">
+                  <div className="entity-name">{lang === "ru" ? b.nameRu : b.nameEn}</div>
+                  <div className="entity-meta">📍 {lang === "ru" ? b.addressRu : b.addressEn}</div>
+                  <div className="entity-meta">📞 {b.phone}</div>
+                </div>
+                <div className="entity-actions">
+                  <button className="btn-small" onClick={() => setBranchEditor({ isNew: false, data: {...b} })}>{Icons.edit}</button>
+                  <button className="btn-small danger" onClick={() => {
+                    if (confirm(t.deleteConfirm + "?")) {
+                      const newBranches = branches.filter(x => x.id !== b.id);
+                      setBranches(newBranches); save(LS.branches, newBranches);
+                    }
+                  }}>{Icons.trash}</button>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+        {adminTab === "faq" && (
+          <>
+            <button className="btn-small primary" style={{width:"100%", padding:12, marginBottom:12, fontSize:13}}
+              onClick={() => setFaqEditor({
+                isNew: true,
+                data: { id: Date.now(), q: {ru:"", en:""}, a: {ru:"", en:""} }
+              })}>
+              {Icons.plus} {t.addFaq}
+            </button>
+            {faq.map((item, i) => (
+              <div key={item.id} className="entity-card">
+                <div style={{width:48, height:48, borderRadius:12, background:"var(--btn)", color:"white", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0}}>?</div>
+                <div className="entity-info">
+                  <div className="entity-name">{item.q[lang]}</div>
+                  <div className="entity-meta">{item.a[lang].substring(0, 50)}...</div>
+                </div>
+                <div className="entity-actions">
+                  <button className="btn-small" onClick={() => setFaqEditor({ isNew: false, data: {...item} })}>{Icons.edit}</button>
+                  <button className="btn-small danger" onClick={() => {
+                    if (confirm(t.deleteConfirm + "?")) {
+                      const newFaq = faq.filter(x => x.id !== item.id);
+                      setFaq(newFaq); save(LS.faq, newFaq);
+                    }
+                  }}>{Icons.trash}</button>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+        {adminTab === "blacklist" && (
+          <>
+            <button className="btn-small primary" style={{width:"100%", padding:12, marginBottom:12, fontSize:13}}
+              onClick={() => setBlacklistEditor({
+                isNew: true,
+                data: { id: Date.now(), userId: 0, userName: "", reason: "" }
+              })}>
+              {Icons.plus} {t.addToBlacklist}
+            </button>
+            {blacklist.length === 0 ? (
+              <div className="empty-state" style={{padding:20}}><div>{t.blacklistEmpty}</div></div>
+            ) : blacklist.map(b => (
+              <div key={b.id} className="blacklist-item">
+                <div style={{fontSize:24}}>{Icons.shield}</div>
+                <div className="blacklist-info">
+                  <div className="blacklist-name">{b.userName || "User #" + b.userId}</div>
+                  <div className="blacklist-reason">{b.reason} · {new Date(b.date).toLocaleDateString()}</div>
+                </div>
+                <button className="btn-small danger" onClick={() => {
+                  const newBl = blacklist.filter(x => x.id !== b.id);
+                  setBlacklist(newBl); save(LS.blacklist, newBl);
+                }}>{Icons.x}</button>
+              </div>
+            ))}
+          </>
+        )}
       </div>
-      {renderCancelModal()}
-      {renderEntityEditor()}
+      {cancelModal && (
+        <div className="modal-overlay" onClick={() => setCancelModal(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">{t.cancelReasonTitle}</div>
+            <div className="modal-sub">{t.cancelReasonSub}</div>
+            <div className="reason-list">
+              {[
+                { id: "changed", label: t.cancelReasonChanged },
+                { id: "sick", label: t.cancelReasonSick },
+                { id: "found", label: t.cancelReasonFound },
+                { id: "expensive", label: t.cancelReasonExpensive },
+                { id: "other", label: t.cancelReasonOther },
+              ].map(r => (
+                <div key={r.id} className={"reason-item " + (cancelModal.reason === r.id ? "selected" : "")}
+                  onClick={() => setCancelModal({ ...cancelModal, reason: r.id })}>
+                  <div className="reason-radio"></div>
+                  <div className="reason-text">{r.label}</div>
+                </div>
+              ))}
+            </div>
+            {cancelModal.reason === "other" && (
+              <input className="form-input" placeholder={t.cancelReasonCustom}
+                value={cancelModal.customReason}
+                onChange={e => setCancelModal({ ...cancelModal, customReason: e.target.value })}
+                style={{marginBottom:16}} />
+            )}
+            <div className="modal-actions">
+              <button className="btn-small ghost" onClick={() => setCancelModal(null)}>{t.cancel}</button>
+              <button className="btn-small danger" onClick={submitCancel} disabled={!cancelModal.reason}>{t.confirmCancelBtn}</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {entityEditor && (
+        <div className="modal-overlay" onClick={() => setEntityEditor(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">{entityEditor.isNew ? (entityEditor.type === "doctor" ? t.addDoctor : t.addService) : (entityEditor.type === "doctor" ? t.editDoctor : t.editService)}</div>
+            <div className="profile-form">
+              {entityEditor.type === "doctor" ? (
+                <>
+                  <div className="form-group"><label className="form-label">{t.doctorNameRu}</label><input className="form-input" value={entityEditor.data.nameRu} onChange={e => setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, nameRu: e.target.value } })} /></div>
+                  <div className="form-group"><label className="form-label">{t.doctorNameEn}</label><input className="form-input" value={entityEditor.data.nameEn} onChange={e => setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, nameEn: e.target.value } })} /></div>
+                  <div className="form-group"><label className="form-label">{t.doctorSpecRu}</label><input className="form-input" value={entityEditor.data.specRu} onChange={e => setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, specRu: e.target.value } })} /></div>
+                  <div className="form-group"><label className="form-label">{t.doctorSpecEn}</label><input className="form-input" value={entityEditor.data.specEn} onChange={e => setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, specEn: e.target.value } })} /></div>
+                  <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10}}>
+                    <div className="form-group"><label className="form-label">{t.doctorRating}</label><input className="form-input" type="number" step="0.1" min="0" max="5" value={entityEditor.data.rating} onChange={e => setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, rating: parseFloat(e.target.value) || 0 } })} /></div>
+                    <div className="form-group"><label className="form-label">{t.doctorReviews}</label><input className="form-input" type="number" min="0" value={entityEditor.data.reviews} onChange={e => setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, reviews: parseInt(e.target.value) || 0 } })} /></div>
+                  </div>
+                  <div className="form-group"><label className="form-label">{t.doctorInitials}</label><input className="form-input" maxLength="3" value={entityEditor.data.initials} onChange={e => setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, initials: e.target.value } })} /></div>
+                  <div className="form-group"><label className="form-label">{t.doctorGradient}</label><input className="form-input" value={entityEditor.data.gradient} onChange={e => setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, gradient: e.target.value } })} /></div>
+                  <div className="form-group"><label className="form-label">{t.doctorServices}</label>
+                    <div className="checkbox-row">
+                      {services.map(s => (
+                        <div key={s.id} className={"checkbox-chip " + (entityEditor.data.services.indexOf(s.id) !== -1 ? "active" : "")}
+                          onClick={() => {
+                            const has = entityEditor.data.services.indexOf(s.id) !== -1;
+                            const newSvcs = has ? entityEditor.data.services.filter(x => x !== s.id) : entityEditor.data.services.concat([s.id]);
+                            setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, services: newSvcs } });
+                          }}>
+                          {lang === "ru" ? s.nameRu : s.nameEn}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="form-group"><label className="form-label">{t.serviceId}</label><input className="form-input" value={entityEditor.data.id} disabled={!entityEditor.isNew} onChange={e => setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, id: e.target.value.replace(/[^a-z0-9]/gi,"") } })} /></div>
+                  <div className="form-group"><label className="form-label">{t.serviceNameRu}</label><input className="form-input" value={entityEditor.data.nameRu} onChange={e => setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, nameRu: e.target.value } })} /></div>
+                  <div className="form-group"><label className="form-label">{t.serviceNameEn}</label><input className="form-input" value={entityEditor.data.nameEn} onChange={e => setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, nameEn: e.target.value } })} /></div>
+                  <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10}}>
+                    <div className="form-group"><label className="form-label">{t.serviceDuration}</label><input className="form-input" type="number" min="5" value={entityEditor.data.duration} onChange={e => setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, duration: parseInt(e.target.value) || 0 } })} /></div>
+                    <div className="form-group"><label className="form-label">{t.servicePrice}</label><input className="form-input" type="number" min="0" value={entityEditor.data.price} onChange={e => setEntityEditor({ ...entityEditor, data: { ...entityEditor.data, price: parseInt(e.target.value) || 0 } })} /></div>
+                  </div>
+                </>
+              )}
+              <div className="modal-actions" style={{marginTop:8}}>
+                <button className="btn-small ghost" onClick={() => setEntityEditor(null)}>{t.cancel}</button>
+                <button className="btn-small primary" onClick={() => {
+                  if (entityEditor.type === "doctor") {
+                    let newDoctors;
+                    if (entityEditor.isNew) newDoctors = doctors.concat([{ ...entityEditor.data, id: "d" + Date.now() }]);
+                    else newDoctors = doctors.map(d => d.id === entityEditor.data.id ? entityEditor.data : d);
+                    setDoctors(newDoctors); save(LS.doctors, newDoctors);
+                  } else {
+                    if (!entityEditor.data.id) return;
+                    let newServices;
+                    if (entityEditor.isNew) newServices = services.concat([entityEditor.data]);
+                    else newServices = services.map(s => s.id === entityEditor.data.id ? entityEditor.data : s);
+                    setServices(newServices); save(LS.services, newServices);
+                  }
+                  setEntityEditor(null);
+                }}>{t.save}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {newsEditor && (
         <div className="modal-overlay" onClick={() => setNewsEditor(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="modal-title">{newsEditor.isNew ? t.addNews : t.editNews}</div>
             <div className="profile-form">
-              <div className="form-group">
-                <label className="form-label">{t.newsType}</label>
+              <div className="form-group"><label className="form-label">{t.newsType}</label>
                 <div style={{display:"flex", gap:8}}>
                   <button className={"btn-small " + (newsEditor.data.type==="promo"?"primary":"ghost")} onClick={() => setNewsEditor({...newsEditor, data: {...newsEditor.data, type: "promo"}})}>{t.promo}</button>
                   <button className={"btn-small " + (newsEditor.data.type==="news"?"primary":"ghost")} onClick={() => setNewsEditor({...newsEditor, data: {...newsEditor.data, type: "news"}})}>{t.new}</button>
                 </div>
               </div>
-              <div className="form-group">
-                <label className="form-label">{t.newsTitleField} (RU)</label>
-                <input className="form-input" value={newsEditor.data.title.ru} onChange={e => setNewsEditor({...newsEditor, data: {...newsEditor.data, title: {...newsEditor.data.title, ru: e.target.value}}})} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">{t.newsTitleField} (EN)</label>
-                <input className="form-input" value={newsEditor.data.title.en} onChange={e => setNewsEditor({...newsEditor, data: {...newsEditor.data, title: {...newsEditor.data.title, en: e.target.value}}})} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">{t.newsDescField} (RU)</label>
-                <textarea className="form-input" rows="3" value={newsEditor.data.desc.ru} onChange={e => setNewsEditor({...newsEditor, data: {...newsEditor.data, desc: {...newsEditor.data.desc, ru: e.target.value}}})} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">{t.newsDescField} (EN)</label>
-                <textarea className="form-input" rows="3" value={newsEditor.data.desc.en} onChange={e => setNewsEditor({...newsEditor, data: {...newsEditor.data, desc: {...newsEditor.data.desc, en: e.target.value}}})} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">{t.newsValid}</label>
-                <input className="form-input" type="date" value={newsEditor.data.validUntil || ""} onChange={e => setNewsEditor({...newsEditor, data: {...newsEditor.data, validUntil: e.target.value || null}})} />
-              </div>
+              <div className="form-group"><label className="form-label">{t.newsTitleField} (RU)</label><input className="form-input" value={newsEditor.data.title.ru} onChange={e => setNewsEditor({...newsEditor, data: {...newsEditor.data, title: {...newsEditor.data.title, ru: e.target.value}}})} /></div>
+              <div className="form-group"><label className="form-label">{t.newsTitleField} (EN)</label><input className="form-input" value={newsEditor.data.title.en} onChange={e => setNewsEditor({...newsEditor, data: {...newsEditor.data, title: {...newsEditor.data.title, en: e.target.value}}})} /></div>
+              <div className="form-group"><label className="form-label">{t.newsDescField} (RU)</label><textarea className="form-input" rows="3" value={newsEditor.data.desc.ru} onChange={e => setNewsEditor({...newsEditor, data: {...newsEditor.data, desc: {...newsEditor.data.desc, ru: e.target.value}}})} /></div>
+              <div className="form-group"><label className="form-label">{t.newsDescField} (EN)</label><textarea className="form-input" rows="3" value={newsEditor.data.desc.en} onChange={e => setNewsEditor({...newsEditor, data: {...newsEditor.data, desc: {...newsEditor.data.desc, en: e.target.value}}})} /></div>
+              <div className="form-group"><label className="form-label">{t.newsValid}</label><input className="form-input" type="date" value={newsEditor.data.validUntil || ""} onChange={e => setNewsEditor({...newsEditor, data: {...newsEditor.data, validUntil: e.target.value || null}})} /></div>
               <div className="modal-actions" style={{marginTop:8}}>
                 <button className="btn-small ghost" onClick={() => setNewsEditor(null)}>{t.cancel}</button>
                 <button className="btn-small primary" onClick={() => {
                   let newNews;
-                  if (newsEditor.isNew) {
-                    newNews = news.concat([newsEditor.data]);
-                  } else {
-                    newNews = news.map(n => n.id === newsEditor.data.id ? newsEditor.data : n);
-                  }
-                  setNews(newNews);
-                  save(LS.news, newNews);
+                  if (newsEditor.isNew) newNews = news.concat([newsEditor.data]);
+                  else newNews = news.map(n => n.id === newsEditor.data.id ? newsEditor.data : n);
+                  setNews(newNews); save(LS.news, newNews);
                   setNewsEditor(null);
+                }}>{t.save}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {branchEditor && (
+        <div className="modal-overlay" onClick={() => setBranchEditor(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">{branchEditor.isNew ? t.addBranch : t.edit + " " + t.branch}</div>
+            <div className="profile-form">
+              <div className="form-group"><label className="form-label">{t.branchName} (RU)</label><input className="form-input" value={branchEditor.data.nameRu} onChange={e => setBranchEditor({...branchEditor, data: {...branchEditor.data, nameRu: e.target.value}})} /></div>
+              <div className="form-group"><label className="form-label">{t.branchName} (EN)</label><input className="form-input" value={branchEditor.data.nameEn} onChange={e => setBranchEditor({...branchEditor, data: {...branchEditor.data, nameEn: e.target.value}})} /></div>
+              <div className="form-group"><label className="form-label">{t.branchAddress} (RU)</label><input className="form-input" value={branchEditor.data.addressRu} onChange={e => setBranchEditor({...branchEditor, data: {...branchEditor.data, addressRu: e.target.value}})} /></div>
+              <div className="form-group"><label className="form-label">{t.branchAddress} (EN)</label><input className="form-input" value={branchEditor.data.addressEn} onChange={e => setBranchEditor({...branchEditor, data: {...branchEditor.data, addressEn: e.target.value}})} /></div>
+              <div className="form-group"><label className="form-label">{t.branchPhone}</label><input className="form-input" value={branchEditor.data.phone} onChange={e => setBranchEditor({...branchEditor, data: {...branchEditor.data, phone: e.target.value}})} /></div>
+              <div className="form-group"><label className="form-label">{t.branchCoords}</label><input className="form-input" placeholder="55.751244,37.618423" value={branchEditor.data.coords} onChange={e => setBranchEditor({...branchEditor, data: {...branchEditor.data, coords: e.target.value}})} /></div>
+              {branchEditor.data.coords && (
+                <div className="map-container" style={{height:150}}>
+                  <iframe title="branch-map" src={`https://yandex.ru/map-widget/v1/?ll=${branchEditor.data.coords}&z=16`} loading="lazy" />
+                </div>
+              )}
+              <div className="form-group"><label className="form-label">{t.branchWorkHours} (RU)</label><input className="form-input" value={branchEditor.data.workHoursRu} onChange={e => setBranchEditor({...branchEditor, data: {...branchEditor.data, workHoursRu: e.target.value}})} /></div>
+              <div className="form-group"><label className="form-label">{t.branchWorkHours} (EN)</label><input className="form-input" value={branchEditor.data.workHoursEn} onChange={e => setBranchEditor({...branchEditor, data: {...branchEditor.data, workHoursEn: e.target.value}})} /></div>
+              <div className="modal-actions" style={{marginTop:8}}>
+                <button className="btn-small ghost" onClick={() => setBranchEditor(null)}>{t.cancel}</button>
+                <button className="btn-small primary" onClick={() => {
+                  let newBranches;
+                  if (branchEditor.isNew) newBranches = branches.concat([branchEditor.data]);
+                  else newBranches = branches.map(b => b.id === branchEditor.data.id ? branchEditor.data : b);
+                  setBranches(newBranches); save(LS.branches, newBranches);
+                  setBranchEditor(null);
+                }}>{t.save}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {faqEditor && (
+        <div className="modal-overlay" onClick={() => setFaqEditor(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">{faqEditor.isNew ? t.addFaq : t.edit + " FAQ"}</div>
+            <div className="profile-form">
+              <div className="form-group"><label className="form-label">{t.faqQuestion} (RU)</label><input className="form-input" value={faqEditor.data.q.ru} onChange={e => setFaqEditor({...faqEditor, data: {...faqEditor.data, q: {...faqEditor.data.q, ru: e.target.value}}})} /></div>
+              <div className="form-group"><label className="form-label">{t.faqQuestion} (EN)</label><input className="form-input" value={faqEditor.data.q.en} onChange={e => setFaqEditor({...faqEditor, data: {...faqEditor.data, q: {...faqEditor.data.q, en: e.target.value}}})} /></div>
+              <div className="form-group"><label className="form-label">{t.faqAnswer} (RU)</label><textarea className="form-input" rows="3" value={faqEditor.data.a.ru} onChange={e => setFaqEditor({...faqEditor, data: {...faqEditor.data, a: {...faqEditor.data.a, ru: e.target.value}}})} /></div>
+              <div className="form-group"><label className="form-label">{t.faqAnswer} (EN)</label><textarea className="form-input" rows="3" value={faqEditor.data.a.en} onChange={e => setFaqEditor({...faqEditor, data: {...faqEditor.data, a: {...faqEditor.data.a, en: e.target.value}}})} /></div>
+              <div className="modal-actions" style={{marginTop:8}}>
+                <button className="btn-small ghost" onClick={() => setFaqEditor(null)}>{t.cancel}</button>
+                <button className="btn-small primary" onClick={() => {
+                  let newFaq;
+                  if (faqEditor.isNew) newFaq = faq.concat([faqEditor.data]);
+                  else newFaq = faq.map(f => f.id === faqEditor.data.id ? faqEditor.data : f);
+                  setFaq(newFaq); save(LS.faq, newFaq);
+                  setFaqEditor(null);
+                }}>{t.save}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {blacklistEditor && (
+        <div className="modal-overlay" onClick={() => setBlacklistEditor(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">{t.addToBlacklist}</div>
+            <div className="profile-form">
+              <div className="form-group"><label className="form-label">User ID</label><input className="form-input" type="number" value={blacklistEditor.data.userId} onChange={e => setBlacklistEditor({...blacklistEditor, data: {...blacklistEditor.data, userId: parseInt(e.target.value) || 0}})} /></div>
+              <div className="form-group"><label className="form-label">{t.patient}</label><input className="form-input" value={blacklistEditor.data.userName} onChange={e => setBlacklistEditor({...blacklistEditor, data: {...blacklistEditor.data, userName: e.target.value}})} /></div>
+              <div className="form-group"><label className="form-label">{t.blacklistReason}</label><input className="form-input" value={blacklistEditor.data.reason} onChange={e => setBlacklistEditor({...blacklistEditor, data: {...blacklistEditor.data, reason: e.target.value}})} /></div>
+              <div className="modal-actions" style={{marginTop:8}}>
+                <button className="btn-small ghost" onClick={() => setBlacklistEditor(null)}>{t.cancel}</button>
+                <button className="btn-small primary" onClick={() => {
+                  const newBl = blacklist.concat([{ ...blacklistEditor.data, id: Date.now(), date: new Date().toISOString() }]);
+                  setBlacklist(newBl); save(LS.blacklist, newBl);
+                  setBlacklistEditor(null);
                 }}>{t.save}</button>
               </div>
             </div>
@@ -2468,14 +3006,6 @@ function App() {
   );
 
   return <div className="app"><div>Loading...</div></div>;
-}
-
-function renderCancelModal() {
-  return null;
-}
-
-function renderEntityEditor() {
-  return null;
 }
 
 try {
