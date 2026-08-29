@@ -49,7 +49,6 @@
   }
   .screen { animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
   @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-  @keyframes slideOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(-20px); } }
   .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 8px; }
   .header-left, .header-right { display: flex; align-items: center; gap: 6px; }
   .header-title { font-weight: 700; font-size: 16px; text-align: center; flex: 1; }
@@ -57,19 +56,14 @@
     width: 36px; height: 36px; border-radius: 50%; background: var(--secondary);
     border: none; display: flex; align-items: center; justify-content: center;
     cursor: pointer; color: var(--text); font-size: 16px;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .icon-btn:active { transform: scale(0.92); }
   .back-btn {
     width: 36px; height: 36px; border-radius: 50%; background: var(--secondary);
     border: none; display: flex; align-items: center; justify-content: center;
     cursor: pointer; color: var(--text);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .back-btn:active { transform: scale(0.9); }
-  .back-btn svg { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-  .back-btn:hover svg { transform: translateX(-3px); }
-  .back-btn:active svg { transform: translateX(-5px); }
   .lang-switch { display: flex; gap: 2px; background: var(--secondary); border-radius: 18px; padding: 2px; }
   .lang-btn {
     padding: 5px 10px; border: none; background: transparent;
@@ -106,10 +100,6 @@
     border-radius: 16px;
   }
   .hero-logo svg { width: 36px; height: 36px; }
-  .hero-badge {
-    background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);
-    padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;
-  }
   .hero-bottom h1 { margin: 0; font-size: 22px; font-weight: 700; }
   .hero-bottom p { margin: 4px 0 0; font-size: 13px; opacity: 0.9; }
   .branch-selector {
@@ -248,7 +238,6 @@
     font-size: 12px; font-weight: 600; cursor: pointer;
     background: var(--bg); color: var(--text);
     display: inline-flex; align-items: center; gap: 4px;
-    transition: all 0.15s;
   }
   .btn-small:active { transform: scale(0.95); }
   .btn-small.danger { background: var(--danger); color: white; }
@@ -298,6 +287,7 @@
     outline: none; width: 100%; font-family: inherit;
   }
   textarea.form-input { resize: none; }
+  .form-input.error { border: 2px solid var(--danger); }
   .info-block { background: var(--secondary); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
   .info-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
   .info-icon { width: 32px; display: flex; align-items: center; justify-content: center; }
@@ -396,10 +386,9 @@
   .schedule-cell.available { background: rgba(52,199,89,0.15); color: var(--success); }
   .schedule-cell.booked { background: rgba(51,144,236,0.2); color: var(--btn); font-weight: 600; }
   .schedule-cell.blocked-cell { background: repeating-linear-gradient(45deg, var(--bg), var(--bg) 4px, var(--secondary) 4px, var(--secondary) 8px); color: var(--hint); }
-  .block-list { display: flex; flex-direction: column; gap: 8px; }
   .block-item {
     background: var(--secondary); border-radius: 12px; padding: 12px;
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
   }
   .block-info { flex: 1; }
   .block-date { font-weight: 700; font-size: 14px; }
@@ -472,21 +461,13 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 20px;
   }
-  .onboarding-illustration {
-    width: 200px; height: 200px; margin-bottom: 24px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 120px;
-  }
+  .onboarding-illustration { width: 200px; height: 200px; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; font-size: 120px; }
   .onboarding-title { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 12px; }
   .onboarding-desc { font-size: 15px; color: var(--hint); text-align: center; margin-bottom: 32px; line-height: 1.5; }
   .onboarding-dots { display: flex; gap: 8px; margin-bottom: 24px; }
   .onboarding-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--hint); opacity: 0.3; }
   .onboarding-dot.active { opacity: 1; background: var(--btn); }
-  .onboarding-btn {
-    padding: 14px 32px; background: var(--btn); color: var(--btn-text);
-    border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
-    cursor: pointer; min-width: 200px;
-  }
+  .onboarding-btn { padding: 14px 32px; background: var(--btn); color: var(--btn-text); border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; min-width: 200px; }
   .ptr-indicator {
     position: fixed; top: 0; left: 50%; transform: translateX(-50%);
     padding: 8px 16px; background: var(--secondary); border-radius: 0 0 12px 12px;
@@ -542,12 +523,10 @@
   .sync-compact-info { flex: 1; }
   .sync-compact-title { font-weight: 600; font-size: 13px; }
   .sync-compact-sub { font-size: 11px; color: var(--hint); text-transform: uppercase; margin-top: 1px; }
-  /* FAQ */
   .faq-item { flex-direction: column; align-items: flex-start; gap: 8px; cursor: pointer; }
   .faq-q { font-weight: 600; font-size: 14px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
   .faq-a { font-size: 13px; color: var(--hint); line-height: 1.5; width: 100%; }
   .faq-toggle { font-size: 18px; color: var(--btn); font-weight: 700; }
-  /* Branch card */
   .branch-card {
     background: var(--secondary); border-radius: 14px; padding: 14px;
     margin-bottom: 10px; display: flex; gap: 12px; align-items: center;
@@ -557,7 +536,6 @@
     color: var(--btn-text); display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
-  /* Blacklist */
   .blacklist-item {
     background: var(--secondary); border-radius: 12px; padding: 12px;
     margin-bottom: 8px; display: flex; align-items: center; gap: 12px;
@@ -566,7 +544,6 @@
   .blacklist-info { flex: 1; }
   .blacklist-name { font-weight: 700; font-size: 14px; }
   .blacklist-reason { font-size: 12px; color: var(--hint); margin-top: 2px; }
-  /* Quick book */
   .quick-book-card {
     background: linear-gradient(135deg, var(--btn), #1e6fd9);
     color: white; border-radius: 16px; padding: 16px;
@@ -581,10 +558,22 @@
   .quick-book-info { flex: 1; }
   .quick-book-title { font-weight: 700; font-size: 15px; }
   .quick-book-sub { font-size: 12px; opacity: 0.9; margin-top: 2px; }
-  /* Admin action buttons row */
-  .admin-actions-row {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;
+  .admin-actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .client-card {
+    background: var(--secondary); border-radius: 14px; padding: 14px;
+    margin-bottom: 10px; display: flex; gap: 12px; align-items: center;
   }
+  .client-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--btn); color: var(--btn-text);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px; flex-shrink: 0;
+  }
+  .client-info { flex: 1; min-width: 0; }
+  .client-name { font-weight: 700; font-size: 14px; }
+  .client-phone { font-size: 12px; color: var(--hint); margin-top: 2px; }
+  .client-meta { font-size: 11px; color: var(--hint); margin-top: 2px; }
+  .required-star { color: var(--danger); }
 </style>
 </head>
 <body>
@@ -598,9 +587,7 @@ const ADMIN_USER_ID = 8690178977;
 const BOT_USERNAME = "your_dental_bot";
 
 const ToothIcon = ({ size = 36 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none">
-    <path d="M12 2C9.5 2 7.5 3 6 4.5C4.5 6 4 8 4 10C4 12 5 14 6 16C7 18 7.5 20 8 21C8.5 22 9.5 22 10 21C10.5 20 11 18 12 18C13 18 13.5 20 14 21C14.5 22 15.5 22 16 21C16.5 20 17 18 18 16C19 14 20 12 20 10C20 8 19.5 6 18 4.5C16.5 3 14.5 2 12 2ZM12 6C13.1 6 14 6.9 14 8C14 9.1 13.1 10 12 10C10.9 10 10 9.1 10 8C10 6.9 10.9 6 12 6Z"/>
-  </svg>
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C9.5 2 7.5 3 6 4.5C4.5 6 4 8 4 10C4 12 5 14 6 16C7 18 7.5 20 8 21C8.5 22 9.5 22 10 21C10.5 20 11 18 12 18C13 18 13.5 20 14 21C14.5 22 15.5 22 16 21C16.5 20 17 18 18 16C19 14 20 12 20 10C20 8 19.5 6 18 4.5C16.5 3 14.5 2 12 2ZM12 6C13.1 6 14 6.9 14 8C14 9.1 13.1 10 12 10C10.9 10 10 9.1 10 8C10 6.9 10.9 6 12 6Z"/></svg>
 );
 
 const Icons = {
@@ -610,7 +597,7 @@ const Icons = {
   user: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
   users: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
   mapPin: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>,
-  gift: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>,
+  gift: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/></svg>,
   messageCircle: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>,
   settings: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
   check: <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
@@ -672,7 +659,7 @@ const T = {
     total:"Всего", todayCount:"Сегодня", upcomingCount:"Предстоящие",
     cancelledCount:"Отменено", search:"Поиск...",
     schedule:"Расписание", blockedDates:"Блокировки", stats:"Статистика",
-    addBlock:"Добавить блокировку", blockReason:"Причина (отпуск, праздник...)",
+    addBlock:"Добавить блокировку", blockReason:"Причина",
     noBlocks:"Нет блокировок",
     allDoctors:"Все врачи", filterByService:"Фильтр по услуге",
     years:"лет", newsTitle:"Акции и новости", noNews:"Пока нет новостей",
@@ -714,7 +701,7 @@ const T = {
     doctorNameRu:"Имя (рус)", doctorNameEn:"Имя (англ)",
     doctorSpecRu:"Специализация (рус)", doctorSpecEn:"Специализация (англ)",
     doctorRating:"Рейтинг (0-5)", doctorReviews:"Кол-во отзывов",
-    doctorInitials:"Инициалы", doctorGradient:"Цвет (CSS gradient)",
+    doctorInitials:"Инициалы", doctorGradient:"Цвет",
     doctorServices:"Оказываемые услуги",
     serviceId:"ID (латиницей)", serviceIcon:"Иконка",
     serviceDuration:"Длительность (мин)", servicePrice:"Цена",
@@ -737,10 +724,10 @@ const T = {
     refreshing:"Обновление...",
     familyMembers:"Члены семьи",
     addFamilyMember:"Добавить члена семьи",
-    familyName:"Имя", familyRole:"Роль (например, сын, дочь)",
+    familyName:"Имя", familyRole:"Роль",
     forMyself:"Для себя",
     selectPatient:"Выберите пациента",
-    tipNearest:"Нажмите «Показать ближайшие» чтобы найти свободные слоты у всех врачей",
+    tipNearest:"Нажмите «Показать ближайшие» чтобы найти свободные слоты",
     tipReschedule:"Вы можете перенести запись, не отменяя её",
     tipFamily:"Добавьте членов семьи чтобы записывать их тоже",
     gotIt:"Понятно",
@@ -795,6 +782,22 @@ const T = {
     blockedUser:"Вы заблокированы",
     selectBranch:"Выберите филиал",
     branch:"Филиал",
+    clients:"Клиенты",
+    noClients:"Клиентов пока нет",
+    phoneRequired:"Укажите номер телефона",
+    phoneInvalid:"Некорректный номер",
+    adminCancelTitle:"Причина отмены (админ)",
+    adminCancelSub:"Выберите причину отмены записи клиента",
+    adminCancelClient:"По просьбе клиента",
+    adminCancelDoctor:"Врач заболел / недоступен",
+    adminCancelTech:"Технические причины",
+    adminCancelReschedule:"Перенос по инициативе клиники",
+    adminCancelNoShow:"Клиент не явился",
+    adminCancelOther:"Другое",
+    clientName:"Имя клиента",
+    clientVisits:"Визитов",
+    clientLastVisit:"Последний визит",
+    contact:"Связаться",
   },
   en: {
     greeting:"Hello", welcome:"Welcome",
@@ -820,7 +823,7 @@ const T = {
     total:"Total", todayCount:"Today", upcomingCount:"Upcoming",
     cancelledCount:"Cancelled", search:"Search...",
     schedule:"Schedule", blockedDates:"Blocked Dates", stats:"Statistics",
-    addBlock:"Add Block", blockReason:"Reason (vacation, holiday...)",
+    addBlock:"Add Block", blockReason:"Reason",
     noBlocks:"No blocks",
     allDoctors:"All doctors", filterByService:"Filter by service",
     years:"years", newsTitle:"Promotions & News", noNews:"No news yet",
@@ -862,7 +865,7 @@ const T = {
     doctorNameRu:"Name (RU)", doctorNameEn:"Name (EN)",
     doctorSpecRu:"Specialization (RU)", doctorSpecEn:"Specialization (EN)",
     doctorRating:"Rating (0-5)", doctorReviews:"Reviews count",
-    doctorInitials:"Initials", doctorGradient:"Color (CSS gradient)",
+    doctorInitials:"Initials", doctorGradient:"Color",
     doctorServices:"Provided services",
     serviceId:"ID (latin)", serviceIcon:"Icon",
     serviceDuration:"Duration (min)", servicePrice:"Price",
@@ -885,10 +888,10 @@ const T = {
     refreshing:"Refreshing...",
     familyMembers:"Family members",
     addFamilyMember:"Add family member",
-    familyName:"Name", familyRole:"Role (e.g., son, daughter)",
+    familyName:"Name", familyRole:"Role",
     forMyself:"For myself",
     selectPatient:"Select patient",
-    tipNearest:"Tap 'Find nearest' to see available slots across all doctors",
+    tipNearest:"Tap 'Find nearest' to see available slots",
     tipReschedule:"You can reschedule without cancelling",
     tipFamily:"Add family members to book for them too",
     gotIt:"Got it",
@@ -943,6 +946,22 @@ const T = {
     blockedUser:"You are blocked",
     selectBranch:"Select branch",
     branch:"Branch",
+    clients:"Clients",
+    noClients:"No clients yet",
+    phoneRequired:"Phone number required",
+    phoneInvalid:"Invalid phone number",
+    adminCancelTitle:"Cancellation reason (admin)",
+    adminCancelSub:"Select reason for cancelling client's appointment",
+    adminCancelClient:"At client's request",
+    adminCancelDoctor:"Doctor sick / unavailable",
+    adminCancelTech:"Technical reasons",
+    adminCancelReschedule:"Rescheduled by clinic",
+    adminCancelNoShow:"Client no-show",
+    adminCancelOther:"Other",
+    clientName:"Client name",
+    clientVisits:"Visits",
+    clientLastVisit:"Last visit",
+    contact:"Contact",
   }
 };
 
@@ -998,35 +1017,26 @@ const DEFAULT_NEWS = [
 ];
 
 const LS = {
-  appts:"dental_appts_v6", profile:"dental_profile_v6", theme:"dental_theme_v6",
-  lang:"dental_lang_v6", blocks:"dental_blocks_v6",
-  doctors:"dental_doctors_v3", services:"dental_services_v3",
-  times:"dental_times_v2", family:"dental_family_v2",
-  onboarding:"dental_onboarding_v2", tips:"dental_tips_v2",
-  clinic:"dental_clinic_v2", news:"dental_news_v2",
-  branches:"dental_branches_v1", faq:"dental_faq_v1", blacklist:"dental_blacklist_v1"
+  appts:"dental_appts_v7", theme:"dental_theme_v7",
+  lang:"dental_lang_v7", blocks:"dental_blocks_v7",
+  doctors:"dental_doctors_v4", services:"dental_services_v4",
+  times:"dental_times_v3", family:"dental_family_v3",
+  onboarding:"dental_onboarding_v3", tips:"dental_tips_v3",
+  clinic:"dental_clinic_v3", news:"dental_news_v3",
+  branches:"dental_branches_v2", faq:"dental_faq_v2", blacklist:"dental_blacklist_v2",
+  allProfiles:"dental_all_profiles_v1"
 };
 const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 
-const cloudStorage = {
-  get: (key) => new Promise((resolve) => {
-    if (!tg || !tg.CloudStorage) return resolve(null);
-    try {
-      tg.CloudStorage.getItem(key, (err, data) => {
-        if (err || !data) resolve(null);
-        else { try { resolve(JSON.parse(data)); } catch { resolve(data); } }
-      });
-    } catch { resolve(null); }
-  }),
-  set: (key, value) => new Promise((resolve) => {
-    if (!tg || !tg.CloudStorage) return resolve(false);
-    try {
-      const str = typeof value === "string" ? value : JSON.stringify(value);
-      tg.CloudStorage.setItem(key, str, (err) => resolve(!err));
-    } catch { resolve(false); }
-  }),
-};
+// Profile key per user
+const getProfileKey = (userId) => `dental_profile_v7_${userId || "guest"}`;
+const loadProfile = (userId) => load(getProfileKey(userId), {});
+const saveProfile = (userId, profile) => save(getProfileKey(userId), profile);
+
+// All profiles storage (for admin)
+const loadAllProfiles = () => load(LS.allProfiles, {});
+const saveAllProfiles = (profiles) => save(LS.allProfiles, profiles);
 
 function App() {
   const detectLang = () => {
@@ -1042,7 +1052,7 @@ function App() {
   const [screen, setScreen] = useState("home");
   const [user, setUser] = useState(null);
   const [appointments, setAppointments] = useState(() => load(LS.appts, []));
-  const [profile, setProfile] = useState(() => load(LS.profile, {}));
+  const [profile, setProfile] = useState({});
   const [blocks, setBlocks] = useState(() => load(LS.blocks, []));
   const [doctors, setDoctors] = useState(() => load(LS.doctors, DEFAULT_DOCTORS));
   const [services, setServices] = useState(() => load(LS.services, DEFAULT_SERVICES));
@@ -1053,6 +1063,7 @@ function App() {
   const [branches, setBranches] = useState(() => load(LS.branches, DEFAULT_BRANCHES));
   const [faq, setFaq] = useState(() => load(LS.faq, DEFAULT_FAQ));
   const [blacklist, setBlacklist] = useState(() => load(LS.blacklist, []));
+  const [allProfiles, setAllProfiles] = useState(() => loadAllProfiles());
   const [currentBranchId, setCurrentBranchId] = useState(null);
   const [booking, setBooking] = useState({ service:null, doctor:null, date:null, time:null, patientId:null, branchId:null });
   const [calMonth, setCalMonth] = useState(new Date().getMonth());
@@ -1064,11 +1075,12 @@ function App() {
   const [apptTab, setApptTab] = useState("upcoming");
   const [notification, setNotification] = useState(null);
   const [editProfile, setEditProfile] = useState(false);
+  const [profileErrors, setProfileErrors] = useState({});
   const [scheduleDoctor, setScheduleDoctor] = useState("d1");
   const [scheduleWeek, setScheduleWeek] = useState(0);
   const [newBlockDate, setNewBlockDate] = useState("");
   const [newBlockReason, setNewBlockReason] = useState("");
-  const [cancelModal, setCancelModal] = useState(null);
+  const [cancelModal, setCancelModal] = useState(null); // { id, reason, customReason, isAdmin }
   const [showNearest, setShowNearest] = useState(false);
   const [entityEditor, setEntityEditor] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem(LS.onboarding));
@@ -1095,7 +1107,23 @@ function App() {
   const steps = ["services","doctors","date","time","confirm"];
   const currentStep = steps.indexOf(screen);
 
-  // Check blacklist on load
+  // Load user profile when user is set
+  useEffect(() => {
+    if (user) {
+      const p = loadProfile(user.id);
+      setProfile(p);
+      setFamilyMembers(load(LS.family + "_" + user.id, []));
+    }
+  }, [user]);
+
+  // Save family members when they change
+  useEffect(() => {
+    if (user) {
+      save(LS.family + "_" + user.id, familyMembers);
+    }
+  }, [familyMembers, user]);
+
+  // Check blacklist
   useEffect(() => {
     if (user && blacklist.some(b => b.userId === user.id)) {
       setNotification({
@@ -1145,7 +1173,7 @@ function App() {
     };
   }, [screen]);
 
-  // Pull to refresh
+  // Pull to refresh on ALL screens
   useEffect(() => {
     const handleTouchStart = (e) => {
       if (window.scrollY <= 0) {
@@ -1192,12 +1220,16 @@ function App() {
     setDoctors(load(LS.doctors, DEFAULT_DOCTORS));
     setServices(load(LS.services, DEFAULT_SERVICES));
     setTimeSlots(load(LS.times, DEFAULT_TIMES));
-    setFamilyMembers(load(LS.family, []));
     setClinicInfo(load(LS.clinic, DEFAULT_CLINIC));
     setNews(load(LS.news, DEFAULT_NEWS));
     setBranches(load(LS.branches, DEFAULT_BRANCHES));
     setFaq(load(LS.faq, DEFAULT_FAQ));
     setBlacklist(load(LS.blacklist, []));
+    setAllProfiles(loadAllProfiles());
+    if (user) {
+      setProfile(loadProfile(user.id));
+      setFamilyMembers(load(LS.family + "_" + user.id, []));
+    }
     setTimeout(() => setPullState({ pulling: false, refreshing: false, distance: 0 }), 800);
   };
 
@@ -1221,58 +1253,26 @@ function App() {
     }
   }, []);
 
-  // Cloud sync
-  useEffect(() => {
-    if (!tg || !tg.CloudStorage) return;
-    cloudStorage.get("appointments").then((data) => {
-      if (data && Array.isArray(data) && data.length > appointments.length) {
-        setAppointments(data);
-        save(LS.appts, data);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!tg || !tg.CloudStorage) return;
-    cloudStorage.set("appointments", appointments).then((ok) => {
-      if (ok) { setCloudStatus("saved"); setTimeout(() => setCloudStatus(null), 2000); }
-    });
-  }, [appointments]);
-
-  // Reminders
-  useEffect(() => {
-    const checkReminders = () => {
-      const now = new Date();
-      for (let i = 0; i < appointments.length; i++) {
-        const a = appointments[i];
-        if (a.status !== "confirmed" || !a.reminder || a.reminderShown) continue;
-        const apptTime = new Date(a.date + "T" + a.time + ":00");
-        const diff = apptTime - now;
-        if (diff > 0 && diff < 24 * 60 * 60 * 1000) {
-          const diffHours = Math.round(diff / (60 * 60 * 1000));
-          setNotification({
-            id: a.id, icon: "bell",
-            title: t.reminderTitle,
-            text: diffHours <= 1 ? t.reminderIn1 + ": " + a.time : t.reminderIn24 + " " + a.time,
-          });
-          const updated = appointments.map(x => x.id === a.id ? { ...x, reminderShown: true } : x);
-          setAppointments(updated);
-          save(LS.appts, updated);
-          break;
-        }
-      }
-    };
-    checkReminders();
-    const interval = setInterval(checkReminders, 60000);
-    return () => clearInterval(interval);
-  }, [appointments, lang]);
-
-  // MainButton
+  // MainButton - FIXED: properly clear handlers
   useEffect(() => {
     if (!tg || !tg.MainButton) return;
-    const hide = () => { try { tg.MainButton.hide(); } catch {} };
+    
+    const clearHandlers = () => {
+      try { tg.MainButton.offClick(); } catch {}
+    };
+    
+    const hide = () => { 
+      clearHandlers();
+      try { tg.MainButton.hide(); } catch {} 
+    };
+    
     const show = (text, onClick) => {
-      try { tg.MainButton.setText(text); tg.MainButton.show(); tg.MainButton.onClick(onClick); } catch {}
+      clearHandlers();
+      try { 
+        tg.MainButton.setText(text); 
+        tg.MainButton.show(); 
+        tg.MainButton.onClick(onClick); 
+      } catch {}
     };
 
     if (["home","success","info","news","appointments","admin","profile","settings","faq"].includes(screen) && !editProfile) {
@@ -1282,10 +1282,22 @@ function App() {
 
     const stepText = currentStep >= 0 ? ` (${currentStep + 1}/${steps.length})` : "";
 
-    if (screen === "services") show(t.next + stepText, () => { if (!booking.service) tg.showAlert(t.selectServiceMsg); else setScreen("doctors"); });
-    else if (screen === "doctors") show(t.next + stepText, () => { if (!booking.doctor) tg.showAlert(t.selectDoctorMsg); else setScreen("date"); });
-    else if (screen === "date") show(t.next + stepText, () => { if (!booking.date) tg.showAlert(t.selectDateMsg); else setScreen("time"); });
-    else if (screen === "time") show(t.next + stepText, () => { if (!booking.time) tg.showAlert(t.selectTimeMsg); else setScreen("confirm"); });
+    if (screen === "services") show(t.next + stepText, () => { 
+      if (!booking.service) tg.showAlert(t.selectServiceMsg); 
+      else setScreen("doctors"); 
+    });
+    else if (screen === "doctors") show(t.next + stepText, () => { 
+      if (!booking.doctor) tg.showAlert(t.selectDoctorMsg); 
+      else setScreen("date"); 
+    });
+    else if (screen === "date") show(t.next + stepText, () => { 
+      if (!booking.date) tg.showAlert(t.selectDateMsg); 
+      else setScreen("time"); 
+    });
+    else if (screen === "time") show(t.next + stepText, () => { 
+      if (!booking.time) tg.showAlert(t.selectTimeMsg); 
+      else setScreen("confirm"); 
+    });
     else if (screen === "confirm") show(t.confirm, () => {
       const patientName = booking.patientId 
         ? (() => { const m = familyMembers.find(x => x.id === booking.patientId); return m ? m.name : "Guest"; })()
@@ -1303,18 +1315,33 @@ function App() {
       const updated = appointments.concat([newAppt]);
       setAppointments(updated);
       save(LS.appts, updated);
-      // Notify admin
       notifyAdmin(newAppt);
       setBooking({ service:null, doctor:null, date:null, time:null, patientId:null, branchId:null });
       setScreen("success");
     });
     else if (screen === "profile" && editProfile) show(t.save, () => {
-      save(LS.profile, profile);
+      // Validate phone
+      const errors = {};
+      if (!profile.phone || profile.phone.trim().length < 5) {
+        errors.phone = t.phoneRequired;
+      }
+      if (Object.keys(errors).length > 0) {
+        setProfileErrors(errors);
+        tg.showAlert(t.phoneRequired);
+        return;
+      }
+      setProfileErrors({});
+      saveProfile(user.id, profile);
+      // Update all profiles
+      const allP = loadAllProfiles();
+      allP[user.id] = { ...profile, userId: user.id, firstName: user.firstName, lastName: user.lastName, username: user.username, updatedAt: new Date().toISOString() };
+      saveAllProfiles(allP);
+      setAllProfiles(allP);
       setEditProfile(false);
     });
 
     return () => hide();
-  }, [screen, booking, appointments, user, lang, profile, editProfile, t, currentStep, currentBranchId]);
+  }, [screen, booking, appointments, user, lang, profile, editProfile, t, currentStep, currentBranchId, familyMembers]);
 
   const notifyAdmin = (appt) => {
     if (!tg) return;
@@ -1323,7 +1350,6 @@ function App() {
         tg.sendData(JSON.stringify({ type: "new_appointment", appt }));
       }
     } catch {}
-    // Visual feedback
     setCloudStatus("admin_notified");
     setTimeout(() => setCloudStatus(null), 2000);
   };
@@ -1389,7 +1415,6 @@ function App() {
     setScreen("date");
   };
 
-  // Quick book - 1 click
   const quickBook = () => {
     const lastAppt = appointments
       .filter(a => a.userId === user?.id && a.status === "confirmed")
@@ -1414,13 +1439,16 @@ function App() {
       .sort((a,b) => b.createdAt.localeCompare(a.createdAt))[0];
   }, [appointments, user]);
 
-  const openCancelModal = (id) => setCancelModal({ id, reason: null, customReason: "" });
+  const openCancelModal = (id, isAdminCancel = false) => {
+    setCancelModal({ id, reason: null, customReason: "", isAdmin: isAdminCancel });
+  };
+  
   const submitCancel = () => {
     if (!cancelModal) return;
     let reasonText = cancelModal.reason;
     if (cancelModal.reason === "other" && cancelModal.customReason) reasonText = cancelModal.customReason;
     const updated = appointments.map(a => a.id === cancelModal.id ? {
-      ...a, status: "cancelled", cancelReason: reasonText || "—"
+      ...a, status: "cancelled", cancelReason: reasonText || "—", cancelByAdmin: cancelModal.isAdmin
     } : a);
     setAppointments(updated);
     save(LS.appts, updated);
@@ -1439,20 +1467,12 @@ function App() {
     }
   }, [screen]);
 
-  // Export CSV
   const exportCsv = () => {
     const headers = ["ID","Client","Service","Doctor","Branch","Date","Time","Status","Price","Created"];
     const rows = appointments.map(a => [
-      a.id,
-      a.userName,
-      svcName(a.service),
-      doctorName(a.doctorId),
-      branchName(a.branchId),
-      a.date,
-      a.time,
-      a.status,
-      services.find(s => s.id === a.service)?.price || 0,
-      a.createdAt
+      a.id, a.userName, svcName(a.service), doctorName(a.doctorId),
+      branchName(a.branchId), a.date, a.time, a.status,
+      services.find(s => s.id === a.service)?.price || 0, a.createdAt
     ]);
     const csv = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
     const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
@@ -1465,7 +1485,6 @@ function App() {
     if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
   };
 
-  // ICS download
   const downloadIcs = (appt) => {
     const service = services.find(s => s.id === appt.service);
     const duration = service?.duration || 60;
@@ -1533,12 +1552,8 @@ function App() {
   }, [appointments, booking.date, booking.doctor]);
 
   const filteredDoctors = useMemo(() => {
-    let list = serviceFilter ? doctors.filter(d => d.services.indexOf(serviceFilter) !== -1) : doctors;
-    if (currentBranchId) {
-      // All doctors available at all branches for simplicity
-    }
-    return list;
-  }, [serviceFilter, doctors, currentBranchId]);
+    return serviceFilter ? doctors.filter(d => d.services.indexOf(serviceFilter) !== -1) : doctors;
+  }, [serviceFilter, doctors]);
 
   const myAppts = useMemo(() => {
     if (isAdmin) return appointments;
@@ -1622,7 +1637,7 @@ function App() {
     const slides = [
       { icon: "", title: t.onboarding1Title, desc: t.onboarding1Desc },
       { icon: "🔔", title: t.onboarding2Title, desc: t.onboarding2Desc },
-      { icon: "👨‍👩‍👧", title: t.onboarding3Title, desc: t.onboarding3Desc },
+      { icon: "👨‍‍👧", title: t.onboarding3Title, desc: t.onboarding3Desc },
       { icon: "✨", title: t.onboarding4Title, desc: t.onboarding4Desc },
     ];
     const slide = slides[onboardingStep];
@@ -1663,18 +1678,13 @@ function App() {
           <button className="notif-close" onClick={() => setNotification(null)}>×</button>
         </div>
       )}
-      {cloudStatus === "saved" && (
-        <div style={{position:"fixed", top:"60px", right:"16px", background:"var(--success)", color:"white", padding:"6px 12px", borderRadius:"20px", fontSize:"11px", fontWeight:600, zIndex:999}}>
-          ✓ {t.cloudSaved}
-        </div>
-      )}
       {cloudStatus === "admin_notified" && (
         <div style={{position:"fixed", top:"60px", right:"16px", background:"var(--btn)", color:"white", padding:"6px 12px", borderRadius:"20px", fontSize:"11px", fontWeight:600, zIndex:999}}>
           🔔 {t.adminNotified}
         </div>
       )}
       <div className="ptr-indicator" style={{opacity: pullState.pulling ? 1 : 0, transform: `translateY(${pullState.distance}px)`}}>
-        {pullState.refreshing ? "⟳ " + t.refreshing : "↓ " + t.pullToRefresh}
+        {pullState.refreshing ? " " + t.refreshing : "↓ " + t.pullToRefresh}
       </div>
       <div className="fade-in">
         <div className={`hero ${clinicInfo.heroImage ? "has-image" : ""}`} style={clinicInfo.heroImage ? {backgroundImage: `url(${clinicInfo.heroImage})`} : {}}>
@@ -1682,7 +1692,6 @@ function App() {
           <div className="hero-content">
             <div className="hero-top">
               <div className="hero-logo"><ToothIcon size={36} /></div>
-              <div className="hero-badge">{t.synced} ✓</div>
             </div>
             <div className="hero-bottom">
               <h1>{lang === "ru" ? clinicInfo.nameRu : clinicInfo.nameEn}</h1>
@@ -1702,7 +1711,6 @@ function App() {
             <button className="icon-btn" onClick={() => setScreen("settings")}>{Icons.settings}</button>
           </div>
         )}
-        {/* Branch selector */}
         {branches.length > 0 && (
           <>
             <div style={{fontSize:12, color:"var(--hint)", marginBottom:6, fontWeight:600}}>{t.selectBranch}</div>
@@ -1718,7 +1726,6 @@ function App() {
             </div>
           </>
         )}
-        {/* Quick book */}
         {lastAppt && (
           <div className="quick-book-card" onClick={quickBook}>
             <div className="quick-book-icon">⚡</div>
@@ -1998,7 +2005,7 @@ function App() {
                   <button className="btn-small primary" onClick={() => downloadIcs(a)}>
                     {Icons.calendarPlus} {t.icsAdd}
                   </button>
-                  {!isAdmin && <button className="btn-small danger" onClick={() => openCancelModal(a.id)}>{t.cancelAppt}</button>}
+                  {!isAdmin && <button className="btn-small danger" onClick={() => openCancelModal(a.id, false)}>{t.cancelAppt}</button>}
                   {!isAdmin && <button className="btn-small warning" onClick={() => rescheduleAppt(a)}>
                     {Icons.clockArrow} {t.reschedule}
                   </button>}
@@ -2018,16 +2025,23 @@ function App() {
       {cancelModal && (
         <div className="modal-overlay" onClick={() => setCancelModal(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">{t.cancelReasonTitle}</div>
-            <div className="modal-sub">{t.cancelReasonSub}</div>
+            <div className="modal-title">{cancelModal.isAdmin ? t.adminCancelTitle : t.cancelReasonTitle}</div>
+            <div className="modal-sub">{cancelModal.isAdmin ? t.adminCancelSub : t.cancelReasonSub}</div>
             <div className="reason-list">
-              {[
+              {(cancelModal.isAdmin ? [
+                { id: "client", label: t.adminCancelClient },
+                { id: "doctor", label: t.adminCancelDoctor },
+                { id: "tech", label: t.adminCancelTech },
+                { id: "reschedule", label: t.adminCancelReschedule },
+                { id: "noshow", label: t.adminCancelNoShow },
+                { id: "other", label: t.adminCancelOther },
+              ] : [
                 { id: "changed", label: t.cancelReasonChanged },
                 { id: "sick", label: t.cancelReasonSick },
                 { id: "found", label: t.cancelReasonFound },
                 { id: "expensive", label: t.cancelReasonExpensive },
                 { id: "other", label: t.cancelReasonOther },
-              ].map(r => (
+              ]).map(r => (
                 <div key={r.id} className={"reason-item " + (cancelModal.reason === r.id ? "selected" : "")}
                   onClick={() => setCancelModal({ ...cancelModal, reason: r.id })}>
                   <div className="reason-radio"></div>
@@ -2061,7 +2075,7 @@ function App() {
   // PROFILE
   if (screen === "profile") return (
     <div className="app screen">
-      {renderHeader(t.profile, true, !editProfile ? <button className="icon-btn" onClick={() => setEditProfile(true)}>{Icons.edit}</button> : null)}
+      {renderHeader(t.profile, true, !editProfile ? <button className="icon-btn" onClick={() => { setEditProfile(true); setProfileErrors({}); }} >{Icons.edit}</button> : null)}
       <div className="fade-in">
         <div className="user-card" style={{marginBottom:16}}>
           <div className="avatar" style={{width:64,height:64,fontSize:24}}>
@@ -2075,8 +2089,9 @@ function App() {
         {editProfile ? (
           <div className="profile-form">
             <div className="form-group">
-              <label className="form-label">{t.phone}</label>
-              <input className="form-input" type="tel" placeholder="+7 ..." value={profile.phone || ""} onChange={e => setProfile({...profile, phone: e.target.value})} />
+              <label className="form-label">{t.phone} <span className="required-star">*</span></label>
+              <input className={"form-input " + (profileErrors.phone ? "error" : "")} type="tel" placeholder="+7 ..." value={profile.phone || ""} onChange={e => { setProfile({...profile, phone: e.target.value}); setProfileErrors({...profileErrors, phone: null}); }} />
+              {profileErrors.phone && <div style={{fontSize:11, color:"var(--danger)", marginTop:4}}>{profileErrors.phone}</div>}
             </div>
             <div className="form-group">
               <label className="form-label">{t.email}</label>
@@ -2090,6 +2105,9 @@ function App() {
               <label className="form-label">{t.notes}</label>
               <textarea className="form-input" rows="3" value={profile.notes || ""} onChange={e => setProfile({...profile, notes: e.target.value})} />
             </div>
+            <div style={{fontSize:11, color:"var(--hint)", marginTop:8}}>
+              * {lang === "ru" ? "Обязательное поле" : "Required field"}
+            </div>
           </div>
         ) : (
           <div className="info-block">
@@ -2100,13 +2118,6 @@ function App() {
           </div>
         )}
         <div className="section-title" style={{marginTop:16}}>{t.syncStatus}</div>
-        <div className="sync-compact">
-          <div className="sync-compact-icon">{Icons.checkSmall}</div>
-          <div className="sync-compact-info">
-            <div className="sync-compact-title">{t.synced}</div>
-            <div className="sync-compact-sub">Telegram Cloud Storage</div>
-          </div>
-        </div>
         <div className="sync-compact">
           <div className="sync-compact-icon">{Icons.checkSmall}</div>
           <div className="sync-compact-info">
@@ -2127,7 +2138,7 @@ function App() {
             </div>
             <button className="btn-small danger" onClick={() => {
               const newFam = familyMembers.filter(x => x.id !== m.id);
-              setFamilyMembers(newFam); save(LS.family, newFam);
+              setFamilyMembers(newFam);
             }}>{Icons.trash}</button>
           </div>
         ))}
@@ -2171,7 +2182,7 @@ function App() {
                 <button className="btn-small primary" onClick={() => {
                   if (!newFamilyName) return;
                   const newFam = familyMembers.concat([{ id: "f" + Date.now(), name: newFamilyName, role: newFamilyRole }]);
-                  setFamilyMembers(newFam); save(LS.family, newFam);
+                  setFamilyMembers(newFam);
                   setNewFamilyName(""); setNewFamilyRole("");
                   setAddFamilyModal(false);
                 }}>{t.save}</button>
@@ -2204,7 +2215,6 @@ function App() {
           <div className="info-row"><div className="info-icon">{Icons.phone}</div><div className="info-content"><div className="info-label">{t.phone}</div><div className="info-value">{clinicInfo.phone}</div></div></div>
           <div className="info-row"><div className="info-icon">{Icons.mail}</div><div className="info-content"><div className="info-label">Email</div><div className="info-value">{clinicInfo.email}</div></div></div>
         </div>
-        {/* Branches list */}
         {branches.length > 0 && (
           <>
             <div className="section-title">{t.branches}</div>
@@ -2214,7 +2224,7 @@ function App() {
                 <div className="entity-info">
                   <div className="entity-name">{lang === "ru" ? b.nameRu : b.nameEn}</div>
                   <div className="entity-meta">📍 {lang === "ru" ? b.addressRu : b.addressEn}</div>
-                  <div className="entity-meta">📞 {b.phone}</div>
+                  <div className="entity-meta"> {b.phone}</div>
                 </div>
               </div>
             ))}
@@ -2298,7 +2308,7 @@ function App() {
           <div className={"switch " + (themeMode === "dark" ? "on" : "")}></div>
         </div>
         <div className="theme-toggle" onClick={() => setThemeMode("auto")}>
-          <span style={{fontSize:20}}>📱</span>
+          <span style={{fontSize:20}}></span>
           <div className="theme-toggle-label">{t.autoTheme}</div>
           <div className={"switch " + (themeMode === "auto" ? "on" : "")}></div>
         </div>
@@ -2318,6 +2328,7 @@ function App() {
       <div className="tabs">
         <button className={"tab " + (adminTab==="stats"?"active":"")} onClick={() => setAdminTab("stats")}>{t.stats}</button>
         <button className={"tab " + (adminTab==="appts"?"active":"")} onClick={() => setAdminTab("appts")}>{t.myAppts}</button>
+        <button className={"tab " + (adminTab==="clients"?"active":"")} onClick={() => setAdminTab("clients")}>{t.clients}</button>
         <button className={"tab " + (adminTab==="schedule"?"active":"")} onClick={() => setAdminTab("schedule")}>{t.schedule}</button>
         <button className={"tab " + (adminTab==="blocks"?"active":"")} onClick={() => setAdminTab("blocks")}>{t.blockedDates}</button>
         <button className={"tab " + (adminTab==="doctors"?"active":"")} onClick={() => setAdminTab("doctors")}>{t.manageDoctors}</button>
@@ -2348,6 +2359,7 @@ function App() {
               <div className="info-row"><div className="info-icon">{Icons.stethoscope}</div><div className="info-content"><div className="info-label">{t.service}</div><div className="info-value">{services.length} {t.services}</div></div></div>
               <div className="info-row"><div className="info-icon">{Icons.clock}</div><div className="info-content"><div className="info-label">{t.time}</div><div className="info-value">{timeSlots.length} {t.available}</div></div></div>
               <div className="info-row"><div className="info-icon">{Icons.building}</div><div className="info-content"><div className="info-label">{t.branches}</div><div className="info-value">{branches.length}</div></div></div>
+              <div className="info-row"><div className="info-icon">{Icons.users}</div><div className="info-content"><div className="info-label">{t.clients}</div><div className="info-value">{Object.keys(allProfiles).length}</div></div></div>
               <div className="info-row"><div className="info-icon">{Icons.bell}</div><div className="info-content"><div className="info-label">{t.reminderOn}</div><div className="info-value">{appointments.filter(a => a.reminder && a.status === "confirmed").length}</div></div></div>
               <div className="info-row"><div className="info-icon">{Icons.shield}</div><div className="info-content"><div className="info-label">{t.blacklist}</div><div className="info-value">{blacklist.length}</div></div></div>
             </div>
@@ -2395,9 +2407,9 @@ function App() {
                   </div>
                 </div>
                 <div className="appt-details">
-                  <span>📅 {formatDate(a.date)}</span><span>🕐 {a.time}</span>
+                  <span> {formatDate(a.date)}</span><span>🕐 {a.time}</span>
                 </div>
-                {a.doctorId && <div className="appt-doctor">👨‍⚕️ {doctorName(a.doctorId)}</div>}
+                {a.doctorId && <div className="appt-doctor">👨⚕️ {doctorName(a.doctorId)}</div>}
                 {a.branchId && <div className="appt-doctor">📍 {branchName(a.branchId)}</div>}
                 {a.status === "cancelled" && a.cancelReason && (
                   <div className="appt-cancel-reason">💭 {t.reason}: {a.cancelReason}</div>
@@ -2405,7 +2417,7 @@ function App() {
                 {a.status === "confirmed" && (
                   <div className="appt-actions">
                     <button className="btn-small primary" onClick={() => downloadIcs(a)}>{Icons.calendarPlus} .ics</button>
-                    <button className="btn-small danger" onClick={() => openCancelModal(a.id)}>{t.cancelAppt}</button>
+                    <button className="btn-small danger" onClick={() => openCancelModal(a.id, true)}>{t.cancelAppt}</button>
                     <button className="btn-small" onClick={() => {
                       if (confirm((lang === "ru" ? "Добавить в чёрный список?" : "Add to blacklist?"))) {
                         const newBl = blacklist.concat([{ id: Date.now(), userId: a.userId, userName: a.userName, reason: lang === "ru" ? "Админ добавил" : "Admin added", date: new Date().toISOString() }]);
@@ -2416,6 +2428,62 @@ function App() {
                 )}
               </div>
             ))}
+          </>
+        )}
+        {adminTab === "clients" && (
+          <>
+            <input className="search-box" placeholder={t.search} value={adminSearch} onChange={e => setAdminSearch(e.target.value)} />
+            {Object.keys(allProfiles).length === 0 ? (
+              <div className="empty-state"><div className="empty-icon">{Icons.empty}</div><div>{t.noClients}</div></div>
+            ) : Object.values(allProfiles)
+              .filter(p => {
+                if (!adminSearch) return true;
+                const q = adminSearch.toLowerCase();
+                return (p.firstName || "").toLowerCase().includes(q) || 
+                       (p.lastName || "").toLowerCase().includes(q) ||
+                       (p.phone || "").includes(q) ||
+                       (p.email || "").toLowerCase().includes(q);
+              })
+              .map(p => {
+                const clientAppts = appointments.filter(a => a.userId === p.userId);
+                const lastAppt = clientAppts.sort((a,b) => b.createdAt.localeCompare(a.createdAt))[0];
+                return (
+                  <div key={p.userId} className="client-card">
+                    <div className="client-avatar">
+                      {(p.firstName || "?")[0].toUpperCase()}
+                    </div>
+                    <div className="client-info">
+                      <div className="client-name">{p.firstName || ""} {p.lastName || ""}</div>
+                      <div className="client-phone"> {p.phone || "—"}</div>
+                      <div className="client-meta">
+                        ✉️ {p.email || "—"} · {t.clientVisits}: {clientAppts.length}
+                        {lastAppt && ` · ${t.clientLastVisit}: ${formatDate(lastAppt.date)}`}
+                      </div>
+                      {p.username && <div className="client-meta">@{p.username}</div>}
+                      {p.birthday && <div className="client-meta">🎂 {formatDate(p.birthday)}</div>}
+                      {p.notes && <div className="client-meta">📝 {p.notes}</div>}
+                    </div>
+                    <div className="entity-actions" style={{flexDirection:"column"}}>
+                      {p.phone && (
+                        <button className="btn-small primary" onClick={() => { window.location.href = "tel:" + p.phone.replace(/\s/g,""); }}>
+                          {Icons.phone}
+                        </button>
+                      )}
+                      {p.email && (
+                        <button className="btn-small" onClick={() => { window.location.href = "mailto:" + p.email; }}>
+                          {Icons.mail}
+                        </button>
+                      )}
+                      <button className="btn-small danger" onClick={() => {
+                        if (confirm((lang === "ru" ? "Добавить в чёрный список?" : "Add to blacklist?") + " " + (p.firstName || ""))) {
+                          const newBl = blacklist.concat([{ id: Date.now(), userId: p.userId, userName: (p.firstName || "") + " " + (p.lastName || ""), reason: lang === "ru" ? "Админ добавил" : "Admin added", date: new Date().toISOString() }]);
+                          setBlacklist(newBl); save(LS.blacklist, newBl);
+                        }
+                      }}>{Icons.shield}</button>
+                    </div>
+                  </div>
+                );
+              })}
           </>
         )}
         {adminTab === "schedule" && (
@@ -2457,7 +2525,7 @@ function App() {
                         setBlocks(newBlocks); save(LS.blocks, newBlocks);
                       } else if (status === "booked") {
                         const appt = appointments.find(a => a.date === ds && a.time === time && a.doctorId === scheduleDoctor && a.status === "confirmed");
-                        if (appt) openCancelModal(appt.id);
+                        if (appt) openCancelModal(appt.id, true);
                       }
                     }}>
                       {status === "booked" ? "●" : status === "blocked-cell" ? "×" : ""}
@@ -2802,16 +2870,23 @@ function App() {
       {cancelModal && (
         <div className="modal-overlay" onClick={() => setCancelModal(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">{t.cancelReasonTitle}</div>
-            <div className="modal-sub">{t.cancelReasonSub}</div>
+            <div className="modal-title">{cancelModal.isAdmin ? t.adminCancelTitle : t.cancelReasonTitle}</div>
+            <div className="modal-sub">{cancelModal.isAdmin ? t.adminCancelSub : t.cancelReasonSub}</div>
             <div className="reason-list">
-              {[
+              {(cancelModal.isAdmin ? [
+                { id: "client", label: t.adminCancelClient },
+                { id: "doctor", label: t.adminCancelDoctor },
+                { id: "tech", label: t.adminCancelTech },
+                { id: "reschedule", label: t.adminCancelReschedule },
+                { id: "noshow", label: t.adminCancelNoShow },
+                { id: "other", label: t.adminCancelOther },
+              ] : [
                 { id: "changed", label: t.cancelReasonChanged },
                 { id: "sick", label: t.cancelReasonSick },
                 { id: "found", label: t.cancelReasonFound },
                 { id: "expensive", label: t.cancelReasonExpensive },
                 { id: "other", label: t.cancelReasonOther },
-              ].map(r => (
+              ]).map(r => (
                 <div key={r.id} className={"reason-item " + (cancelModal.reason === r.id ? "selected" : "")}
                   onClick={() => setCancelModal({ ...cancelModal, reason: r.id })}>
                   <div className="reason-radio"></div>
